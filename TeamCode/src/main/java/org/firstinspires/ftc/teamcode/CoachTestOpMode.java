@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -7,14 +8,37 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Gyroscope;
 import com.qualcomm.robotcore.hardware.Servo;//
-//Trey was here
+
+class goBuildAServo2000 {
+    private Servo theServo;
+    private Telemetry telemetry;
+
+    public void initialize (Servo aServo, Telemetry aTelemetry ){
+        theServo = aServo;
+        telemetry = aTelemetry;
+    }
+
+    public void goTo (int degrees){
+        if (theServo == null){
+            telemetry.addData("ERROR", "you have not initialized");
+            return;
+        }
+        if (degrees < 0 || degrees > 250){
+            telemetry.addData("ERROR", "Servo degrees out of range");
+            return;
+        }
+        theServo.setPosition(0.004 * degrees);
+
+    }
+}
+//Trey was here.....                                                        ....or was he.......
 @TeleOp(name="Coach Test", group="Linear Opmode")
 public class CoachTestOpMode extends LinearOpMode {
     private Gyroscope imu;
     private DcMotor motorTest;
     private DigitalChannel digitalTouch;
     private DistanceSensor sensorColorRange;
-    private Servo servoTest;
+    private goBuildAServo2000 servoTest = new goBuildAServo2000();
 
     @Override
     public void runOpMode() {
@@ -23,7 +47,7 @@ public class CoachTestOpMode extends LinearOpMode {
         motorTest = hardwareMap.get(DcMotor.class, "motorTest");
         digitalTouch = hardwareMap.get(DigitalChannel.class, "digitalTouch");
         sensorColorRange = hardwareMap.get(DistanceSensor.class, "sensorColorRange");
-        servoTest = hardwareMap.get(Servo.class, "servoTest");
+        servoTest.initialize(hardwareMap.get(Servo.class, "servoTest"), telemetry);
         // set digital channel to input mode.
         digitalTouch.setMode(DigitalChannel.Mode.INPUT);
         // Output status to the console
@@ -41,13 +65,13 @@ public class CoachTestOpMode extends LinearOpMode {
             // check to see if we need to move the servo.
             if(gamepad1.y) {
                 // move to 0 degrees.
-                servoTest.setPosition(0);
+                servoTest.goTo(0);
             } else if (gamepad1.x || gamepad1.b) {
                 // move to 90 degrees.
-                servoTest.setPosition(0.5);
+                servoTest.goTo(90);
             } else if (gamepad1.a) {
                 // move to 180 degrees.
-                servoTest.setPosition(1);
+                servoTest.goTo(180);
             }
             // is button pressed?
             if (digitalTouch.getState() == false) {
@@ -58,7 +82,7 @@ public class CoachTestOpMode extends LinearOpMode {
             }
 
 
-            telemetry.addData("Servo Position", servoTest.getPosition());
+            //telemetry.addData("Servo Position", servoTest.getPosition());
             telemetry.addData("Motor Target Power", tgtPower);
             telemetry.addData("Motor Power", motorTest.getPower());
             telemetry.addData("Status", "Running");
