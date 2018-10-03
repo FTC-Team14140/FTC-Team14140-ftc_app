@@ -7,7 +7,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Gyroscope;
-import com.qualcomm.robotcore.hardware.Servo;//
+import com.qualcomm.robotcore.hardware.Servo;
+//
 
 class goBuildAServo2000 {
     private Servo theServo;
@@ -32,7 +33,7 @@ class goBuildAServo2000 {
     }
 }
 //Trey was here.....                                                        ....or was he.......
-@TeleOp(name="Coach Test", group="Linear Opmode")
+@TeleOp(name="Test", group="Linear Opmode")
 public class CoachTestOpMode extends LinearOpMode {
     private Gyroscope imu;
     private DcMotor motorTest;
