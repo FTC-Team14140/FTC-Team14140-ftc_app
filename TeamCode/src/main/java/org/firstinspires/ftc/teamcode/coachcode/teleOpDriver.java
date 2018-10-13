@@ -48,6 +48,10 @@ public class teleOpDriver extends LinearOpMode{
 
         // reverse the drive on the left rear motor for normal control
         leftRearMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftRearMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightRearMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftRearMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightRearMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         driver = new autoDriver (hardwareMap, this, telemetry, leftRearMotor, rightRearMotor, gyro);
 
@@ -71,13 +75,15 @@ public class teleOpDriver extends LinearOpMode{
             rightRearMotor.setPower(tgtPowerRR);
 
             if(gamepad1.x) {
-                driver.turn(.2, -90);
-           } else if ( gamepad1.b) {
-                driver.turn(.2, 90);
-            } else if ( gamepad1.y) {
                 driver.spin(.15, -90);
-            } else if ( gamepad1.a) {
+           } else if ( gamepad1.b) {
                 driver.spin(.15, 90);
+            } else if ( gamepad1.y) {
+                //driver.spin(.15, -90);
+                driver.moveInches(.2,12);
+            } else if ( gamepad1.a) {
+                //driver.spin(.15, 90);
+                driver.moveInches(-0.2,-12);
             }
             //telemetry.addData("Servo Position", servoTest.getPosition());
             //telemetry.addData("Left Motor Target Power", tgtPowerLR);
@@ -85,6 +91,9 @@ public class teleOpDriver extends LinearOpMode{
             //telemetry.addData("Left Motor Power", leftRearMotor.getPower());
             //telemetry.addData("Right Motor Power", rightRearMotor.getPower());
             telemetry.addData("heading", gyro.getHeading());
+            telemetry.addData("Drive Encoders",  "L:%7d R:%7d",
+                    leftRearMotor.getCurrentPosition(),
+                    rightRearMotor.getCurrentPosition());
             telemetry.addData("Status", "Running");
             telemetry.update();
         }
