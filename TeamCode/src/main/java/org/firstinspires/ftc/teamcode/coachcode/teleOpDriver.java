@@ -29,6 +29,9 @@ public class teleOpDriver extends LinearOpMode{
     private DistanceSensor sensorColorRange;
     //private goBuildAServo2000 servoTest = new goBuildAServo2000();
 
+    private Servo grabberServo;
+
+
     @Override
     public void runOpMode() {
 
@@ -41,7 +44,7 @@ public class teleOpDriver extends LinearOpMode{
         rightRearMotor = hardwareMap.get(DcMotor.class, "rightRear");
         digitalTouch = hardwareMap.get(DigitalChannel.class, "digitalTouch");
         sensorColorRange = hardwareMap.get(DistanceSensor.class, "sensorColorRange");
-        //servoTest.initialize(hardwareMap.get(Servo.class, "servoTest"), telemetry);
+        grabberServo = hardwareMap.get(Servo.class, "servoTest");
 
         // set digital channel to input mode.
         digitalTouch.setMode(DigitalChannel.Mode.INPUT);
@@ -84,6 +87,12 @@ public class teleOpDriver extends LinearOpMode{
             } else if ( gamepad1.a) {
                 //driver.spin(.15, 90);
                 driver.moveInches(-0.2,-12);
+            } else if (gamepad1.dpad_left) {
+                grabberServo.setPosition(0.004 * 0);
+            } else if (gamepad1.dpad_up) {
+                grabberServo.setPosition(0.004 * 35);
+            } else if (gamepad1.dpad_right) {
+                grabberServo.setPosition(0.004 * 60);
             }
             //telemetry.addData("Servo Position", servoTest.getPosition());
             //telemetry.addData("Left Motor Target Power", tgtPowerLR);
