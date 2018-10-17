@@ -23,7 +23,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
 public class coachVu {
 
     Telemetry telemetry;
-    private static final String VUFORIA_KEY = " -- YOUR NEW VUFORIA KEY GOES HERE  --- ";
+    private static final String VUFORIA_KEY = "AS4C9AT/////AAABmWPn8BKhgkppteJIWeu23pd3sH+HzHIII5D39Gs8ElMdsVxuXflUZtrLJFi2vf1DJwhAJ0HBGSK0ZWTrg5jiVxe3UKqBkMuqxK1oJvDBfuepZaVgv8/PSHkWZ/5e5wyet+sGou6WAcYdZelyRmyKvjnH37mwiomXiXORJZZ0TJXTnAlTbWxD50rnHyssTSk+NtV538b2FP1wTeuFVZigD2Yj7yDjkEqES2tgmFfstLmXMFoBz0fxsgmhZ1pesVcihAFG8h4uskXtOVZP0Kf1QseqwgIWtrSMyRAYlnDC9kbTwYMU9I2mXRQV+VOe2Bl2cRxOY8Zavm8D9FDcLtD6JW83/u5vXMTPN6cEukC5hiYc";
 
     // Since ImageTarget trackables use mm to specifiy their dimensions, we must use mm for all the physical dimension.
     // We will define some constants and conversions here
