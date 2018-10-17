@@ -30,7 +30,7 @@ public class teleOpDriver extends LinearOpMode{
     //private goBuildAServo2000 servoTest = new goBuildAServo2000();
 
     private Servo grabberServo;
-
+    private coachVu vu;
 
     @Override
     public void runOpMode() {
@@ -45,6 +45,7 @@ public class teleOpDriver extends LinearOpMode{
         digitalTouch = hardwareMap.get(DigitalChannel.class, "digitalTouch");
         sensorColorRange = hardwareMap.get(DistanceSensor.class, "sensorColorRange");
         grabberServo = hardwareMap.get(Servo.class, "servoTest");
+        vu = new coachVu(telemetry, hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
 
         // set digital channel to input mode.
         digitalTouch.setMode(DigitalChannel.Mode.INPUT);
@@ -57,6 +58,7 @@ public class teleOpDriver extends LinearOpMode{
         rightRearMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         driver = new autoDriver (hardwareMap, this, telemetry, leftRearMotor, rightRearMotor, gyro);
+        vu.init();
 
         // Output status to the console
         telemetry.addData("Status", "Initialized");
@@ -94,6 +96,10 @@ public class teleOpDriver extends LinearOpMode{
             } else if (gamepad1.dpad_right) {
                 grabberServo.setPosition(0.004 * 60);
             }
+
+            //test out vuforia vumark navigation
+            vu.getLocation();
+
             //telemetry.addData("Servo Position", servoTest.getPosition());
             //telemetry.addData("Left Motor Target Power", tgtPowerLR);
             //telemetry.addData("Right Motor Target Power", tgtPowerRR);
