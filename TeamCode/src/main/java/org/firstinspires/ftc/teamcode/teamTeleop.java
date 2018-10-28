@@ -14,6 +14,9 @@ public class teamTeleop extends LinearOpMode {
     private DcMotor motorLeft;
     private DcMotor motorRight;
 
+    // 0.15 is the threshold that the motor starts to accelerate
+    private static final double deadSpot = 0.15;
+
     @Override
     public void runOpMode() {
         // Get the objects for the various pieces of hardware
@@ -32,8 +35,20 @@ public class teamTeleop extends LinearOpMode {
         double tgtPowerLeft = 0;
         while (opModeIsActive()) {
             tgtPowerRight = -this.gamepad1.right_stick_y;
-            motorRight.setPower(tgtPowerRight);
             tgtPowerLeft = -this.gamepad1.left_stick_y;
+            //  "if statement" uses this equation  to figure out if it is can be used in the formula
+            if (tgtPowerRight > 0) {
+                // formula to use
+                tgtPowerRight = (1 - deadSpot) * tgtPowerRight + deadSpot;
+            }else if (tgtPowerRight< 0){
+                tgtPowerRight = (1 - deadSpot) * tgtPowerRight - deadSpot;
+            }
+            if (tgtPowerLeft > 0) {
+                tgtPowerLeft = (1 - deadSpot) * tgtPowerLeft + deadSpot;
+            }else if (tgtPowerLeft< 0){
+                tgtPowerLeft = (1 - deadSpot) * tgtPowerLeft - deadSpot;
+            }
+            motorRight.setPower(tgtPowerRight);
             motorLeft.setPower(tgtPowerLeft);
 
 

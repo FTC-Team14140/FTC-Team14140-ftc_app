@@ -39,7 +39,7 @@ public class coachVu {
     private boolean targetVisible = false;
 
     private List<VuforiaTrackable> allTrackables;
-
+    private VuforiaTrackables targetsRoverRuckus;
 
     int cameraMonitorViewId;
     /**
@@ -61,7 +61,7 @@ public class coachVu {
          */
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 
-        // VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+        //VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY ;
         parameters.cameraDirection   = CAMERA_CHOICE;
@@ -71,7 +71,7 @@ public class coachVu {
 
         // Load the data sets that for the trackable objects. These particular data
         // sets are stored in the 'assets' part of our application.
-        VuforiaTrackables targetsRoverRuckus = this.vuforia.loadTrackablesFromAsset("RoverRuckus");
+        targetsRoverRuckus = this.vuforia.loadTrackablesFromAsset("RoverRuckus");
         VuforiaTrackable blueRover = targetsRoverRuckus.get(0);
         blueRover.setName("Blue-Rover");
         VuforiaTrackable redFootprint = targetsRoverRuckus.get(1);
@@ -189,11 +189,15 @@ public class coachVu {
             ((VuforiaTrackableDefaultListener)trackable.getListener()).setPhoneInformation(phoneLocationOnRobot, parameters.cameraDirection);
         }
 
-        telemetry.addData("Vuforia:", "Initialized");
-        telemetry.update();
+        telemetry.addData("Vuforia Initialized:", allTrackables.size());
+        //telemetry.update();
 
     }
 
+    public void activate() {
+        targetsRoverRuckus.activate();
+
+    }
     public void getLocation() {
         // check all the trackable target to see which one (if any) is visible.
         targetVisible = false;
@@ -226,6 +230,6 @@ public class coachVu {
         else {
             telemetry.addData("Visible Target", "none");
         }
-        telemetry.update();
+        //telemetry.update();
     }
 }
