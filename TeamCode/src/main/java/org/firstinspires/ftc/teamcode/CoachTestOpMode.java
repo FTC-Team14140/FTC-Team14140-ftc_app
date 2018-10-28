@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.teamLibs.goBuildAServo2000;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -10,28 +11,6 @@ import com.qualcomm.robotcore.hardware.Gyroscope;
 import com.qualcomm.robotcore.hardware.Servo;
 //
 
-class goBuildAServo2000 {
-    private Servo theServo;
-    private Telemetry telemetry;
-
-    public void initialize (Servo aServo, Telemetry aTelemetry ){
-        theServo = aServo;
-        telemetry = aTelemetry;
-    }
-
-    public void goTo (int degrees){
-        if (theServo == null){
-            telemetry.addData("ERROR", "you have not initialized");
-            return;
-        }
-        if (degrees < 0 || degrees > 250){
-            telemetry.addData("ERROR", "Servo degrees out of range");
-            return;
-        }
-        theServo.setPosition(0.004 * degrees);
-
-    }
-}
 //Trey was here.....                                                        ....or was he.......
 @TeleOp(name="Test", group="Linear Opmode")
 public class CoachTestOpMode extends LinearOpMode {
