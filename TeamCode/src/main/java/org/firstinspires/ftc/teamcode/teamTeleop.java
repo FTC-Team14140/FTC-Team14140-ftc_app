@@ -52,6 +52,35 @@ public class teamTeleop extends LinearOpMode {
             motorLeft.setPower(tgtPowerLeft);
 
 
+            if(gamepad1.x){
+                //rotate 45 to left
+            } else if (gamepad1.b){
+                //rotate 45 to the right
+            } else if (gamepad1.a){
+                //rotate 180
+            } else if (gamepad1.y) {
+                //TBD
+            }
+
+            //this.gamepad1.x
+            //this.gamepad1.y
+            //this.gamepad1.a
+            //this.gamepad1.b
+            //this.gamepad1.right_bumper
+            //this.gamepad1.left_bumper
+            //this.gamepad1.right_trigger
+            //this.gamepad1.left_trigger
+            //this.gamepad1.dpad_down
+            //this.gamepad1.dpad_up
+            //this.gamepad1.dpad_right
+            //this.gamepad1.dpad_left
+            //this.gamepad1.right_stick_button
+            //this.gamepad1.right_stick_x
+            //this.gamepad1.right_stick_y
+            //this.gamepad1.left_stick_button
+            //this.gamepad1.left_stick_x
+            //this.gamepad1.left_stick_y
+
             //telemetry.addData("Servo Position", servoTest.getPosition());
             telemetry.addData("MotorLeft Target Power", tgtPowerLeft);
             telemetry.addData("MotorRight Target Power", tgtPowerRight);

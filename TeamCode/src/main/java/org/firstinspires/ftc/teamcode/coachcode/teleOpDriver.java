@@ -133,6 +133,8 @@ public class teleOpDriver extends LinearOpMode{
                 laMotor.setPower(0);
             }
 
+
+
             // convert the RGB values to HSV values. multiply by the SCALE_FACTOR.
             // then cast it back to int (SCALE_FACTOR is a double)
             Color.RGBToHSV((int) (sensorColor.red() * SCALE_FACTOR),
