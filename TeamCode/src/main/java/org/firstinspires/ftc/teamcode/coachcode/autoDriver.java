@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode.coachcode;
 
+import android.graphics.Color;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -14,14 +17,28 @@ public class autoDriver {
     private coachGyro gyro;
     private DcMotor leftMotor;
     private DcMotor rightMotor;
+    private ColorSensor leftColor;
+    private ColorSensor rightColor;
 
-    autoDriver(HardwareMap map, LinearOpMode mode, Telemetry tel, DcMotor left, DcMotor right, coachGyro g){
+    // hsvValues is an array that will hold the hue, saturation, and value information.
+    private float hsvValuesLeft[] = {0F, 0F, 0F};
+    private float hsvValuesRight[] = {0F, 0F, 0F};
+    // values is a reference to the hsvValues array.
+    private final float valuesLeft[] = hsvValuesLeft;
+    private final float valuesRight[] = hsvValuesRight;
+    // sometimes it helps to multiply the raw RGB values with a scale factor
+    // to amplify/attentuate the measured values.
+    private final double COLOR_SCALE_FACTOR = 255;
+
+    autoDriver(HardwareMap map, LinearOpMode mode, Telemetry tel, DcMotor left, DcMotor right, coachGyro g, ColorSensor lC, ColorSensor rC){
         hardwareMap = map;
         opMode = mode;
         telemetry = tel;
         leftMotor = left;
         rightMotor = right;
         gyro = g;
+        leftColor = lC;
+        rightColor = rC;
     }
 
     // move a specified number of inches
@@ -131,6 +148,49 @@ public class autoDriver {
             }
             rightMotor.setPower(0);
             leftMotor.setPower(0);
+        }
+    }
+
+    void updateColorSensorData() {
+        // convert the RGB values to HSV values. multiply by the SCALE_FACTOR.
+        // then cast it back to int (SCALE_FACTOR is a double)
+        Color.RGBToHSV((int) (leftColor.red() * COLOR_SCALE_FACTOR),
+                (int) (leftColor.green() * COLOR_SCALE_FACTOR),
+                (int) (leftColor.blue() * COLOR_SCALE_FACTOR),
+                hsvValuesLeft);
+        Color.RGBToHSV((int) (rightColor.red() * COLOR_SCALE_FACTOR),
+                (int) (rightColor.green() * COLOR_SCALE_FACTOR),
+                (int) (rightColor.blue() * COLOR_SCALE_FACTOR),
+                hsvValuesRight);
+        if (true) {
+            //telemetry.addData("Distance (cm)",
+            //        String.format(Locale.US, "%.02f", sensorDistance.getDistance(DistanceUnit.CM)));
+            //telemetry.addData("Alpha", sensorColor.alpha());
+            telemetry.addData("Red Left ", leftColor.red());
+            telemetry.addData("Red Right ", rightColor.red());
+            //telemetry.addData("Green", sensorColor.green());
+            telemetry.addData("Blue Left ", leftColor.blue());
+            telemetry.addData("Blue Right ", rightColor.blue());
+            //telemetry.addData("Hue", hsvValues[0]);
+        }
+    }
+    void squareOnBlueLine(double speed) {
+        updateColorSensorData();
+        int blackLeft = leftColor.blue();
+        int blackRight = rightColor.blue();
+        leftMotor.setPower(speed);
+        rightMotor.setPower(speed);
+        while ((leftColor.blue() < blackLeft *2) || (rightColor.blue() < blackRight *2)) {
+            if (leftColor.blue() < blackLeft *2) {
+                leftMotor.setPower(speed);
+            } else {
+                leftMotor.setPower(0);
+            }
+            if (rightColor.blue() < blackLeft *2) {
+                rightMotor.setPower(speed);
+            } else {
+                rightMotor.setPower(0);
+            }
         }
     }
 }

@@ -42,7 +42,6 @@ public class revHubIMUGyro {
 
     float getHeading() {
         anglesCurrent = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        anglesCurrent.firstAngle
         telemetry.addData("Heading", anglesCurrent.firstAngle);
         anglesLast = anglesCurrent;
 

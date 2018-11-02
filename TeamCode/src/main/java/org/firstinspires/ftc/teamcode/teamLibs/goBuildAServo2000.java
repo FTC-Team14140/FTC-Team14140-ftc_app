@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-class goBuildAServo2000 {
+public class goBuildAServo2000 {
     private Servo theServo;
     private Telemetry telemetry;
 
