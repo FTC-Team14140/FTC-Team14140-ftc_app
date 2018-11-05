@@ -26,6 +26,7 @@ public class revHubIMUGyro {
         imu = theimu;
         currentDirection = 0;
         // set up our IMU
+        //These are the parameters that the imu uses in the code to name and keep track of the data
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
@@ -33,10 +34,12 @@ public class revHubIMUGyro {
     }
 
 
+
     float resetHeading() {
         currentHeading = 0;
         anglesLast = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-
+        //The code resets the current heading to 0 and keep wwhat the current angle is as you reset it as angles last to
+        //use in the code in the future
         return currentHeading;
     }
 
