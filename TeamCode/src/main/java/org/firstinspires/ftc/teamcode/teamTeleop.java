@@ -34,24 +34,34 @@ public class teamTeleop extends LinearOpMode {
         double tgtPowerRight = 0;
         double tgtPowerLeft = 0;
         while (opModeIsActive()) {
-            tgtPowerRight = -this.gamepad1.right_stick_y;
-            tgtPowerLeft = -this.gamepad1.left_stick_y;
+
+            float throttle = this.gamepad1.left_stick_y;
+            float steering = this.gamepad1.right_stick_x;
+
             //  "if statement" uses this equation  to figure out if it is can be used in the formula
-            if (tgtPowerRight > 0) {
+            if (throttle > 0) {
                 // formula to use
-                tgtPowerRight = (1 - deadSpot) * tgtPowerRight + deadSpot;
-            }else if (tgtPowerRight< 0){
-                tgtPowerRight = (1 - deadSpot) * tgtPowerRight - deadSpot;
-            }
-            if (tgtPowerLeft > 0) {
-                tgtPowerLeft = (1 - deadSpot) * tgtPowerLeft + deadSpot;
-            }else if (tgtPowerLeft< 0){
-                tgtPowerLeft = (1 - deadSpot) * tgtPowerLeft - deadSpot;
-            }
+                throttle = (1 - deadSpot) * throttle + deadSpot;
+            }else if (throttle < 0){
+                throttle = (1 - deadSpot) * throttle- deadSpot;
+            } // finds the deadspot of the throttle variable
+            if (throttle > 0){
+                tgtPowerRight = throttle-steering*2*throttle;
+                tgtPowerLeft = throttle;
+            }else if (throttle < 0){
+                tgtPowerRight = throttle;
+                tgtPowerLeft =  throttle+steering*2*throttle;
+            } else {
+                tgtPowerRight = 0;
+                tgtPowerLeft = 0;
+            }//equation to find out the x (right/left) by plugging in a formula
+
+
+
             motorRight.setPower(tgtPowerRight);
             motorLeft.setPower(tgtPowerLeft);
 
-
+/*
             if(gamepad1.x){
                 //rotate 45 to left
             } else if (gamepad1.b){
@@ -60,8 +70,8 @@ public class teamTeleop extends LinearOpMode {
                 //rotate 180
             } else if (gamepad1.y) {
                 //TBD
-            }
-
+            } else if (gamepad1.right_stick_x)
+*/
             //this.gamepad1.x
             //this.gamepad1.y
             //this.gamepad1.a
