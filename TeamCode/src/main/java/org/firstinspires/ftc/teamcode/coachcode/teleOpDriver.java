@@ -21,6 +21,7 @@ package org.firstinspires.ftc.teamcode.coachcode;
         import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
         import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
         import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+        import org.firstinspires.ftc.teamcode.teamLibs.revHubIMUGyro;
 
         import java.util.Locale;
 
@@ -31,7 +32,8 @@ public class teleOpDriver extends LinearOpMode{
     private DcMotor leftRearMotor;
     private DcMotor rightRearMotor;
     private DcMotor laMotor;
-    private coachGyro gyro;
+    //private coachGyro gyro;
+    private revHubIMUGyro gyro;
     private autoDriver driver;
 
     private DigitalChannel digitalTouch;
@@ -53,7 +55,7 @@ public class teleOpDriver extends LinearOpMode{
     public void runOpMode() {
 
         // set up our IMU
-        gyro = new coachGyro(hardwareMap, "imu");
+        gyro = new revHubIMUGyro(hardwareMap.get(BNO055IMU.class, "imu"), telemetry);
 
         // Get the objects for the various pieces of hardware
         //imu = hardwareMap.get(Gyroscope.class, "imu");
