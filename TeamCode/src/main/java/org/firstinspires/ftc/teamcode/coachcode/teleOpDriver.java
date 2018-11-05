@@ -134,17 +134,17 @@ public class teleOpDriver extends LinearOpMode{
             } else if (gamepad1.dpad_down) {
                 driver.squareOnBlueLine(-.15);
             } else if (gamepad1.left_bumper) {
-                //laMotor.setPower(1);
+                laMotor.setPower(1);
                 //reachPos = reachPos+5;
-                reachServoFTC.setPosition(0.004 * 150);
+                //reachServoFTC.setPosition(0.004 * 150);
                 //sleep(1000);
             } else if (gamepad1.right_bumper) {
                 //reachPos = reachPos-5;
-                reachServoFTC.setPosition(0.004 * 0);
+                //reachServoFTC.setPosition(0.004 * 0);
                 //sleep(1000);
-                //laMotor.setPower(-1);
+                laMotor.setPower(-1);
             } else {
-                //laMotor.setPower(0);
+                laMotor.setPower(0);
             }
             telemetry.addData("reachPos", reachPos);
 

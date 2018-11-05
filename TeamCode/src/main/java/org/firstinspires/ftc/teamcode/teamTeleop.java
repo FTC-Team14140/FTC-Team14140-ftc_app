@@ -30,34 +30,39 @@ public class teamTeleop extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        // run until the end of the match (driver presses STOP)
+        //Yuto: What are these two variables for?
         double tgtPowerRight = 0;
         double tgtPowerLeft = 0;
+
+        // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            float throttle = this.gamepad1.left_stick_y;
-            float steering = this.gamepad1.right_stick_x;
+            //Yuto: What are these two variables for and where are we getting their values?
+            double throttle = -this.gamepad1.left_stick_y;
+            double steering = this.gamepad1.right_stick_x;
 
-            //  "if statement" uses this equation  to figure out if it is can be used in the formula
+            //  Yuto: What is going on here?
             if (throttle > 0) {
-                // formula to use
+                // formula to use (OK, but what does the formula do?)
                 throttle = (1 - deadSpot) * throttle + deadSpot;
             }else if (throttle < 0){
                 throttle = (1 - deadSpot) * throttle- deadSpot;
-            } // finds the deadspot of the throttle variable
-            if (throttle > 0){
+            }
+
+            //What is this next block of code for?
+            // If we are turning to the right then we...
+            if (steering > 0){
                 tgtPowerRight = throttle-steering*2*throttle;
                 tgtPowerLeft = throttle;
-            }else if (throttle < 0){
+            } else if (steering < 0){ // if we are turning to the left then we...
                 tgtPowerRight = throttle;
                 tgtPowerLeft =  throttle+steering*2*throttle;
-            } else {
-                tgtPowerRight = 0;
-                tgtPowerLeft = 0;
-            }//equation to find out the x (right/left) by plugging in a formula
+            } else { // if we are not turning at all than we ...
+                tgtPowerRight = throttle;
+                tgtPowerLeft = throttle;
+            }
 
-
-
+            //Yuto: What is happening here?
             motorRight.setPower(tgtPowerRight);
             motorLeft.setPower(tgtPowerLeft);
 
