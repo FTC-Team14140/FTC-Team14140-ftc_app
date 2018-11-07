@@ -30,28 +30,43 @@ public class teamTeleop extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        // run until the end of the match (driver presses STOP)
+        //Yuto: What are these two variables for?
         double tgtPowerRight = 0;
         double tgtPowerLeft = 0;
+
+        // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            tgtPowerRight = -this.gamepad1.right_stick_y;
-            tgtPowerLeft = -this.gamepad1.left_stick_y;
-            //  "if statement" uses this equation  to figure out if it is can be used in the formula
-            if (tgtPowerRight > 0) {
-                // formula to use
-                tgtPowerRight = (1 - deadSpot) * tgtPowerRight + deadSpot;
-            }else if (tgtPowerRight< 0){
-                tgtPowerRight = (1 - deadSpot) * tgtPowerRight - deadSpot;
+
+            //Yuto: What are these two variables for and where are we getting their values?
+            double throttle = -this.gamepad1.left_stick_y;
+            double steering = this.gamepad1.right_stick_x;
+
+            //  Yuto: What is going on here?
+            if (throttle > 0) {
+                // formula to use (OK, but what does the formula do?)
+                throttle = (1 - deadSpot) * throttle + deadSpot;
+            }else if (throttle < 0){
+                throttle = (1 - deadSpot) * throttle- deadSpot;
             }
-            if (tgtPowerLeft > 0) {
-                tgtPowerLeft = (1 - deadSpot) * tgtPowerLeft + deadSpot;
-            }else if (tgtPowerLeft< 0){
-                tgtPowerLeft = (1 - deadSpot) * tgtPowerLeft - deadSpot;
+
+            //What is this next block of code for?
+            // If we are turning to the right then we...
+            if (steering > 0){
+                tgtPowerRight = throttle-steering*2*throttle;
+                tgtPowerLeft = throttle;
+            } else if (steering < 0){ // if we are turning to the left then we...
+                tgtPowerRight = throttle;
+                tgtPowerLeft =  throttle+steering*2*throttle;
+            } else { // if we are not turning at all than we ...
+                tgtPowerRight = throttle;
+                tgtPowerLeft = throttle;
             }
+
+            //Yuto: What is happening here?
             motorRight.setPower(tgtPowerRight);
             motorLeft.setPower(tgtPowerLeft);
 
-
+/*
             if(gamepad1.x){
                 //rotate 45 to left
             } else if (gamepad1.b){
@@ -60,8 +75,8 @@ public class teamTeleop extends LinearOpMode {
                 //rotate 180
             } else if (gamepad1.y) {
                 //TBD
-            }
-
+            } else if (gamepad1.right_stick_x)
+*/
             //this.gamepad1.x
             //this.gamepad1.y
             //this.gamepad1.a

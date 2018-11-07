@@ -20,7 +20,7 @@ public class coachGyro {
     float currentHeading;
 
     coachGyro(HardwareMap map, String deviceName) {
-        hardwareMap =map;
+        hardwareMap = map;
         // set up our IMU
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
@@ -48,11 +48,14 @@ public class coachGyro {
         // if we were near the cutoff and appear to have turned through it to the left
         } else if ((anglesLast.firstAngle < -90) && (anglesCurrent.firstAngle > 0)) {
             currentHeading = currentHeading - (180 - anglesCurrent.firstAngle) - (anglesLast.firstAngle + 180);
-        // otherwise we haven't oved through the cutoff and can just do the math
-        } else {
-            currentHeading = currentHeading - (anglesCurrent.firstAngle - anglesLast.firstAngle);
+
+        } else { // otherwise we haven't oved through the cutoff and can just do the math
+            currentHeading = currentHeading + (anglesCurrent.firstAngle - anglesLast.firstAngle);
         }
         anglesLast = anglesCurrent;
         return currentHeading;
     }
 }
+
+
+

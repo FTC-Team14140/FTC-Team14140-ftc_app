@@ -8,13 +8,14 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.teamLibs.revHubIMUGyro;
 
 public class autoDriver {
 
     private HardwareMap hardwareMap;
     private LinearOpMode opMode;
     private Telemetry telemetry;
-    private coachGyro gyro;
+    private revHubIMUGyro gyro;
     private DcMotor leftMotor;
     private DcMotor rightMotor;
     private ColorSensor leftColor;
@@ -30,7 +31,7 @@ public class autoDriver {
     // to amplify/attentuate the measured values.
     private final double COLOR_SCALE_FACTOR = 255;
 
-    autoDriver(HardwareMap map, LinearOpMode mode, Telemetry tel, DcMotor left, DcMotor right, coachGyro g, ColorSensor lC, ColorSensor rC){
+    autoDriver(HardwareMap map, LinearOpMode mode, Telemetry tel, DcMotor left, DcMotor right, revHubIMUGyro g, ColorSensor lC, ColorSensor rC){
         hardwareMap = map;
         opMode = mode;
         telemetry = tel;
