@@ -13,16 +13,19 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
    you expect people to use it.  Provide some simple use cases that explain to someone
    else how they should use this class in their code
  */
-
+//This code gives you a number of the current heading of the robot.
+// The code tells you how much the robot has moved from its last heading.
+// This code can be used for turning until a certain amount of degrees or angle.
+// Which can be very useful in the autonomous, or even in the teleop period which lining up your robot.
 public class revHubIMUGyro {
 
     //Trey: Need some comments here explaining what these variables are for
-    private Telemetry telemetry;
-    private BNO055IMU imu;
+    private Telemetry telemetry; //This variable repersent the telemetry
+    private BNO055IMU imu; //This variable is the imu
     private int currentDirection;
-    float currentHeading;
-    Orientation anglesCurrent;
-    Orientation anglesLast;
+    float currentHeading; //This variable is the current heading of the robot
+    Orientation anglesCurrent; //This variable keeps track of the current heading
+    Orientation anglesLast; // This variable keeps track of the last current heading
 
 
 
@@ -43,6 +46,7 @@ public class revHubIMUGyro {
 
 
      //Trey: Need a comment here explaining what this method does
+    //This resets the imu current heading
      public float resetHeading() {
         currentHeading = 0;
         anglesLast = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
