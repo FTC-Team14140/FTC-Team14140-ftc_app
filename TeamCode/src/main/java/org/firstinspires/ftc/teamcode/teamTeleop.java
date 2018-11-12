@@ -1,6 +1,10 @@
 package org.firstinspires.ftc.teamcode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.teamcode.teamLibs.revHubIMUGyro;
+
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -11,7 +15,7 @@ import org.firstinspires.ftc.teamcode.teamLibs.grabberArm;
 
 @TeleOp(name="Drive Test", group="Linear Opmode")
 public class teamTeleop extends LinearOpMode {
-    private Gyroscope imu;
+    private revHubIMUGyro gyro;
     private DcMotor motorLeft;
     private DcMotor motorRight;
     private grabberArm grabber;
@@ -29,16 +33,22 @@ public class teamTeleop extends LinearOpMode {
         motorLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
         grabber = new grabberArm (telemetry, hardwareMap, "grabberServo", "liftServo");
+        gyro = new revHubIMUGyro(hardwareMap.get(BNO055IMU.class, "imu"), telemetry );
 
-        // Wait for the game to start (driver presses PLAY)
-        waitForStart();
+
+        // Wait for the game to start (drver presses PLAY)
+         waitForStart();
 
         //Yuto: What are these two variables for?
         double tgtPowerRight = 0;
         double tgtPowerLeft = 0;
 
+        gyro.resetHeading();
+
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
+
+            telemetry.addData( "Gyro Heading",gyro.getHeading());
 
             //Yuto: What are these two variables for and where are we getting their values?
             double throttle = -this.gamepad1.left_stick_y;
