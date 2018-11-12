@@ -5,55 +5,55 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-import org.firstinspires.ftc.teamcode.teamLibs.goBuildAServo2000;
-
 public class grabberArm {
 
     private Telemetry telemetry;
     private goBuildAServo2000 grabberServo;
     private goBuildAServo2000 liftServo;
-    //variables below are degress for servo positions
+    //variables integers below are degress for servo positions
     private final int DOWN_SPOT = 150;
-    private final int UP = 30;
+    private final int UP_SPOT = 30;
     private final int GRAB = 60;
     private final int SKINNY = 35;
     private final int WIDE = 0;
     private final int DROP = 0;
 
-    grabberArm(Telemetry theTel, HardwareMap hwMap, String grabServoName, String liftServoName) {
+    public grabberArm(Telemetry theTel, HardwareMap hwMap, String grabServoName, String liftServoName) {
 
         telemetry = theTel;
 
         grabberServo = new goBuildAServo2000(hwMap.get(Servo.class, grabServoName), telemetry);
         liftServo = new goBuildAServo2000(hwMap.get(Servo.class, liftServoName), telemetry);
     }
-//methods to move srevos
-    void initialize () {
-        liftServo.goTo(UP);
+//methods to move srevos on grabber
+    public void initialize () {
+        liftServo.goTo(UP_SPOT);
         grabberServo.goTo(WIDE);
     }
 
-    void grab () {
+    public void grab () {
         grabberServo.goTo(GRAB);
     }
 
-    void skinnyOpen () {
+    public void skinnyOpen () {
         grabberServo.goTo(SKINNY);
     }
 
-    void wideOpen () {
+    public void wideOpen () {
         grabberServo.goTo(WIDE);
     }
 
-    void holdUp () {
-        liftServo.goTo(UP);
+    public void holdUp () {
+        liftServo.goTo(UP_SPOT);
     }
 
-    void deposit () {
+    public void deposit () {
         liftServo.goTo(DROP);
+        //java.lang.Thread.sleep(1000);
+        grabberServo.goTo(SKINNY);
     }
 
-    void grabberDown () {
+    public void grabberDown () {
         liftServo.goTo(DOWN_SPOT);
     }
 

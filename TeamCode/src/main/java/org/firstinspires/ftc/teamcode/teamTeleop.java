@@ -80,8 +80,20 @@ public class teamTeleop extends LinearOpMode {
             motorLeft.setPower(tgtPowerLeft);
 
             if(gamepad2.y){
-                grabberArm.wideOpen();
+                grabber.wideOpen();
+            } else if(gamepad2.x) {
+                grabber.skinnyOpen();
+            } else if(gamepad2.a) {
+                grabber.grab();
+            } else if(gamepad2.b) {
+                grabber.deposit();
+            } else if(gamepad2.dpad_up) {
+                grabber.holdUp();
+            } else if(gamepad2.dpad_right) {
+                grabber.grabberDown();
             } else
+
+
 
 /*
             if(gamepad1.x){
