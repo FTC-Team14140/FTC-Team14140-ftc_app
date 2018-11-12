@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gyroscope;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import org.firstinspires.ftc.teamcode.teamLibs.grabberArm;
 
 
 @TeleOp(name="Drive Test", group="Linear Opmode")
@@ -13,6 +14,7 @@ public class teamTeleop extends LinearOpMode {
     private Gyroscope imu;
     private DcMotor motorLeft;
     private DcMotor motorRight;
+    private grabberArm grabber;
 
     // 0.15 is the threshold that the motor starts to accelerate
     private static final double deadSpot = 0.15;
@@ -26,6 +28,7 @@ public class teamTeleop extends LinearOpMode {
         //when we say go forwards, we really mean backwards
         motorLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
+        grabber = new grabberArm (telemetry, hardwareMap, "grabberServo", "liftServo");
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -65,6 +68,10 @@ public class teamTeleop extends LinearOpMode {
             //Yuto: What is happening here?
             motorRight.setPower(tgtPowerRight);
             motorLeft.setPower(tgtPowerLeft);
+
+            if(gamepad2.y){
+                grabberArm.wideOpen();
+            } else
 
 /*
             if(gamepad1.x){

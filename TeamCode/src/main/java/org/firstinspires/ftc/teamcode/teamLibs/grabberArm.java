@@ -31,32 +31,34 @@ public class grabberArm {
         liftServo = new goBuildAServo2000(telemetry, hwMap.get(Servo.class, liftServoName);
     }
 //methods to move srevos on grabber
-    void initialize () {
+    public void initialize () {
         liftServo.goTo(UP_SPOT);
         grabberServo.goTo(WIDE);
     }
 
-    void grab () {
+    public void grab () {
         grabberServo.goTo(GRAB);
     }
 
-    void skinnyOpen () {
+    public void skinnyOpen () {
         grabberServo.goTo(SKINNY);
     }
 
-    void wideOpen () {
+    public void wideOpen () {
         grabberServo.goTo(WIDE);
     }
 
-    void holdUp () {
+    public void holdUp () {
         liftServo.goTo(UP_SPOT);
     }
 
-    void deposit () {
+    public void deposit () {
         liftServo.goTo(DROP)
+        sleep(1000);
+        grabberServo.goTo(SKINNY);
     }
 
-    void grabberDown () {
+    public void grabberDown () {
         liftServo.goTo(DOWN_SPOT);
     }
     //methods to move servo on the xrail system
@@ -66,7 +68,5 @@ public class grabberArm {
     void xrailRetract () {
         xrailServo.goTo(retract);
     }
-
-
    // private grabberArm = new grabberArm (hardwaremap, telemetery, "grabberServo", "liftServo")
 }
