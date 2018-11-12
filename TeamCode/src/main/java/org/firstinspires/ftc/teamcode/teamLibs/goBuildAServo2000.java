@@ -8,7 +8,7 @@ public class goBuildAServo2000 {
     private Servo theServo;
     private Telemetry telemetry;
 
-    public void goBuildAServo2000 (Servo aServo, Telemetry aTelemetry ){
+    public goBuildAServo2000 (Servo aServo, Telemetry aTelemetry ){
         theServo = aServo;
         telemetry = aTelemetry;
     }

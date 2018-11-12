@@ -18,7 +18,7 @@ public class CoachTestOpMode extends LinearOpMode {
     private DcMotor motorTest;
     private DigitalChannel digitalTouch;
     private DistanceSensor sensorColorRange;
-    private goBuildAServo2000 servoTest = new goBuildAServo2000();
+    //private goBuildAServo2000 servoTest;
 
     @Override
     public void runOpMode() {
@@ -27,13 +27,14 @@ public class CoachTestOpMode extends LinearOpMode {
         motorTest = hardwareMap.get(DcMotor.class, "motorTest");
         digitalTouch = hardwareMap.get(DigitalChannel.class, "digitalTouch");
         sensorColorRange = hardwareMap.get(DistanceSensor.class, "sensorColorRange");
-        servoTest.initialize(hardwareMap.get(Servo.class, "servoTest"), telemetry);
+        //servoTest.initialize(hardwareMap.get(Servo.class, "servoTest"), telemetry);
         // set digital channel to input mode.
         digitalTouch.setMode(DigitalChannel.Mode.INPUT);
         // Output status to the console
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
+        //servoTest = new goBuildAServo2000()
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
@@ -45,13 +46,13 @@ public class CoachTestOpMode extends LinearOpMode {
             // check to see if we need to move the servo.
             if(gamepad1.y) {
                 // move to 0 degrees.
-                servoTest.goTo(0);
+                //servoTest.goTo(0);
             } else if (gamepad1.x || gamepad1.b) {
                 // move to 90 degrees.
-                servoTest.goTo(90);
+                //servoTest.goTo(90);
             } else if (gamepad1.a) {
                 // move to 180 degrees.
-                servoTest.goTo(180);
+                //servoTest.goTo(180);
             }
             // is button pressed?
             if (digitalTouch.getState() == false) {
