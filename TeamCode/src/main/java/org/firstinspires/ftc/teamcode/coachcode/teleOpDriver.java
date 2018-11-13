@@ -139,7 +139,7 @@ public class teleOpDriver extends LinearOpMode{
                 laMotor.setPower(1);
                 //reachPos = reachPos+5;
                 //reachServoFTC.setPosition(0.004 * 150);
-                //sleep(1000);
+                sleep(1000);
             } else if (gamepad1.right_bumper) {
                 //reachPos = reachPos-5;
                 //reachServoFTC.setPosition(0.004 * 0);

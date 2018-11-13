@@ -40,6 +40,7 @@ public class teamTeleop extends LinearOpMode {
         gyro = new revHubIMUGyro(hardwareMap.get(BNO055IMU.class, "imu"), telemetry );
         La = new linearActuater(telemetry, hardwareMap.get(DcMotor.class, "LAMotor"));
 
+        xrail.init();
 
         // Wait for the game to start (drver presses PLAY)
          waitForStart();
@@ -99,11 +100,11 @@ public class teamTeleop extends LinearOpMode {
             } else
 
             if(gamepad2.right_stick_button) {
-                xrail.extend();
+                xrail.testExtend();
             } else if(gamepad2.left_stick_button) {
-                xrail.retract();
+                //xrail.retract();
             } else {
-                xrail.stop();
+                //xrail.stop();
             }
 
             if(gamepad2.left_bumper) {
