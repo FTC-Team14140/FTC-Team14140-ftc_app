@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gyroscope;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import org.firstinspires.ftc.teamcode.teamLibs.grabberArm;
+import org.firstinspires.ftc.teamcode.teamLibs.xRail;
 
 
 @TeleOp(name="Drive Test", group="Linear Opmode")
@@ -19,6 +20,7 @@ public class teamTeleop extends LinearOpMode {
     private DcMotor motorLeft;
     private DcMotor motorRight;
     private grabberArm grabber;
+    private xRail xrail;
 
     // 0.15 is the threshold that the motor starts to accelerate
     private static final double deadSpot = 0.15;
@@ -33,6 +35,7 @@ public class teamTeleop extends LinearOpMode {
         motorLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
         grabber = new grabberArm (telemetry, hardwareMap, "grabberServo", "liftServo");
+        xrail = new xRail(telemetry, hardwareMap.get(DcMotor.class, "xRailMotor"));
         gyro = new revHubIMUGyro(hardwareMap.get(BNO055IMU.class, "imu"), telemetry );
 
 
@@ -93,8 +96,13 @@ public class teamTeleop extends LinearOpMode {
                 grabber.grabberDown();
             } else
 
-
-
+            if(gamepad2.right_stick_button) {
+                xrail.extend();
+            } else if(gamepad2.left_stick_button) {
+                xrail.retract();
+            } else {
+                xrail.stop();
+            }
 /*
             if(gamepad1.x){
                 //rotate 45 to left
