@@ -5,8 +5,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class linearActuater {
 
-    DcMotor motor;
-    Telemetry telemetry;
+    private DcMotor motor;
+    private Telemetry telemetry;
 
     public linearActuater(Telemetry thetelemetry,DcMotor motor1){
         telemetry=thetelemetry;
@@ -14,7 +14,32 @@ public class linearActuater {
 
     }
 
-    public void lift (){
-        //lift the robot off the ground
+    public void lift () {
+        //lift's the liner actuater
+        motor.setPower(1);
+        telemetry.addData ( "actuaterPosition", motor.getCurrentPosition());
+
     }
+
+    public void drop (){
+        //drop's the liner actuater
+        motor.setPower(-1);
+        telemetry.addData ( "actuaterPosition", motor.getCurrentPosition());
+
+    }
+
+    public void stop () {
+        //stop's the liner actuater
+        motor.setPower(0);
+        telemetry.addData ( "actuaterPosition", motor.getCurrentPosition());
+    }
+
 }
+
+
+
+
+
+
+
+

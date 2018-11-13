@@ -18,11 +18,11 @@ public class xRail {
     //private final int RETRACT = ;
 
     public void  extend () {
-        motor.setPower(1);
+        motor.setPower(-1);
         telemetry.addData("xRailPosition",motor.getCurrentPosition());
     }
     public void retract () {
-        motor.setPower(-1);
+        motor.setPower(1);
         telemetry.addData("xRailPosition",motor.getCurrentPosition());
     }
     public void stop () {

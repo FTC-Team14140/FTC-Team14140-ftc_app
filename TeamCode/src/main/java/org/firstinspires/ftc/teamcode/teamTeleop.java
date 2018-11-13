@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.hardware.Gyroscope;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import org.firstinspires.ftc.teamcode.teamLibs.grabberArm;
 import org.firstinspires.ftc.teamcode.teamLibs.xRail;
-
+import org.firstinspires.ftc.teamcode.teamLibs.linearActuater;
 
 @TeleOp(name="Drive Test", group="Linear Opmode")
 public class teamTeleop extends LinearOpMode {
@@ -21,6 +21,7 @@ public class teamTeleop extends LinearOpMode {
     private DcMotor motorRight;
     private grabberArm grabber;
     private xRail xrail;
+    private linearActuater La;
 
     // 0.15 is the threshold that the motor starts to accelerate
     private static final double deadSpot = 0.15;
@@ -37,12 +38,13 @@ public class teamTeleop extends LinearOpMode {
         grabber = new grabberArm (telemetry, hardwareMap, "grabberServo", "liftServo");
         xrail = new xRail(telemetry, hardwareMap.get(DcMotor.class, "xRailMotor"));
         gyro = new revHubIMUGyro(hardwareMap.get(BNO055IMU.class, "imu"), telemetry );
+        La = new linearActuater(telemetry, hardwareMap.get(DcMotor.class, "LAMotor"));
 
 
         // Wait for the game to start (drver presses PLAY)
          waitForStart();
 
-        //Yuto: What are these two variables for?
+        //These are the variables for the motors power at the start of the program
         double tgtPowerRight = 0;
         double tgtPowerLeft = 0;
 
@@ -53,32 +55,32 @@ public class teamTeleop extends LinearOpMode {
 
             telemetry.addData( "Gyro Heading",gyro.getHeading());
 
-            //Yuto: What are these two variables for and where are we getting their values?
+            //We use these variables to figure out how to control the X or turning for the robot right stick and the Y or movement on the left stick
             double throttle = -this.gamepad1.left_stick_y;
             double steering = this.gamepad1.right_stick_x;
 
-            //  Yuto: What is going on here?
+            //  It puts in the throttle variable to figure out how far you need to push the joystick for the corresponding motor speed
             if (throttle > 0) {
-                // formula to use (OK, but what does the formula do?)
+                // formula to use figures out what the area of effect for the joysticks is (OK, but what does the formula do?)
                 throttle = (1 - deadSpot) * throttle + deadSpot;
             }else if (throttle < 0){
                 throttle = (1 - deadSpot) * throttle- deadSpot;
             }
 
             //What is this next block of code for?
-            // If we are turning to the right then we...
+            // If we are turning to the right then we give more power to the left motor
             if (steering > 0){
                 tgtPowerRight = throttle-steering*2*throttle;
                 tgtPowerLeft = throttle;
-            } else if (steering < 0){ // if we are turning to the left then we...
+            } else if (steering < 0){ // if we are turning to the left then we give more power to the right motor
                 tgtPowerRight = throttle;
                 tgtPowerLeft =  throttle+steering*2*throttle;
-            } else { // if we are not turning at all than we ...
+            } else { // if we are not turning at all than it will run this program and just not move
                 tgtPowerRight = throttle;
                 tgtPowerLeft = throttle;
             }
 
-            //Yuto: What is happening here?
+            // It is setting the robots motors to the corresponding power
             motorRight.setPower(tgtPowerRight);
             motorLeft.setPower(tgtPowerLeft);
 
@@ -102,6 +104,14 @@ public class teamTeleop extends LinearOpMode {
                 xrail.retract();
             } else {
                 xrail.stop();
+            }
+
+            if(gamepad2.left_bumper) {
+                La.drop();
+            } else if(gamepad2.right_bumper) {
+                La.lift();
+            } else {
+                La.stop();
             }
 /*
             if(gamepad1.x){
