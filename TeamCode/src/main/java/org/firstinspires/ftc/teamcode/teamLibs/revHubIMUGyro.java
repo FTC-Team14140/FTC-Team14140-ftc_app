@@ -14,7 +14,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 // The code tells you how much the robot has moved from its last heading.
 // This code can be used for turning until a certain amount of degrees or angle.
 // Which can be very useful in the autonomous, or even in the teleop period which lining up your robot.
-//For the robot right is postitive and less is negitive
+//For the robot right is postitive and left is negitive
 //You can use it by starting from reset heading to 0 and then turn untill less than, greater than or equal to the heading you want
 public class revHubIMUGyro {
 
