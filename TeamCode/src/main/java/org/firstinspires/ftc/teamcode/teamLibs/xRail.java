@@ -10,7 +10,7 @@ public class xRail {
     DcMotor motor;
     Telemetry telemetry;
 
-    private final int EXTEND = 800;
+    private final int EXTEND = 830;
     //private final int RETRACT = ;
 
     public xRail(Telemetry thetelemetry,DcMotor motor1){
@@ -50,7 +50,7 @@ public class xRail {
     public void testExtend() {
 
         // lift and wait for it to get to the top
-        motor.setTargetPosition(EXTEND+40);
+        motor.setTargetPosition(EXTEND+70);
         motor.setPower(1);
         while (motor.getCurrentPosition()<EXTEND) { }
 

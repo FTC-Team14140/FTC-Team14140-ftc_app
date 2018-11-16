@@ -41,6 +41,7 @@ public class teamTeleop extends LinearOpMode {
         La = new linearActuater(telemetry, hardwareMap.get(DcMotor.class, "LAMotor"));
 
         xrail.init();
+        grabber.initialize();
 
         // Wait for the game to start (drver presses PLAY)
          waitForStart();
@@ -91,7 +92,7 @@ public class teamTeleop extends LinearOpMode {
                 grabber.skinnyOpen();
             } else if(gamepad2.a) {
                 grabber.grab();
-            } else if(gamepad2.b) {
+            } else if(gamepad2.dpad_left) {
                 grabber.deposit();
             } else if(gamepad2.dpad_up) {
                 grabber.holdUp();

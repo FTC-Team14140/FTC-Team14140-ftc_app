@@ -12,7 +12,7 @@ public class grabberArm {
     private goBuildAServo2000 liftServo;
     //variables integers below are degress for servo positions
     private final int DOWN_SPOT = 150;
-    private final int UP_SPOT = 30;
+    private final int UP_SPOT = 40;
     private final int GRAB = 65;
     private final int SKINNY = 35;
     private final int WIDE = 0;
@@ -49,7 +49,7 @@ public class grabberArm {
 
     public void deposit () {
         liftServo.goTo(DROP);
-        //java.lang.Thread.sleep(1000);
+        teamUtil.sleep(1000);
         grabberServo.goTo(SKINNY);
     }
 
