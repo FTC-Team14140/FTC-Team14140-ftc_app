@@ -57,5 +57,9 @@ public class grabberArm {
         liftServo.goTo(DOWN_SPOT);
     }
 
+    public void triggerControl(float trigger){
+        grabberServo.goTo((int) (WIDE+(GRAB-WIDE)*trigger));
+    }
+
    // private grabberArm = new grabberArm (hardwaremap, telemetery, "grabberServo", "liftServo")
 }

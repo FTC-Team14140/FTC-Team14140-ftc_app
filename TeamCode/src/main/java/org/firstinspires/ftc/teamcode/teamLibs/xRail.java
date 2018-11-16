@@ -10,7 +10,8 @@ public class xRail {
     DcMotor motor;
     Telemetry telemetry;
 
-    private final int EXTEND = 830;
+    private final int EXTEND_ACTUAL = 810;
+    private final int EXTEND_TARGET = EXTEND_ACTUAL+150;
     //private final int RETRACT = ;
 
     public xRail(Telemetry thetelemetry,DcMotor motor1){
@@ -50,16 +51,23 @@ public class xRail {
     public void testExtend() {
 
         // lift and wait for it to get to the top
-        motor.setTargetPosition(EXTEND+70);
+        motor.setTargetPosition(EXTEND_TARGET);
         motor.setPower(1);
-        while (motor.getCurrentPosition()<EXTEND) { }
+        while (motor.getCurrentPosition()<EXTEND_ACTUAL) {
+            telemetry.addData("xrail", motor.getCurrentPosition());
+            telemetry.update();
+
+        }
 
         // drop it back down gently
         motor.setPower(0); // brake mode will slow it down
         //teamUtil.sleep(1000); // give it a couple of seconds to mostly retract
         motor.setTargetPosition(0); // slowly back up to starting spot
         motor.setPower(-.15);
-        while (motor.getCurrentPosition()>5) { }
+        while (motor.getCurrentPosition()>5) {
+            telemetry.addData("xrail", motor.getCurrentPosition());
+            telemetry.update();
+        }
         motor.setPower(0); // otherwise we will drain the battery...
     }
 }

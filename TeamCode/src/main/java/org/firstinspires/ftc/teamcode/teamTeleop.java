@@ -98,7 +98,9 @@ public class teamTeleop extends LinearOpMode {
                 grabber.holdUp();
             } else if(gamepad2.dpad_right) {
                 grabber.grabberDown();
-            } else
+            } else if (gamepad2.right_trigger > 0) {
+                grabber.triggerControl(gamepad2.right_trigger);
+            }
 
             if(gamepad2.right_stick_button) {
                 xrail.testExtend();
@@ -146,8 +148,8 @@ public class teamTeleop extends LinearOpMode {
             //this.gamepad1.left_stick_y
 
             //telemetry.addData("Servo Position", servoTest.getPosition());
-            telemetry.addData("MotorLeft Target Power", tgtPowerLeft);
-            telemetry.addData("MotorRight Target Power", tgtPowerRight);
+            //telemetry.addData("MotorLeft Target Power", tgtPowerLeft);
+            //telemetry.addData("MotorRight Target Power", tgtPowerRight);
             telemetry.addData("MotorLeft Power", motorLeft.getPower());
             telemetry.addData("MotorRight Power", motorRight.getPower());
             telemetry.addData("Status", "Running");

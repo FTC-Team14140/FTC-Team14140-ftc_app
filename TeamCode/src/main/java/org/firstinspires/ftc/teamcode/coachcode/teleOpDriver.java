@@ -40,7 +40,8 @@ public class teleOpDriver extends LinearOpMode{
     private ColorSensor leftColor;
     private ColorSensor rightColor;
     //private DistanceSensor sensorDistance;
-    //private DistanceSensor sensorRange2m;
+    private DistanceSensor left2m;
+    private DistanceSensor right2m;
 
 
     //private goBuildAServo2000 servoTest = new goBuildAServo2000();
@@ -59,25 +60,26 @@ public class teleOpDriver extends LinearOpMode{
 
         // Get the objects for the various pieces of hardware
         //imu = hardwareMap.get(Gyroscope.class, "imu");
-        leftRearMotor = hardwareMap.get(DcMotor.class, "leftRear");
-        rightRearMotor = hardwareMap.get(DcMotor.class, "rightRear");
-        laMotor = hardwareMap.get(DcMotor.class, "la");
+        leftRearMotor = hardwareMap.get(DcMotor.class, "motorLeft");
+        rightRearMotor = hardwareMap.get(DcMotor.class, "motorRight");
+        laMotor = hardwareMap.get(DcMotor.class, "LAMotor");
         //digitalTouch = hardwareMap.get(DigitalChannel.class, "digitalTouch");
-        leftColor = hardwareMap.get(ColorSensor.class, "leftColor");
-        rightColor = hardwareMap.get(ColorSensor.class, "rightColor");
+        leftColor = hardwareMap.get(ColorSensor.class, "leftRearColor");
+        rightColor = hardwareMap.get(ColorSensor.class, "rightRearColor");
         //sensorDistance = hardwareMap.get(DistanceSensor.class, "sensorColorRange");
-        grabberServoFTC = hardwareMap.get(Servo.class, "grabberServo");
-        reachServoFTC = hardwareMap.get(Servo.class, "reachServo");
+        //grabberServoFTC = hardwareMap.get(Servo.class, "grabberServo");
+        //reachServoFTC = hardwareMap.get(Servo.class, "reachServo");
         //vu = new coachVu(telemetry, hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
 
         // you can use this as a regular DistanceSensor.
-        //sensorRange2m = hardwareMap.get(DistanceSensor.class, "sensorRange2m");
+        left2m = hardwareMap.get(DistanceSensor.class, "leftFront2M");
+        right2m = hardwareMap.get(DistanceSensor.class, "rightFront2M");
         // you can also cast this to a Rev2mDistanceSensor if you want to use added
         // methods associated with the Rev2mDistanceSensor class.
         //Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor)sensorRange2m;
 
-        grabberServoFTC.setPosition(0.004 * 0);
-        reachServoFTC.setPosition(0.004 * 0);
+        //grabberServoFTC.setPosition(0.004 * 0);
+        //reachServoFTC.setPosition(0.004 * 0);
 
 
         // set digital channel to input mode.
@@ -90,7 +92,7 @@ public class teleOpDriver extends LinearOpMode{
         leftRearMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightRearMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        driver = new autoDriver (hardwareMap, this, telemetry, leftRearMotor, rightRearMotor, gyro, leftColor, rightColor);
+        driver = new autoDriver (hardwareMap, this, telemetry, leftRearMotor, rightRearMotor, gyro, leftColor, rightColor, left2m, right2m);
         //vu.init();
 
         // Output status to the console
@@ -118,23 +120,28 @@ public class teleOpDriver extends LinearOpMode{
             rightRearMotor.setPower(tgtPowerRR);
 
             if(gamepad1.x) {
-                driver.spin(.2, -90);
+                driver.spin(.3, -90);
             } else if ( gamepad1.b) {
-                driver.spin(.2, 90);
+                driver.spin(.3, 90);
             } else if ( gamepad1.y) {
                 //driver.spin(.15, -90);
                 driver.moveInches(.2,12);
             } else if ( gamepad1.a) {
                 //driver.spin(.15, 90);
                 driver.moveInches(-0.2,-12);
-            } else if (gamepad1.dpad_left) {
+            }
+
+            /*else if (gamepad1.dpad_left) {
                 grabberServoFTC.setPosition(0.004 * 0);
             } else if (gamepad1.dpad_up) {
                 grabberServoFTC.setPosition(0.004 * 35);
             } else if (gamepad1.dpad_right) {
                 grabberServoFTC.setPosition(0.004 * 60);
-            } else if (gamepad1.dpad_down) {
+            } */
+              else if (gamepad1.dpad_down) {
                 driver.squareOnBlueLine(-.15);
+            } else if (gamepad1.dpad_up) {
+                  driver.squareOnWall(.2);
             } else if (gamepad1.left_bumper) {
                 laMotor.setPower(1);
                 //reachPos = reachPos+5;
@@ -157,7 +164,8 @@ public class teleOpDriver extends LinearOpMode{
             //telemetry.addData("range", String.format("%.01f mm", sensorRange2m.getDistance(DistanceUnit.MM)));
             //telemetry.addData("range", String.format("%.01f cm", sensorRange2m.getDistance(DistanceUnit.CM)));
             //telemetry.addData("range", String.format("%.01f m", sensorRange2m.getDistance(DistanceUnit.METER)));
-            //telemetry.addData("range", String.format("%.01f in", sensorRange2m.getDistance(DistanceUnit.INCH)));
+            telemetry.addData("left2m: ", String.format("%.01f in", left2m.getDistance(DistanceUnit.INCH)));
+            telemetry.addData("right2m: ", String.format("%.01f in", right2m.getDistance(DistanceUnit.INCH)));
 
             // Rev2mDistanceSensor specific methods.
             //telemetry.addData("ID", String.format("%x", sensorTimeOfFlight.getModelID()));

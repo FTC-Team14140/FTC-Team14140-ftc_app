@@ -5,9 +5,11 @@ import android.graphics.Color;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.teamLibs.revHubIMUGyro;
 
 public class autoDriver {
@@ -20,6 +22,8 @@ public class autoDriver {
     private DcMotor rightMotor;
     private ColorSensor leftColor;
     private ColorSensor rightColor;
+    private DistanceSensor left2m;
+    private DistanceSensor right2m;
 
     // hsvValues is an array that will hold the hue, saturation, and value information.
     private float hsvValuesLeft[] = {0F, 0F, 0F};
@@ -31,7 +35,7 @@ public class autoDriver {
     // to amplify/attentuate the measured values.
     private final double COLOR_SCALE_FACTOR = 255;
 
-    autoDriver(HardwareMap map, LinearOpMode mode, Telemetry tel, DcMotor left, DcMotor right, revHubIMUGyro g, ColorSensor lC, ColorSensor rC){
+    autoDriver(HardwareMap map, LinearOpMode mode, Telemetry tel, DcMotor left, DcMotor right, revHubIMUGyro g, ColorSensor lC, ColorSensor rC, DistanceSensor l2m, DistanceSensor r2m){
         hardwareMap = map;
         opMode = mode;
         telemetry = tel;
@@ -40,6 +44,8 @@ public class autoDriver {
         gyro = g;
         leftColor = lC;
         rightColor = rC;
+        left2m = l2m;
+        right2m = r2m;
     }
 
     // move a specified number of inches
@@ -193,5 +199,29 @@ public class autoDriver {
                 rightMotor.setPower(0);
             }
         }
+    }
+
+    boolean squareOnWall(double speed) {
+
+        if ((left2m.getDistance(DistanceUnit.INCH) > 50 ) || (right2m.getDistance(DistanceUnit.INCH) > 50)) {
+            return false;
+        }
+        if (left2m.getDistance(DistanceUnit.INCH) > right2m.getDistance(DistanceUnit.INCH)) {
+            leftMotor.setPower(speed);
+            rightMotor.setPower(-speed);
+            while (left2m.getDistance(DistanceUnit.INCH) > right2m.getDistance(DistanceUnit.INCH)) {
+                // wait until we are square
+            }
+        } else {
+            leftMotor.setPower(-speed);
+            rightMotor.setPower(speed);
+            while (right2m.getDistance(DistanceUnit.INCH) > left2m.getDistance(DistanceUnit.INCH)) {
+                // wait until we are square
+            }
+        }
+
+        leftMotor.setPower(0);
+        rightMotor.setPower(0);
+        return true;
     }
 }
