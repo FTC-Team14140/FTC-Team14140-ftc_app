@@ -51,6 +51,8 @@ public class grabberArm {
         liftServo.goTo(DROP);
         teamUtil.sleep(1000);
         grabberServo.goTo(SKINNY);
+        teamUtil.sleep(250);
+        liftServo.goTo(UP_SPOT);
     }
 
     public void grabberDown () {
