@@ -13,7 +13,7 @@ public class teamAutoOp extends LinearOpMode {
     public void runOpMode() {
         //initialization code
 
-        // Wait for the game to start (drver presses PLAY)
+        // Wait for the game to start of the game(drver presses PLAY)
         waitForStart();
         La.lowerRobot();
 
