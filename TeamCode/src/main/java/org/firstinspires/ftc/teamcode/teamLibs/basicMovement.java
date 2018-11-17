@@ -15,7 +15,7 @@ public class basicMovement {
     DcMotor motorRight;
     revHubIMUGyro gyro;
     //The counts per inch is the number of ticks per revolution divided by the circumference of the wheel
-    private double     COUNTS_PER_INCH = 89.1294;
+    private double     COUNTS_PER_INCH = 89.7158;
     //stashes the values
     public basicMovement (DcMotor leftMotor, DcMotor rightMotor, BNO055IMU theimu, Telemetry theTelemetry) {
         motorLeft = leftMotor;
@@ -30,16 +30,16 @@ public class basicMovement {
         motorRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         //sets the number of desired inches on both motors
-        motorLeft.setTargetPosition((int) inches);
-        motorRight.setTargetPosition( (int) COUNTS_PER_INCH * (int) inches);
-
-        //sets the desired speed on both motors
-        motorLeft.setPower(speed);
-        motorRight.setPower(speed);
+        motorLeft.setTargetPosition((int) (COUNTS_PER_INCH * inches));
+        motorRight.setTargetPosition((int) (COUNTS_PER_INCH * inches) );
 
         //runs to the set number of inches at the desired speed
         motorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        //sets the desired speed on both motors
+        motorLeft.setPower(speed);
+        motorRight.setPower(speed);
 
         //lets the two moving motors finish the task
         while(motorLeft.isBusy() && motorRight.isBusy())
@@ -91,11 +91,9 @@ public class basicMovement {
     }
     public void leftSpin (double speed, double degrees) {
         gyro.resetHeading();
-        motorLeft.setPower(speed);
+        motorLeft.setPower(-speed);
         motorRight.setPower(speed);
-        while (gyro.getHeading()<degrees) {
-
-    }
+        while (gyro.getHeading()>-degrees) { }
         motorLeft.setPower(0);
         motorRight.setPower(0);
 
@@ -106,8 +104,8 @@ public class basicMovement {
     public void rightSpin (double speed, double degrees) {
         gyro.resetHeading();
         motorLeft.setPower(speed);
-        motorRight.setPower(speed);
-        while (gyro.getHeading()<-degrees) {
+        motorRight.setPower(-speed);
+        while (gyro.getHeading()<degrees) {
 
         }
         motorLeft.setPower(0);
