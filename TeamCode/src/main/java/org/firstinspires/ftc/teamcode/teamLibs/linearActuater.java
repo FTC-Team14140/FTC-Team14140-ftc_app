@@ -7,10 +7,10 @@ public class linearActuater {
 
     private DcMotor motor;
     private Telemetry telemetry;
-    private final int GROUND_POSITION=25800;
-    private final int END_POSITION=GROUND_POSITION / 2;
-    private final int RETRACT_ACTUATOR=-1;
-    private final int EXTEND_ACTUATOR=1;
+    private final int GROUND_POSITION=25800;//This is the position on the floor on the robot attached to the hook
+    private final int END_POSITION=GROUND_POSITION / 2;//The end of the match on top of the latch
+    private final int RETRACT_ACTUATOR=-1;//This power retracts the actuator
+    private final int EXTEND_ACTUATOR=1;//This power extends the actuator
 
 
 
