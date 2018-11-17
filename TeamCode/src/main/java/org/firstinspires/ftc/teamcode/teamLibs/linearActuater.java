@@ -32,7 +32,7 @@ public class linearActuater {
     public void retractFully() {
         int lastPosition;//Creates last position
 
-        motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);//Get out of encoder mode so we can run the motor and detect a stall
+        motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);//Get out of encoder mode so we can run the motor and detect a stall detection
 
         motor.setPower(RETRACT_ACTUATOR);//Set's motor power to -1
         lastPosition = motor.getCurrentPosition();//sets last position to the current encoder position of the robot
