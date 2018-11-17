@@ -35,16 +35,16 @@ public class teamTeleop extends LinearOpMode {
         //when we say go forwards, we really mean backwards
         motorLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        grabber = new grabberArm (telemetry, hardwareMap, "grabberServo", "liftServo");
+        grabber = new grabberArm(telemetry, hardwareMap, "grabberServo", "liftServo");
         xrail = new xRail(telemetry, hardwareMap.get(DcMotor.class, "xRailMotor"));
-        gyro = new revHubIMUGyro(hardwareMap.get(BNO055IMU.class, "imu"), telemetry );
+        gyro = new revHubIMUGyro(hardwareMap.get(BNO055IMU.class, "imu"), telemetry);
         La = new linearActuater(telemetry, hardwareMap.get(DcMotor.class, "LAMotor"));
 
         xrail.init();
         grabber.initialize();
 
         // Wait for the game to start (drver presses PLAY)
-         waitForStart();
+        waitForStart();
 
         //These are the variables for the motors power at the start of the program
         double tgtPowerRight = 0;
@@ -55,7 +55,7 @@ public class teamTeleop extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            telemetry.addData( "Gyro Heading",gyro.getHeading());
+            telemetry.addData("Gyro Heading", gyro.getHeading());
 
             //We use these variables to figure out how to control the X or turning for the robot right stick and the Y or movement on the left stick
             double throttle = -this.gamepad1.left_stick_y;
@@ -65,18 +65,18 @@ public class teamTeleop extends LinearOpMode {
             if (throttle > 0) {
                 // formula to use figures out what the area of effect for the joysticks is (OK, but what does the formula do?)
                 throttle = (1 - deadSpot) * throttle + deadSpot;
-            }else if (throttle < 0){
-                throttle = (1 - deadSpot) * throttle- deadSpot;
+            } else if (throttle < 0) {
+                throttle = (1 - deadSpot) * throttle - deadSpot;
             }
 
             //What is this next block of code for?
             // If we are turning to the right then we give more power to the left motor
-            if (steering > 0){
-                tgtPowerRight = throttle-steering*2*throttle;
+            if (steering > 0) {
+                tgtPowerRight = throttle - steering * 2 * throttle;
                 tgtPowerLeft = throttle;
-            } else if (steering < 0){ // if we are turning to the left then we give more power to the right motor
+            } else if (steering < 0) { // if we are turning to the left then we give more power to the right motor
                 tgtPowerRight = throttle;
-                tgtPowerLeft =  throttle+steering*2*throttle;
+                tgtPowerLeft = throttle + steering * 2 * throttle;
             } else { // if we are not turning at all than it will run this program and just not move
                 tgtPowerRight = throttle;
                 tgtPowerLeft = throttle;
@@ -86,37 +86,45 @@ public class teamTeleop extends LinearOpMode {
             motorRight.setPower(tgtPowerRight);
             motorLeft.setPower(tgtPowerLeft);
 
-            if(gamepad2.y){
+            if (gamepad2.y) {
                 grabber.wideOpen();
-            } else if(gamepad2.x) {
+                //} else if(gamepad2.x) {
                 grabber.skinnyOpen();
-            } else if(gamepad2.a) {
+            } else if (gamepad2.a) {
                 grabber.grab();
-            } else if(gamepad2.dpad_left) {
+            } else if (gamepad2.dpad_left) {
                 grabber.deposit();
-            } else if(gamepad2.dpad_up) {
+            } else if (gamepad2.dpad_up) {
                 grabber.holdUp();
-            } else if(gamepad2.dpad_right) {
+            } else if (gamepad2.dpad_right) {
                 grabber.grabberDown();
             } else if (gamepad2.right_trigger > 0) {
                 grabber.triggerControl(gamepad2.right_trigger);
             }
 
-            if(gamepad2.right_stick_button) {
+            if (gamepad2.right_stick_button) {
                 xrail.testExtend();
-            } else if(gamepad2.left_stick_button) {
+            } else if (gamepad2.left_stick_button) {
                 //xrail.retract();
             } else {
                 //xrail.stop();
             }
 
-            if(gamepad2.left_bumper) {
-               // La.drop();
-            } else if(gamepad2.right_bumper) {
+            if (gamepad2.left_bumper) {
+                La.lowerRobot();
+            } else if (gamepad2.right_bumper) {
+                La.retractFully();
+            } else {
+                La.stop();
+            }
+            if (gamepad2.b) {
+                La.extendForLatch();
+            } else if (gamepad2.x) {
                 La.lift();
             } else {
                 La.stop();
             }
+
 /*
             if(gamepad1.x){
                 //rotate 45 to left
@@ -157,6 +165,5 @@ public class teamTeleop extends LinearOpMode {
         }
 
     }
-
 }
 
