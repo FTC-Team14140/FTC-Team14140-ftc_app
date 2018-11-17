@@ -3,7 +3,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-public class linearActuater {
+public class linearActuator {
 
     private DcMotor motor;
     private Telemetry telemetry;
@@ -14,7 +14,7 @@ public class linearActuater {
 
 
 
-    public linearActuater(Telemetry thetelemetry, DcMotor motor1) {
+    public linearActuator(Telemetry thetelemetry, DcMotor motor1) {
         telemetry = thetelemetry;
         motor = motor1;
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -61,7 +61,7 @@ public class linearActuater {
         //lift's the liner actuater
         retractActuator(RETRACT_ACTUATOR,END_POSITION);//Sets power to -1 and will go to the top position
         telemetry.addData("actuaterPosition", motor.getCurrentPosition());//Gets the position of the motor
-        //The lowest point on the robot has to be over 4in above the ground
+        //The lowest point on the robot has to be over 4in above the ground of the mat
 
 
     }
