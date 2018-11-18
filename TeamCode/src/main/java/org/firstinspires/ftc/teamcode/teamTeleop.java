@@ -115,9 +115,9 @@ public class teamTeleop extends LinearOpMode {
             if(gamepad2.left_bumper) {
                // La.drop();
             } else if(gamepad2.right_bumper) {
-                La.lift();
+               // La.lift();
             } else {
-                La.stop();
+               // La.stop();
             }
 
 
