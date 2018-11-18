@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.teamLibs;
 
+import com.qualcomm.robotcore.util.RobotLog;
+
 public class teamUtil {
 
     public static final double YELLOW_JACKET_ENCODER_CLICKS=145.6;
@@ -22,5 +24,9 @@ public class teamUtil {
             sleepTime=wakeupTime-System.currentTimeMillis();
         }
     }   //sleep
+
+    public static void log(String logString) {
+        RobotLog.d("14140LOG: " + logString);
+    }
 
 }

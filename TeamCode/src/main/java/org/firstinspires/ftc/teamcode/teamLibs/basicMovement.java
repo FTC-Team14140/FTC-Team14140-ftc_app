@@ -2,28 +2,33 @@ package org.firstinspires.ftc.teamcode.teamLibs;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorController;
-import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+//This code will help make maneuvering easier on the autonomous period and possibly when you want
+//the robot to do a spin, turn, or just simply move forewords.
 public class basicMovement {
 
-    //This code will help make maneuvering easier on the autonomous period and possibly when you want
-    //the robot to do a spin, turn, or just simply move forewords.
     DcMotor motorLeft;
     DcMotor motorRight;
     revHubIMUGyro gyro;
+    Telemetry telemetry;
+
     //The counts per inch is the number of ticks per revolution divided by the circumference of the wheel
     private double     COUNTS_PER_INCH = 89.7158;
-    //stashes the values
+
+    //stashes the values for later
     public basicMovement (DcMotor leftMotor, DcMotor rightMotor, BNO055IMU theimu, Telemetry theTelemetry) {
         motorLeft = leftMotor;
         motorRight = rightMotor;
+        motorLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         gyro = new revHubIMUGyro ( theimu, theTelemetry );
+        telemetry = theTelemetry;
     }
 
-    //this will make the robot move a chosen number of inches at a chosen speed
+    // this will make the robot move a chosen number of inches at a chosen speed
+    // TODO: need error handling if they pass in bad parameters
     public void moveInches (double speed, double inches) {
         //resets the motors
         motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -44,7 +49,7 @@ public class basicMovement {
         //lets the two moving motors finish the task
         while(motorLeft.isBusy() && motorRight.isBusy())
         {
-
+            // TODO: Add some telemetry output here so we can see what's happening on the driver station phone
         }
 
         //turns off both motors
@@ -56,7 +61,9 @@ public class basicMovement {
         motorRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
+/*  Turns don't work yet...need to lock the 0 power motor and test
     //this block will let the user do a right turn with the desired # of degrees and speed
+
     public void rightTurn (double speed, double degrees) {
         //here the gyro sensor is reset
         gyro.resetHeading();
@@ -65,6 +72,7 @@ public class basicMovement {
         motorLeft.setPower(speed);
         motorRight.setPower(0);
         while (gyro.getHeading()<degrees) {
+            // TODO: Add some telemetry output here so we can see what's happening on the driver station phone
 
         }
 
@@ -81,6 +89,7 @@ public class basicMovement {
         motorLeft.setPower(0);
         motorRight.setPower(speed);
         while (gyro.getHeading()<-degrees) {
+            // TODO: Add some telemetry output here so we can see what's happening on the driver station phone
 
         }
         motorLeft.setPower(0);
@@ -89,11 +98,17 @@ public class basicMovement {
         motorLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
+*/
+
+    // TODO: need comments on this method and error handling if they pass in bad parameters
     public void leftSpin (double speed, double degrees) {
         gyro.resetHeading();
         motorLeft.setPower(-speed);
         motorRight.setPower(speed);
-        while (gyro.getHeading()>-degrees) { }
+        while (gyro.getHeading()>-degrees) {
+            // TODO: Add some telemetry output here so we can see what's happening on the driver station phone
+
+        }
         motorLeft.setPower(0);
         motorRight.setPower(0);
 
@@ -101,11 +116,14 @@ public class basicMovement {
         motorRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 }
+
+    // TODO: need comments on this method and error handling if they pass in bad parameters
     public void rightSpin (double speed, double degrees) {
         gyro.resetHeading();
         motorLeft.setPower(speed);
         motorRight.setPower(-speed);
         while (gyro.getHeading()<degrees) {
+            // TODO: Add some telemetry output here so we can see what's happening on the driver station phone
 
         }
         motorLeft.setPower(0);
