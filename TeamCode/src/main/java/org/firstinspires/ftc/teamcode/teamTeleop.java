@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.widget.Space;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.teamLibs.basicMovement;
@@ -51,6 +53,7 @@ public class teamTeleop extends LinearOpMode {
         //These are the variables for the motors power at the start of the program
         double tgtPowerRight = 0;
         double tgtPowerLeft = 0;
+        double speedFactor = 1;
 
         //gyro.resetHeading();
 
@@ -84,21 +87,26 @@ public class teamTeleop extends LinearOpMode {
                 tgtPowerLeft = throttle;
             }
 
+            if (gamepad1.y){
+                speedFactor = 1;
+            }else if (gamepad1.a) {
+                speedFactor = 0.6;
+            }
             // It is setting the robots motors to the corresponding power
-            motorRight.setPower(tgtPowerRight);
-            motorLeft.setPower(tgtPowerLeft);
+            motorRight.setPower(tgtPowerRight*speedFactor);
+            motorLeft.setPower(tgtPowerLeft*speedFactor);
 
-            if(gamepad2.y){
+            if(gamepad2.x){
                 grabber.wideOpen();
-            } else if(gamepad2.x) {
-                grabber.skinnyOpen();
             } else if(gamepad2.a) {
+                grabber.skinnyOpen();
+            } else if(gamepad2.b) {
                 grabber.grab();
-            } else if(gamepad2.dpad_left) {
+            } else if(gamepad2.y) {
                 grabber.deposit();
             } else if(gamepad2.dpad_up) {
                 grabber.holdUp();
-            } else if(gamepad2.dpad_right) {
+            } else if(gamepad2.dpad_down) {
                 grabber.grabberDown();
             } else if (gamepad2.right_trigger > 0) {
                 grabber.triggerControl(gamepad2.right_trigger);
