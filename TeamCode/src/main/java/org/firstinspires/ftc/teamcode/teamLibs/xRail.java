@@ -11,7 +11,7 @@ public class xRail {
     Telemetry telemetry;
 
     private final int EXTEND_ACTUAL = 810;
-    private final int EXTEND_TARGET = EXTEND_ACTUAL+150;
+    private final int EXTEND_TARGET = EXTEND_ACTUAL+50;
     //private final int RETRACT = ;
 
     public xRail(Telemetry thetelemetry,DcMotor motor1){
@@ -37,7 +37,7 @@ public class xRail {
     }
 
     public void  extend () {
-        motor.setPower(-1);
+        motor.setPower(-0.50);
         telemetry.addData("xRailPosition",motor.getCurrentPosition());
     }
     public void retract () {
@@ -52,7 +52,7 @@ public class xRail {
 
         // lift and wait for it to get to the top
         motor.setTargetPosition(EXTEND_TARGET);
-        motor.setPower(1);
+        motor.setPower(0.50);
         while (motor.getCurrentPosition()<EXTEND_ACTUAL) {
             telemetry.addData("xrail", motor.getCurrentPosition());
             telemetry.update();

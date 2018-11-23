@@ -63,22 +63,22 @@ public class manualTest extends LinearOpMode {
                 grabber.triggerControl(gamepad2.right_trigger);
             }
 */
-            if(gamepad2.right_stick_button) {
+            if(gamepad1.right_stick_button) {
                 xrail.testExtend();
             }
 
-            if(gamepad2.dpad_down) {
+            if(gamepad1.dpad_down) {
                 La.retractMoving();
-            } else if(gamepad2.dpad_up) {
+            } else if(gamepad1.dpad_up) {
                 La.extendActuatorWhileMoving();
             }
-            else if(gamepad2.dpad_right) {
+            else if(gamepad1.dpad_right) {
                 La.lift();
             }
-            else if(gamepad2.dpad_left) {
+            else if(gamepad1.dpad_left) {
                 La.lowerRobot();
             }
-            else if(gamepad2.left_bumper) {
+            else if(gamepad1.left_bumper) {
                 La.retractFully();
             }
 

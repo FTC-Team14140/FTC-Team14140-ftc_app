@@ -112,17 +112,21 @@ public class teamTeleop extends LinearOpMode {
                 //xrail.stop();
             }
 
-            if(gamepad2.left_bumper) {
-               La.retractFully();
-            } else if(gamepad2.right_bumper) {
-               La.extendActuatorWhileMoving();
-            } else {
-                La.stop();
+
+            if(gamepad1.dpad_down) {
+                La.retractMoving();
+            } else if(gamepad1.dpad_up) {
+                La.extendActuatorWhileMoving();
+            }
+            else if(gamepad1.dpad_left) {
+                La.lift();
+            } else if(gamepad1.dpad_right) {
+                La.retractFully();
             }
 
 
 
-            if(gamepad1.dpad_up){
+ /*           if(gamepad1.dpad_up){
                 basicMove.moveInches(0.25, 12);
             }else if(gamepad1.dpad_left){
                 basicMove.leftSpin(0.25, 90);
