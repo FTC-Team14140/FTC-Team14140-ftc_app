@@ -11,6 +11,7 @@ public class linearActuator {
     private final int END_POSITION=GROUND_POSITION / 2;//The end of the match on top of the latch
     private final int RETRACT_ACTUATOR=-1;//This power retracts the actuator
     private final int EXTEND_ACTUATOR=1;//This power extends the actuator
+    private final int RETRACT_WHILE_MOVING_POSITION=500;
 
 
 
@@ -21,11 +22,15 @@ public class linearActuator {
 
     }
 
-
     public void lowerRobot() {
 
         retractFully();
         extendActuater(EXTEND_ACTUATOR, GROUND_POSITION);//Set the power so it goes down and takes the ground position to get down
+
+    }
+    public void retractMoving(){
+        motor.setPower(RETRACT_ACTUATOR);
+        motor.setTargetPosition(RETRACT_WHILE_MOVING_POSITION);
 
     }
 
@@ -48,14 +53,13 @@ public class linearActuator {
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION); // put the motor back in encoder mode
 
     }
-     public void extendForLatch()
+     public void extendActuatorWhileMoving()
 
     {
-        extendActuater(EXTEND_ACTUATOR, GROUND_POSITION);//This set the power of the robot and then you can up in the postiton for the motor to go
+        //This set the power of the robot and then you can up in the postiton for the motor to go
+        motor.setPower(EXTEND_ACTUATOR);
+        motor.setTargetPosition(GROUND_POSITION);
     }
-
-
-
 
     public void lift() {
         //lift's the liner actuater
