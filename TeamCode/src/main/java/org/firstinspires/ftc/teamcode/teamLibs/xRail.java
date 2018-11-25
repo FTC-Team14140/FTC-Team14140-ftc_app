@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.teamLibs;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -12,6 +13,8 @@ public class xRail {
 
     private final int EXTEND_ACTUAL = 810;
     private final int EXTEND_TARGET = EXTEND_ACTUAL+50;
+    private final double TIMEOUT_SECONDS = 5;
+
     //private final int RETRACT = ;
 
     public xRail(Telemetry thetelemetry,DcMotor motor1){
@@ -45,26 +48,27 @@ public class xRail {
         telemetry.addData("xRailPosition",motor.getCurrentPosition());
     }
     public void stop () {
-        motor.setPower(0);
+        motor.setPower(-.15);
         telemetry.addData("xRailPosition",motor.getCurrentPosition());
     }
-    public void testExtend() {
+    public void loadLander() {
+
+        ElapsedTime runtime = new ElapsedTime();
 
         // lift and wait for it to get to the top
+        runtime.reset();
         motor.setTargetPosition(EXTEND_TARGET);
         motor.setPower(0.50);
-        while (motor.getCurrentPosition()<EXTEND_ACTUAL) {
+        while ((runtime.seconds() < TIMEOUT_SECONDS) && (motor.getCurrentPosition()<EXTEND_ACTUAL)) {
             telemetry.addData("xrail", motor.getCurrentPosition());
             telemetry.update();
-
         }
 
         // drop it back down gently
         motor.setPower(0); // brake mode will slow it down
-        //teamUtil.sleep(1000); // give it a couple of seconds to mostly retract
         motor.setTargetPosition(0); // slowly back up to starting spot
         motor.setPower(-.15);
-        while (motor.getCurrentPosition()>5) {
+        while ((runtime.seconds() < TIMEOUT_SECONDS) && (motor.getCurrentPosition()>5)) {
             telemetry.addData("xrail", motor.getCurrentPosition());
             telemetry.update();
         }

@@ -62,7 +62,10 @@ public class teamTeleop extends LinearOpMode {
 
             //telemetry.addData( "Gyro Heading",gyro.getHeading());
 
-            //We use these variables to figure out how to control the X or turning for the robot right stick and the Y or movement on the left stick
+            ////////////////////////////////////////////////////////////////////
+            // code to control the main motors and steering
+
+            // We use these variables to figure out how to control the X or turning for the robot right stick and the Y or movement on the left stick
             double throttle = -this.gamepad1.left_stick_y;
             double steering = this.gamepad1.right_stick_x;
 
@@ -74,28 +77,30 @@ public class teamTeleop extends LinearOpMode {
                 throttle = (1 - deadSpot) * throttle- deadSpot;
             }
 
-            //What is this next block of code for?
-            // If we are turning to the right then we give more power to the left motor
-            if (steering > 0){
+            // Figure out if we need to change the power to enable a turn
+            if (steering > 0){ // If we are turning to the right then we give more power to the left motor
                 tgtPowerRight = throttle-steering*2*throttle;
                 tgtPowerLeft = throttle;
             } else if (steering < 0){ // if we are turning to the left then we give more power to the right motor
                 tgtPowerRight = throttle;
                 tgtPowerLeft =  throttle+steering*2*throttle;
-            } else { // if we are not turning at all than it will run this program and just not move
+            } else { // if we are not turning at all than equal power to both motors
                 tgtPowerRight = throttle;
                 tgtPowerLeft = throttle;
             }
 
+            // Allow the user to "shift" to high or low gear
             if (gamepad1.y){
-                speedFactor = 1;
+                speedFactor = 1; // high gear, up to full motor power
             }else if (gamepad1.a) {
-                speedFactor = 0.6;
+                speedFactor = 0.6; // low gear, up to 60% motor power
             }
-            // It is setting the robots motors to the corresponding power
+            // Set the robots motors to the corresponding power with the high/low gear speed factor included
             motorRight.setPower(tgtPowerRight*speedFactor);
             motorLeft.setPower(tgtPowerLeft*speedFactor);
 
+            ////////////////////////////////////////////////////////////////////
+            // Code to control the grabber servos
             if(gamepad2.x){
                 grabber.wideOpen();
             } else if(gamepad2.a) {
@@ -112,15 +117,14 @@ public class teamTeleop extends LinearOpMode {
                 grabber.triggerControl(gamepad2.right_trigger);
             }
 
+            ////////////////////////////////////////////////////////////////////
+            // Code to control the xrail system
             if(gamepad2.right_stick_button) {
-                xrail.testExtend();
-            } else if(gamepad2.left_stick_button) {
-                //xrail.retract();
-            } else {
-                //xrail.stop();
+                xrail.loadLander();
             }
 
-
+            ////////////////////////////////////////////////////////////////////
+            // Code to control the linear actuator
             if(gamepad1.dpad_down) {
                 La.retractMoving();
             } else if(gamepad1.dpad_up) {
@@ -134,26 +138,6 @@ public class teamTeleop extends LinearOpMode {
 
 
 
- /*           if(gamepad1.dpad_up){
-                basicMove.moveInches(0.25, 12);
-            }else if(gamepad1.dpad_left){
-                basicMove.leftSpin(0.25, 90);
-            }else if(gamepad1.dpad_right){
-                basicMove.rightSpin(0.25, 90);
-            }else if(gamepad1.dpad_down){
-                basicMove.moveInches(-0.25, -12);
-            }
-/*
-            if(gamepad1.x){
-                //rotate 45 to left
-            } else if (gamepad1.b){
-                //rotate 45 to the right
-            } else if (gamepad1.a){
-                //rotate 180
-            } else if (gamepad1.y) {
-                //TBD
-            } else if (gamepad1.right_stick_x)
-*/
             //this.gamepad1.x
             //this.gamepad1.y
             //this.gamepad1.a

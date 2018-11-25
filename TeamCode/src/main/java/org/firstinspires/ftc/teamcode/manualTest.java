@@ -64,7 +64,7 @@ public class manualTest extends LinearOpMode {
             }
 */
             if(gamepad1.right_stick_button) {
-                xrail.testExtend();
+                xrail.loadLander();
             }
 
             if(gamepad1.dpad_down) {
