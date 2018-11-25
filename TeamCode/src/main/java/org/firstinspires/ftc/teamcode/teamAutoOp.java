@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.teamLibs.linearActuator;
 import org.firstinspires.ftc.teamcode.teamLibs.grabberArm;
 import org.firstinspires.ftc.teamcode.teamLibs.teamUtil;
 
-@Autonomous(name="Team Auto", group="Linear Opmode")
+@Autonomous(name="Auto Depot", group="Linear Opmode")
 public class teamAutoOp extends LinearOpMode {
     private linearActuator La;
     private basicMovement basicMove;
@@ -40,24 +40,23 @@ public class teamAutoOp extends LinearOpMode {
         waitForStart();
 
         teamUtil.log("La.lowerRobot()...");
-        //La.lowerRobot();
+        La.lowerRobot();
 
         teamUtil.log("Unlatching");
-        basicMove.rightSpin(0.5, 20);
+        basicMove.rightSpin(0.5, 10);
         basicMove.moveInches(0.3, 6);
-        basicMove.leftSpin(0.5, 23);
-        basicMove.moveInches(0.5, 38);
+        basicMove.leftSpin(0.5, 12);
+        La.retractMoving();
+        basicMove.moveInches(0.5, 45);
         grabber.grabberDown();
         sleep(1000);
         grabber.wideOpen();
         sleep(500);
         grabber.holdUp();
         grabber.skinnyOpen();
-        basicMove.leftSpin(0.3, 70);
-        basicMove.moveInches(0.3, 10);
-        basicMove.leftSpin(0.3, 45);
-        basicMove.moveInches(1, 70);
-        basicMove.moveInches(0.3, 8);
+        basicMove.rightSpin(0.3, 45);
+        basicMove.moveInches(-1, -58);
+        basicMove.moveInches(-0.3, -5);
 
     }
 

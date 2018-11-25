@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.teamLibs.grabberArm;
 import org.firstinspires.ftc.teamcode.teamLibs.xRail;
 import org.firstinspires.ftc.teamcode.teamLibs.linearActuator;
 
-@TeleOp(name="Drive Test", group="Linear Opmode")
+@TeleOp(name="Comp TeleOp", group="Linear Opmode")
 public class teamTeleop extends LinearOpMode {
     //private revHubIMUGyro gyro;
     private DcMotor motorLeft;
@@ -26,6 +26,7 @@ public class teamTeleop extends LinearOpMode {
     private xRail xrail;
     private linearActuator La;
     private basicMovement basicMove;
+    final static double DPAD_SPEED = .5;
 
     // 0.15 is the threshold that the motor starts to accelerate
     private static final double deadSpot = 0.15;
@@ -55,6 +56,7 @@ public class teamTeleop extends LinearOpMode {
         double tgtPowerLeft = 0;
         double speedFactor = 1;
 
+
         //gyro.resetHeading();
 
         // run until the end of the match (driver presses STOP)
@@ -78,7 +80,19 @@ public class teamTeleop extends LinearOpMode {
             }
 
             // Figure out if we need to change the power to enable a turn
-            if (steering > 0){ // If we are turning to the right then we give more power to the left motor
+            if (gamepad1.dpad_down){
+                tgtPowerLeft = -DPAD_SPEED;
+                tgtPowerRight = -DPAD_SPEED;
+            }else if (gamepad1.dpad_left){
+                tgtPowerLeft = -DPAD_SPEED;
+                tgtPowerRight = DPAD_SPEED;
+            }else if (gamepad1.dpad_up){
+                tgtPowerLeft = DPAD_SPEED;
+                tgtPowerRight = DPAD_SPEED;
+            }else if (gamepad1.dpad_right) {
+                tgtPowerLeft = DPAD_SPEED;
+                tgtPowerRight = -DPAD_SPEED;
+            } else if (steering > 0){ // If we are turning to the right then we give more power to the left motor
                 tgtPowerRight = throttle-steering*2*throttle;
                 tgtPowerLeft = throttle;
             } else if (steering < 0){ // if we are turning to the left then we give more power to the right motor
@@ -90,9 +104,9 @@ public class teamTeleop extends LinearOpMode {
             }
 
             // Allow the user to "shift" to high or low gear
-            if (gamepad1.y){
+            if (gamepad1.right_bumper){
                 speedFactor = 1; // high gear, up to full motor power
-            }else if (gamepad1.a) {
+            }else if (gamepad1.left_bumper) {
                 speedFactor = 0.6; // low gear, up to 60% motor power
             }
             // Set the robots motors to the corresponding power with the high/low gear speed factor included
@@ -125,37 +139,18 @@ public class teamTeleop extends LinearOpMode {
 
             ////////////////////////////////////////////////////////////////////
             // Code to control the linear actuator
-            if(gamepad1.dpad_down) {
+            if(gamepad1.a) {
                 La.retractMoving();
-            } else if(gamepad1.dpad_up) {
+            } else if(gamepad1.y) {
                 La.extendActuatorWhileMoving();
             }
-            else if(gamepad1.dpad_left) {
+            else if(gamepad1.x) {
                 La.lift();
-            } else if(gamepad1.dpad_right) {
+            } else if(gamepad1.b) {
                 La.retractFully();
             }
 
 
-
-            //this.gamepad1.x
-            //this.gamepad1.y
-            //this.gamepad1.a
-            //this.gamepad1.b
-            //this.gamepad1.right_bumper
-            //this.gamepad1.left_bumper
-            //this.gamepad1.right_trigger
-            //this.gamepad1.left_trigger
-            //this.gamepad1.dpad_down
-            //this.gamepad1.dpad_up
-            //this.gamepad1.dpad_right
-            //this.gamepad1.dpad_left
-            //this.gamepad1.right_stick_button
-            //this.gamepad1.right_stick_x
-            //this.gamepad1.right_stick_y
-            //this.gamepad1.left_stick_button
-            //this.gamepad1.left_stick_x
-            //this.gamepad1.left_stick_y
 
             //telemetry.addData("Servo Position", servoTest.getPosition());
             //telemetry.addData("MotorLeft Target Power", tgtPowerLeft);
