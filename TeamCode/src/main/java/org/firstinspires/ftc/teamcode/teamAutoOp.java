@@ -10,13 +10,14 @@ import com.qualcomm.robotcore.util.RobotLog;
 import org.firstinspires.ftc.teamcode.coachcode.autoDriver;
 import org.firstinspires.ftc.teamcode.teamLibs.basicMovement;
 import org.firstinspires.ftc.teamcode.teamLibs.linearActuator;
-import org.firstinspires.ftc.teamcode.teamLibs.linearActuator;
+import org.firstinspires.ftc.teamcode.teamLibs.grabberArm;
 import org.firstinspires.ftc.teamcode.teamLibs.teamUtil;
 
 @Autonomous(name="Team Auto", group="Linear Opmode")
 public class teamAutoOp extends LinearOpMode {
     private linearActuator La;
     private basicMovement basicMove;
+    private grabberArm grabber;
 
     @Override
     public void runOpMode() {
@@ -25,10 +26,16 @@ public class teamAutoOp extends LinearOpMode {
         teamUtil.log("initializing Robot...");
         teamUtil.log("initializing linearActuator...");
         La = new linearActuator(telemetry, hardwareMap.get(DcMotor.class, "LAMotor"));
+        teamUtil.log("initializing grabberArm...");
+        grabber = new grabberArm(telemetry, hardwareMap, "grabberServo", "liftServo");
+
         teamUtil.log("initializing basicMovement...");
         basicMove = new basicMovement(hardwareMap.get(DcMotor.class, "motorLeft"), hardwareMap.get(DcMotor.class, "motorRight"), hardwareMap.get(BNO055IMU.class,"imu"), telemetry);
         // Wait for the game to start of the game(drver presses PLAY)
+
         teamUtil.log("Initialized, Waiting for Start...");
+
+        grabber.autoInitialize();
 
         waitForStart();
 
@@ -36,9 +43,21 @@ public class teamAutoOp extends LinearOpMode {
         //La.lowerRobot();
 
         teamUtil.log("Unlatching");
-        basicMove.rightSpin(0.3, 30);
-        basicMove.moveInches(0.3, 3);
-        basicMove.leftSpin(0.3, 30);
+        basicMove.rightSpin(0.5, 20);
+        basicMove.moveInches(0.3, 6);
+        basicMove.leftSpin(0.5, 23);
+        basicMove.moveInches(0.5, 38);
+        grabber.grabberDown();
+        sleep(1000);
+        grabber.wideOpen();
+        sleep(500);
+        grabber.holdUp();
+        grabber.skinnyOpen();
+        basicMove.leftSpin(0.3, 70);
+        basicMove.moveInches(0.3, 10);
+        basicMove.leftSpin(0.3, 45);
+        basicMove.moveInches(1, 70);
+        basicMove.moveInches(0.3, 8);
 
     }
 

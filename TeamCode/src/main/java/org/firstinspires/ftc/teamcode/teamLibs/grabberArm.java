@@ -59,6 +59,14 @@ public class grabberArm {
         liftServo.goTo(DOWN_SPOT);
     }
 
+    public void autoInitialize () {
+        grabberServo.goTo(WIDE);
+        teamUtil.sleep(500);
+        liftServo.goTo(DROP);
+        teamUtil.sleep(1000);
+        grabberServo.goTo(50);
+    }
+
     public void triggerControl(float trigger){
         grabberServo.goTo((int) (WIDE+(GRAB-WIDE)*trigger));
     }
