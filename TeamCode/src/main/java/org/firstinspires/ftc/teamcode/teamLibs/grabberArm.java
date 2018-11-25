@@ -11,7 +11,7 @@ public class grabberArm {
     private goBuildAServo2000 grabberServo;
     private goBuildAServo2000 liftServo;
     //variables integers below are degress for servo positions
-    private final int DOWN_SPOT = 150;
+    private final int DOWN_SPOT = 154;
     private final int UP_SPOT = 40;
     private final int GRAB = 65;
     private final int SKINNY = 35;
