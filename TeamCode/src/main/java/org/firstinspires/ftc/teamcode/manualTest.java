@@ -4,8 +4,9 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.teamLibs.basicMovement;
 import org.firstinspires.ftc.teamcode.teamLibs.revHubIMUGyro;
-
+import org.firstinspires.ftc.teamcode.teamLibs.distanceSensors;
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -21,6 +22,10 @@ public class manualTest extends LinearOpMode {
     private grabberArm grabber;
     private xRail xrail;
     private linearActuator La;
+    private distanceSensors leftDisSensor;
+    private distanceSensors rightDisSensor;
+
+
 
     @Override
     public void runOpMode() {
@@ -35,6 +40,9 @@ public class manualTest extends LinearOpMode {
         La = new linearActuator(telemetry, hardwareMap.get(DcMotor.class, "LAMotor"));
         xrail.init();
         //grabber.initialize();
+        leftDisSensor = new distanceSensors(telemetry, hardwareMap.get(Rev2mDistanceSensor.class, "leftFront2M"));
+        rightDisSensor = new distanceSensors(telemetry, hardwareMap.get(Rev2mDistanceSensor.class, "rightFront2M"));
+
 
         // Wait for the game to start (drver presses PLAY)
         waitForStart();
@@ -119,7 +127,10 @@ public class manualTest extends LinearOpMode {
            // telemetry.addData("MotorLeft Power", motorLeft.getPower());
            // telemetry.addData("MotorRight Power", motorRight.getPower());
             telemetry.addData("Status", "Running");
+            telemetry.addData("distanceLeft", leftDisSensor.getDistance()  );
+            telemetry.addData("distanceRight", rightDisSensor.getDistance()  );
             telemetry.update();
+
         }
 
     }
