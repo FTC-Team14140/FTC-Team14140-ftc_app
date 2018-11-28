@@ -10,6 +10,7 @@ public class grabberArm {
     private Telemetry telemetry;
     private goBuildAServo2000 grabberServo;
     private goBuildAServo2000 liftServo;
+    private boolean armRunning = false;
     //variables integers below are degress for servo positions
     private final int DOWN_SPOT = 154;
     private final int UP_SPOT = 40;
@@ -48,11 +49,25 @@ public class grabberArm {
     }
 
     public void deposit () {
+        if (armRunning == false) {
+            armRunning = true;
+            Thread t1 = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                   depositWait();
+                }
+            });
+            t1.start();
+        }
+    }
+
+    public void depositWait () {
         liftServo.goTo(DROP);
         teamUtil.sleep(1000);
         grabberServo.goTo(SKINNY);
         teamUtil.sleep(250);
         liftServo.goTo(UP_SPOT);
+        armRunning = false;
     }
 
     public void grabberDown () {
