@@ -6,6 +6,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class teamColorSensor {
     private ColorSensor colorSensor;
     private Telemetry telemetry;
+    private int matValueRed;
+    private int matValueBlue;
 
     public teamColorSensor(Telemetry theTelemetry, ColorSensor theColorSensor) {
         telemetry = theTelemetry;
@@ -17,16 +19,32 @@ public class teamColorSensor {
 
     }
 
-    public void calibrate() {
+    public void calibrate() {//Call this when light sensor are not on tape
+        matValueBlue=colorSensor.blue();
+        matValueRed=colorSensor.red();
+    }
 
+    public boolean isOnTape(){
+        if (onBlue()||onRed()) {
+            return true;
+        } else {
+            return false;
+        }
 
     }
     public boolean onBlue() {
-        return false;
+        if (colorSensor.blue()>matValueBlue*1.5) {
+            return true;
+        } else {
+            return false;
+        }
     }
     public boolean onRed() {
-        return false;
-
+        if (colorSensor.red()>matValueBlue*1.5) {
+            return true;
+        } else {
+            return false;
+        }
 
 
     }
