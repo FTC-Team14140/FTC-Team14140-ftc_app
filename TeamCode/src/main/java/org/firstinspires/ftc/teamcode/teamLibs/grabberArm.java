@@ -13,7 +13,7 @@ public class grabberArm {
     private boolean armRunning = false;
     //variables integers below are degress for servo positions
     private final int DOWN_SPOT = 154;
-    private final int UP_SPOT = 35;
+    private final int UP_SPOT = 25;
     private final int GRAB = 65;
     private final int SKINNY = 35;
     private final int WIDE = 0;
