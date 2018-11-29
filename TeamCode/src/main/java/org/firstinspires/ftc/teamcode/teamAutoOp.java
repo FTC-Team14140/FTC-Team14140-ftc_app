@@ -7,17 +7,20 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.RobotLog;
 
-import org.firstinspires.ftc.teamcode.coachcode.autoDriver;
+import org.firstinspires.ftc.teamcode.teamLibs.teamColorSensor;
 import org.firstinspires.ftc.teamcode.teamLibs.basicMovement;
 import org.firstinspires.ftc.teamcode.teamLibs.linearActuator;
 import org.firstinspires.ftc.teamcode.teamLibs.grabberArm;
 import org.firstinspires.ftc.teamcode.teamLibs.teamUtil;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 
 @Autonomous(name="Auto Depot", group="Linear Opmode")
 public class teamAutoOp extends LinearOpMode {
     private linearActuator La;
     private basicMovement basicMove;
     private grabberArm grabber;
+    private teamColorSensor leftColor;
+    private teamColorSensor rightColor;
 
     @Override
     public void runOpMode() {
@@ -32,6 +35,10 @@ public class teamAutoOp extends LinearOpMode {
         teamUtil.log("initializing basicMovement...");
         basicMove = new basicMovement(hardwareMap.get(DcMotor.class, "motorLeft"), hardwareMap.get(DcMotor.class, "motorRight"), hardwareMap.get(BNO055IMU.class,"imu"), telemetry);
         // Wait for the game to start of the game(drver presses PLAY)
+        teamUtil.log("initializing colorSensors...");
+        leftColor = new teamColorSensor(telemetry,hardwareMap.get(ColorSensor.class,"leftRearColor"));
+        rightColor = new teamColorSensor(telemetry,hardwareMap.get(ColorSensor.class,"rightRearColor"));
+
 
         teamUtil.log("Initialized, Waiting for Start...");
 
@@ -40,13 +47,16 @@ public class teamAutoOp extends LinearOpMode {
         waitForStart();
 
         teamUtil.log("La.lowerRobot()...");
-        //La.lowerRobot();
+        La.lowerRobot();
 
+        teamUtil.log("calibrating");
+        leftColor.calibrate();
+        rightColor.calibrate();
         teamUtil.log("Unlatching");
-        //basicMove.rightSpin(0.5, 10);
-        //basicMove.moveInches(0.3, 6);
-        //basicMove.leftSpin(0.5, 12);
-        //La.retractMoving();
+        basicMove.rightSpin(0.5, 10);
+        basicMove.moveInches(0.3, 6);
+        basicMove.leftSpin(0.5, 10);
+        La.retractMoving();
         //basicMove.moveInches(0.5, 45);
         //grabber.grabberDown();
         //sleep(1000);
@@ -59,15 +69,29 @@ public class teamAutoOp extends LinearOpMode {
         //basicMove.moveInches(-0.3, -5);
 
         //new code
-        basicMove.moveInches(0.5, 45);
+        basicMove.moveInches(1, 50);
+        basicMove.moveInches(-0.3, -5);
         grabber.grabberDown();
         sleep(1000);
         grabber.wideOpen();
         sleep(500);
         grabber.holdUp();
-        basicMove.moveInches(-0.5, -45);
-        basicMove.leftSpin(0.3, 90);
-        basicMove.moveInches(0.7,40);
+        basicMove.motorsOn(-1);
+        while (!leftColor.isOnTape()){
+
+        }
+        basicMove.motorsOff();
+        teamUtil.sleep(250);
+        basicMove.motorsOn(0.3);
+        while (!leftColor.isOnTape()){
+
+        }
+        basicMove.motorsOff();
+        //basicMove.moveInches(-1, -34);
+        //basicMove.moveInches(.5,5);
+
+        basicMove.leftSpin(0.7, 80);
+        basicMove.moveInches(1,45);
         basicMove.moveInches(0.3,10);
 
     }

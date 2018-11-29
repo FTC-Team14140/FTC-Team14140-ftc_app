@@ -82,8 +82,8 @@ public class grabberArm {
         //grabberServo.goTo(50);
 
         //new code
-        grabberServo.goTo(50);
-        grabberServo.goTo(UP_SPOT);
+        grabberServo.goTo(GRAB);
+        liftServo.goTo(UP_SPOT);
     }
 
     public void triggerControl(float trigger){

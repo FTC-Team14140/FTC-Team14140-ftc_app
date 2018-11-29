@@ -9,11 +9,16 @@ import org.firstinspires.ftc.teamcode.teamLibs.basicMovement;
 import org.firstinspires.ftc.teamcode.teamLibs.grabberArm;
 import org.firstinspires.ftc.teamcode.teamLibs.linearActuator;
 import org.firstinspires.ftc.teamcode.teamLibs.teamUtil;
+import com.qualcomm.robotcore.hardware.ColorSensor;
+import org.firstinspires.ftc.teamcode.teamLibs.teamColorSensor;
+
 @Autonomous(name="Auto Crater", group="Linear Opmode")
 public class autoCrater extends LinearOpMode{
         private linearActuator La;
         private basicMovement basicMove;
         private grabberArm grabber;
+        private teamColorSensor leftColor;
+        private teamColorSensor rightColor;
 
         @Override
         public void runOpMode() {
@@ -28,6 +33,9 @@ public class autoCrater extends LinearOpMode{
             teamUtil.log("initializing basicMovement...");
             basicMove = new basicMovement(hardwareMap.get(DcMotor.class, "motorLeft"), hardwareMap.get(DcMotor.class, "motorRight"), hardwareMap.get(BNO055IMU.class,"imu"), telemetry);
             // Wait for the game to start of the game(drver presses PLAY)
+            teamUtil.log("initializing colorSensors...");
+            leftColor = new teamColorSensor(telemetry,hardwareMap.get(ColorSensor.class,"leftRearColor"));
+            rightColor = new teamColorSensor(telemetry,hardwareMap.get(ColorSensor.class,"rightRearColor"));
 
             teamUtil.log("Initialized, Waiting for Start...");
 
@@ -36,21 +44,26 @@ public class autoCrater extends LinearOpMode{
             waitForStart();
 
             teamUtil.log("La.lowerRobot()...");
-            //La.lowerRobot();
-
+            La.lowerRobot();
+            teamUtil.log("calibrating");
+            leftColor.calibrate();
+            rightColor.calibrate();
             teamUtil.log("Unlatching");
             basicMove.rightSpin(0.5, 10);
             basicMove.moveInches(0.3, 6);
             basicMove.leftSpin(0.5, 10);
             teamUtil.log("retracting");
             //La.retractMoving();
-            basicMove.moveInches(0.3,19);
-            basicMove.moveInches(-0.3, -10);
-            basicMove.leftSpin(0.3,90);
-            basicMove.moveInches(0.5,60);
-            basicMove.leftSpin(0.3,45);
-            basicMove.moveInches(0.7, 45);
-            basicMove.rightSpin(0.3, 45);
+            basicMove.moveInches(0.6,19);
+            basicMove.moveInches(-0.6, -10);
+            basicMove.leftSpin(0.4,85);
+            teamUtil.log("heading = "+basicMove.getHeading());
+            basicMove.moveInches(1,52);
+            basicMove.moveInches(0.3, 5);
+            teamUtil.log("spinning left = "+(40+(basicMove.getHeading()+85)));
+            basicMove.leftSpin(0.4,40+(basicMove.getHeading()+85));
+            basicMove.moveInches(1, 37);
+            basicMove.moveInches(0.3,5);
             teamUtil.log("dropping");
             grabber.grabberDown();
             sleep(1000);
@@ -58,9 +71,8 @@ public class autoCrater extends LinearOpMode{
             sleep(500);
             grabber.holdUp();
             grabber.skinnyOpen();
-            //basicMove.leftSpin(0.3, 45);
-            //basicMove.moveInches(-0.7,-65);
-            //basicMove.moveInches(-0.3,-5);
+            basicMove.moveInches(-1,-65);
+            basicMove.moveInches(-0.3,-5);
 
         }
 

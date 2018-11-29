@@ -61,6 +61,19 @@ public class basicMovement {
         motorRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
+    public void motorsOn(double speed) {
+        motorLeft.setPower(speed);
+        motorRight.setPower(speed);
+    }
+    public void motorsOff() {
+        motorLeft.setPower(0);
+        motorRight.setPower(0);
+    }
+
+    public float getHeading() {
+        return gyro.getHeading();
+    }
+
 /*  Turns don't work yet...need to lock the 0 power motor and test
     //this block will let the user do a right turn with the desired # of degrees and speed
 
