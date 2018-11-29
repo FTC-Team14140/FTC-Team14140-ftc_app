@@ -40,23 +40,35 @@ public class teamAutoOp extends LinearOpMode {
         waitForStart();
 
         teamUtil.log("La.lowerRobot()...");
-        La.lowerRobot();
+        //La.lowerRobot();
 
         teamUtil.log("Unlatching");
-        basicMove.rightSpin(0.5, 10);
-        basicMove.moveInches(0.3, 6);
-        basicMove.leftSpin(0.5, 12);
-        La.retractMoving();
+        //basicMove.rightSpin(0.5, 10);
+        //basicMove.moveInches(0.3, 6);
+        //basicMove.leftSpin(0.5, 12);
+        //La.retractMoving();
+        //basicMove.moveInches(0.5, 45);
+        //grabber.grabberDown();
+        //sleep(1000);
+        //grabber.wideOpen();
+        //sleep(500);
+        //grabber.holdUp();
+        //grabber.skinnyOpen();
+        //basicMove.rightSpin(0.3, 45);
+        //basicMove.moveInches(-1, -58);
+        //basicMove.moveInches(-0.3, -5);
+
+        //new code
         basicMove.moveInches(0.5, 45);
         grabber.grabberDown();
         sleep(1000);
         grabber.wideOpen();
         sleep(500);
         grabber.holdUp();
-        grabber.skinnyOpen();
-        basicMove.rightSpin(0.3, 45);
-        basicMove.moveInches(-1, -58);
-        basicMove.moveInches(-0.3, -5);
+        basicMove.moveInches(-0.5, -45);
+        basicMove.leftSpin(0.3, 90);
+        basicMove.moveInches(0.7,40);
+        basicMove.moveInches(0.3,10);
 
     }
 

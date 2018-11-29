@@ -36,14 +36,14 @@ public class autoCrater extends LinearOpMode{
             waitForStart();
 
             teamUtil.log("La.lowerRobot()...");
-            La.lowerRobot();
+            //La.lowerRobot();
 
             teamUtil.log("Unlatching");
             basicMove.rightSpin(0.5, 10);
             basicMove.moveInches(0.3, 6);
             basicMove.leftSpin(0.5, 10);
             teamUtil.log("retracting");
-            La.retractMoving();
+            //La.retractMoving();
             basicMove.moveInches(0.3,19);
             basicMove.moveInches(-0.3, -10);
             basicMove.leftSpin(0.3,90);
