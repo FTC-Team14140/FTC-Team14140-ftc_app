@@ -79,19 +79,18 @@ public class manualTest extends LinearOpMode {
                 xrail.loadLander();
             }
 
-            if(gamepad1.dpad_down) {
+            ////////////////////////////////////////////////////////////////////
+            // Code to control the linear actuator
+            if(gamepad1.a) {
                 La.retractMoving();
-            } else if(gamepad1.dpad_up) {
+            } else if(gamepad1.y) {
                 La.extendActuatorWhileMoving();
-            }
-            else if(gamepad1.dpad_right) {
+            } else if(gamepad1.x) {
                 La.lift();
-            }
-            else if(gamepad1.dpad_left) {
-                La.lowerRobot();
-            }
-            else if(gamepad1.left_bumper) {
+            } else if(gamepad1.b) {
                 La.retractFully();
+            } else if(gamepad1.dpad_down) {
+                La.lowerRobot();
             }
 
 

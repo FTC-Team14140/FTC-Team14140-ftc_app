@@ -7,6 +7,7 @@ public class linearActuator {
 
     private DcMotor motor;
     private Telemetry telemetry;
+    private boolean isBusy = false;
     private final int GROUND_POSITION=25800;//This is the position on the floor on the robot attached to the hook
     private final int END_POSITION=GROUND_POSITION / 2;//The end of the match on top of the latch
     private final int RETRACT_ACTUATOR=-1;//This power retracts the actuator
@@ -34,6 +35,20 @@ public class linearActuator {
 
     }
 
+    // This method runs the retractFully method in a seperate thread and returns control to the caller
+    public void retractFullyNoWait () {
+        if (isBusy == false) {
+            isBusy = true;
+            Thread t1 = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    retractFully();
+                }
+            });
+            t1.start();
+        }
+    }
+
     public void retractFully() {
         int lastPosition;//Creates last position
 
@@ -44,14 +59,14 @@ public class linearActuator {
         teamUtil.sleep(100);//wait's 100ms so the motor has time to run a little
         while (lastPosition != motor.getCurrentPosition()) {
             lastPosition=motor.getCurrentPosition();//This while loop makes it so if the positon of the motor is the same
-            teamUtil.sleep(100);//After 100ms than we know it hit the bottom and stalled
+            teamUtil.sleep(100);           //after 100ms than we know it hit the bottom and stalled
         }
         motor.setPower(0);//Then turn the motor off to power 0
 
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);//Reset the encoder on the motor (fully retracted is our zero position)
 
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION); // put the motor back in encoder mode
-
+        isBusy = false;
     }
      public void extendActuatorWhileMoving()
 
@@ -66,8 +81,6 @@ public class linearActuator {
         retractActuator(RETRACT_ACTUATOR,END_POSITION);//Sets power to -1 and will go to the top position
         telemetry.addData("actuaterPosition", motor.getCurrentPosition());//Gets the position of the motor
         //The lowest point on the robot has to be over 4in above the ground of the mat
-
-
     }
 
 
