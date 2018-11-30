@@ -50,7 +50,7 @@ public class teleOpDriver extends LinearOpMode{
     private Servo grabberServoFTC;
     //private goBuildAServo2000 reachServo;
     //private goBuildAServo2000 grabberServo;
-    //private coachVu vu;
+    private coachDetect detector;
 
     @Override
     public void runOpMode() {
@@ -94,6 +94,8 @@ public class teleOpDriver extends LinearOpMode{
 
         driver = new autoDriver (hardwareMap, this, telemetry, leftRearMotor, rightRearMotor, gyro, leftColor, rightColor, left2m, right2m);
         //vu.init();
+        detector = new coachDetect(telemetry, hardwareMap, hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
+        detector.init();
 
         // Output status to the console
         telemetry.addData("Status", "Initialized");
@@ -105,6 +107,7 @@ public class teleOpDriver extends LinearOpMode{
         waitForStart();
 
         //vu.activate(); // start vuforia tracking
+        detector.start();
 
         // run until the end of the match (driver presses STOP)
         double tgtPowerLR = 0;
@@ -173,6 +176,7 @@ public class teleOpDriver extends LinearOpMode{
 
             //test out vuforia vumark navigation
             // vu.getLocation();
+            detector.track();
 
             //telemetry.addData("Servo Position", servoTest.getPosition());
             //telemetry.addData("Left Motor Target Power", tgtPowerLR);
@@ -186,6 +190,7 @@ public class teleOpDriver extends LinearOpMode{
             telemetry.addData("Status", "Running");
             telemetry.update();
         }
+        detector.stop();
 
     }
 
