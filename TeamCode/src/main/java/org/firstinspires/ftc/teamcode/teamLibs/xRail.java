@@ -12,7 +12,7 @@ public class xRail {
     Telemetry telemetry;
 
     private final int EXTEND_ACTUAL = 810;
-    private final int EXTEND_TARGET = EXTEND_ACTUAL+80;
+    private final int EXTEND_TARGET = EXTEND_ACTUAL+50;
     private final double TIMEOUT_SECONDS = 5;
 
     //private final int RETRACT = ;

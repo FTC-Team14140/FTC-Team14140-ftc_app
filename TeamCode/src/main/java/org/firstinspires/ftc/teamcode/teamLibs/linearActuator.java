@@ -66,8 +66,8 @@ public class linearActuator {
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);//Reset the encoder on the motor (fully retracted is our zero position)
 
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION); // put the motor back in encoder mode
-        isBusy = false;
-    }
+    isBusy = false;
+}
      public void extendActuatorWhileMoving()
 
     {
@@ -102,6 +102,23 @@ public class linearActuator {
 
         }
         motor.setPower(0);
+    }
+    public void extendFully() {
+        int lastPosition;//Creates last position
+
+        motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);//Get out of encoder mode so we can run the motor and detect a stall detection
+
+        motor.setPower(EXTEND_ACTUATOR);//Set's motor power to -1
+        lastPosition = motor.getCurrentPosition();//sets last position to the current encoder position of the robot
+        teamUtil.sleep(100);//wait's 100ms so the motor has time to run a little
+        while (lastPosition != motor.getCurrentPosition()) {
+            lastPosition=motor.getCurrentPosition();//This while loop makes it so if the positon of the motor is the same
+            teamUtil.sleep(100);           //after 100ms than we know it hit the bottom and stalled
+        }
+        motor.setPower(0);//Then turn the motor off to power 0
+
+        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION); // put the motor back in encoder mode
+        isBusy = false;
     }
 
 

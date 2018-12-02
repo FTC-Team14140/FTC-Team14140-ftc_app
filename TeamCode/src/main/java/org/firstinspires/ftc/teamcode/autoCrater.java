@@ -44,7 +44,9 @@ public class autoCrater extends LinearOpMode{
             waitForStart();
 
             teamUtil.log("La.lowerRobot()...");
-            La.lowerRobot();
+            basicMove.motorsOn(0.2);
+            La.extendFully();
+            basicMove.motorsOff();
             teamUtil.log("calibrating");
             leftColor.calibrate();
             rightColor.calibrate();
@@ -53,7 +55,7 @@ public class autoCrater extends LinearOpMode{
             basicMove.moveInches(0.3, 6);
             basicMove.leftSpin(0.5, 10);
             teamUtil.log("retracting");
-            //La.retractMoving();
+            La.retractMoving();
             basicMove.moveInches(0.6,19);
             basicMove.moveInches(-0.6, -10);
             basicMove.leftSpin(0.4,85);

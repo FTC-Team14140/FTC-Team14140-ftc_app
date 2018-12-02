@@ -47,7 +47,7 @@ public class teamAutoOp extends LinearOpMode {
         waitForStart();
 
         teamUtil.log("La.lowerRobot()...");
-        La.lowerRobot();
+        La.extendFully();
 
         teamUtil.log("calibrating");
         leftColor.calibrate();
@@ -69,19 +69,21 @@ public class teamAutoOp extends LinearOpMode {
         //basicMove.moveInches(-0.3, -5);
 
         //new code
-        basicMove.moveInches(1, 50);
+        basicMove.moveInches(1, 45);
+        basicMove.moveInches(0.3,5);
         basicMove.moveInches(-0.3, -5);
         grabber.grabberDown();
         sleep(1000);
         grabber.wideOpen();
         sleep(500);
         grabber.holdUp();
-        basicMove.motorsOn(-1);
+        basicMove.moveInches(-1,-30);
+        basicMove.motorsOn(-0.3);
         while (!leftColor.isOnTape()){
 
         }
         basicMove.motorsOff();
-        teamUtil.sleep(250);
+        teamUtil.sleep(500);
         basicMove.motorsOn(0.3);
         while (!leftColor.isOnTape()){
 
@@ -90,8 +92,8 @@ public class teamAutoOp extends LinearOpMode {
         //basicMove.moveInches(-1, -34);
         //basicMove.moveInches(.5,5);
 
-        basicMove.leftSpin(0.7, 80);
-        basicMove.moveInches(1,45);
+        basicMove.leftSpin(0.7, 78);
+        basicMove.moveInches(1,50);
         basicMove.moveInches(0.3,10);
 
     }
