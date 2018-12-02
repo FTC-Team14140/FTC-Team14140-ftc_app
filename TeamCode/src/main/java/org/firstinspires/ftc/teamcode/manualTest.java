@@ -48,7 +48,7 @@ public class manualTest extends LinearOpMode {
         leftColSensor = new teamColorSensor(telemetry, hardwareMap.get(ColorSensor.class, "leftRearColor"));
         rightColSensor = new teamColorSensor(telemetry, hardwareMap.get(ColorSensor.class, "rightRearColor"));
 
-        // Wait for the game to start (drver presses PLAY)
+        // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
 
@@ -82,15 +82,17 @@ public class manualTest extends LinearOpMode {
             ////////////////////////////////////////////////////////////////////
             // Code to control the linear actuator
             if(gamepad1.a) {
-                La.retractMoving();
+                La.retractFullyNoWait();
             } else if(gamepad1.y) {
-                La.extendActuatorWhileMoving();
+                La.extendFullyNoWait();
             } else if(gamepad1.x) {
-                La.lift();
+                La.extend();
             } else if(gamepad1.b) {
-                La.retractFully();
+                La.retract();
             } else if(gamepad1.dpad_down) {
-                La.lowerRobot();
+                La.retractFully();
+            } else {
+                La.stopMotor();
             }
 
 

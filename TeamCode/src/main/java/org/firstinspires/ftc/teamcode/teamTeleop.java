@@ -143,13 +143,15 @@ public class teamTeleop extends LinearOpMode {
             ////////////////////////////////////////////////////////////////////
             // Code to control the linear actuator
             if(gamepad1.a) {
-                La.retractMoving();
+                La.retractFullyNoWait();
             } else if(gamepad1.y) {
-                La.extendActuatorWhileMoving();
+                La.extendFullyNoWait();
             } else if(gamepad1.x) {
-                La.lift();
+                La.extend();
             } else if(gamepad1.b) {
-                La.retractFully();
+                La.retract();
+            } else {
+                La.stopMotor();
             }
 
 

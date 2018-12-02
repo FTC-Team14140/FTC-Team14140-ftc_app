@@ -12,7 +12,10 @@ public class linearActuator {
     private final int END_POSITION=GROUND_POSITION / 2;//The end of the match on top of the latch
     private final int RETRACT_ACTUATOR=-1;//This power retracts the actuator
     private final int EXTEND_ACTUATOR=1;//This power extends the actuator
+    private final int MOTOR_OFF=0;//This power stops the motor
     private final int RETRACT_WHILE_MOVING_POSITION=500;
+
+
 
 
 
@@ -21,6 +24,23 @@ public class linearActuator {
         motor = motor1;
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+    }
+
+    public void extend () {
+        motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);//Get out of encoder mode so we can run the motor and detect a stall detection
+        motor.setPower (EXTEND_ACTUATOR);
+    }
+
+    public void retract () {
+        motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);//Get out of encoder mode so we can run the motor and detect a stall detection
+        motor.setPower (RETRACT_ACTUATOR);
+    }
+
+    public void stopMotor () {
+        if(isBusy==false) {
+            motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);//Get out of encoder mode so we can run the motor and detect a stall detection
+            motor.setPower(MOTOR_OFF);
+        }
     }
 
     public void lowerRobot() {
@@ -35,7 +55,7 @@ public class linearActuator {
 
     }
 
-    // This method runs the retractFully method in a seperate thread and returns control to the caller
+    // This method runs the retractFully method in a separate thread and returns control to the caller
     public void retractFullyNoWait () {
         if (isBusy == false) {
             isBusy = true;
@@ -43,6 +63,20 @@ public class linearActuator {
                 @Override
                 public void run() {
                     retractFully();
+                }
+            });
+            t1.start();
+        }
+    }
+
+    // This method runs the extendFully method in a separate thread and returns control to the caller
+    public void extendFullyNoWait () {
+        if (isBusy == false) {
+            isBusy = true;
+            Thread t1 = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    extendFully();
                 }
             });
             t1.start();
