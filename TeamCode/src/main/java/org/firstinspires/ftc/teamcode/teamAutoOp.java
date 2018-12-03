@@ -56,7 +56,7 @@ public class teamAutoOp extends LinearOpMode {
         basicMove.rightSpin(0.5, 10);
         basicMove.moveInches(0.3, 6);
         basicMove.leftSpin(0.5, 10);
-        La.retractMoving();
+        La.retractFullyNoWait();
         //basicMove.moveInches(0.5, 45);
         //grabber.grabberDown();
         //sleep(1000);

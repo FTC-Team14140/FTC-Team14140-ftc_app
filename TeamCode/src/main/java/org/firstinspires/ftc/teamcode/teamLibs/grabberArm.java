@@ -12,12 +12,12 @@ public class grabberArm {
     private goBuildAServo2000 liftServo;
     private boolean armRunning = false;
     //variables integers below are degress for servo positions
-    private final int DOWN_SPOT = 154;
-    private final int UP_SPOT = 25;
+    private final int DOWN_SPOT = 240;
+    private final int UP_SPOT = 115;
     private final int GRAB = 65;
     private final int SKINNY = 35;
     private final int WIDE = 0;
-    private final int DROP = 0;
+    private final int DROP = 90;
 
     public grabberArm(Telemetry theTel, HardwareMap hwMap, String grabServoName, String liftServoName) {
 

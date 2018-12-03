@@ -47,12 +47,12 @@ public class teamTeleop extends LinearOpMode {
         basicMove = new basicMovement(motorLeft, motorRight, hardwareMap.get(BNO055IMU.class,"imu"), telemetry);
         xrail.init();
 
-        // Wait for the game to start (drver presses PLAY)
+        // Wait for the game to start (driver presses PLAY)
          waitForStart();
-        grabber.initialize(); // don't move servos until play starts!
+        //grabber.initialize(); // don't move servos until play starts!
 
          // reseet the LA position so we are ready to extend at end of match
-        La.retractFullyNoWait();
+        //La.retractFullyNoWait();
 
         //These are the variables for the motors power at the start of the program
         double tgtPowerRight = 0;

@@ -55,7 +55,7 @@ public class autoCrater extends LinearOpMode{
             basicMove.moveInches(0.3, 6);
             basicMove.leftSpin(0.5, 10);
             teamUtil.log("retracting");
-            La.retractMoving();
+            La.retractFullyNoWait();
             basicMove.moveInches(0.6,19);
             basicMove.moveInches(-0.6, -10);
             basicMove.leftSpin(0.4,85);
