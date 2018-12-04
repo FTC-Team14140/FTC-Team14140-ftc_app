@@ -82,5 +82,8 @@ public class revHubIMUGyro {
         return currentHeading;
     }
 
-
+    public float getAbsoluteHeading() {
+        anglesCurrent = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        return anglesCurrent.firstAngle;
+    }
 }

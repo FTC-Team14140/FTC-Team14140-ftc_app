@@ -7,10 +7,14 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.teamLibs.revHubIMUGyro;
+import org.firstinspires.ftc.teamcode.teamLibs.teamColorSensor;
+import org.firstinspires.ftc.teamcode.teamLibs.teamUtil;
+
 
 public class autoDriver {
 
@@ -20,8 +24,8 @@ public class autoDriver {
     private revHubIMUGyro gyro;
     private DcMotor leftMotor;
     private DcMotor rightMotor;
-    private ColorSensor leftColor;
-    private ColorSensor rightColor;
+    private teamColorSensor leftColor;
+    private teamColorSensor rightColor;
     private DistanceSensor left2m;
     private DistanceSensor right2m;
 
@@ -35,7 +39,7 @@ public class autoDriver {
     // to amplify/attentuate the measured values.
     private final double COLOR_SCALE_FACTOR = 255;
 
-    autoDriver(HardwareMap map, LinearOpMode mode, Telemetry tel, DcMotor left, DcMotor right, revHubIMUGyro g, ColorSensor lC, ColorSensor rC, DistanceSensor l2m, DistanceSensor r2m){
+    autoDriver(HardwareMap map, LinearOpMode mode, Telemetry tel, DcMotor left, DcMotor right, revHubIMUGyro g, teamColorSensor lC, teamColorSensor rC, DistanceSensor l2m, DistanceSensor r2m){
         hardwareMap = map;
         opMode = mode;
         telemetry = tel;
@@ -46,6 +50,113 @@ public class autoDriver {
         rightColor = rC;
         left2m = l2m;
         right2m = r2m;
+    }
+
+    void accelerateForSeconds (double startSpeed, double endSpeed, double seconds) {
+        ElapsedTime runtime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
+
+        runtime.reset();
+        while (runtime.milliseconds() < seconds*1000) {
+            double targetSpeed = startSpeed + (endSpeed-startSpeed)/seconds * (runtime.milliseconds()/1000);
+            leftMotor.setPower(targetSpeed);
+            rightMotor.setPower(targetSpeed);
+        }
+    }
+
+    void accelerateForEncoderClicks (double startSpeed, double endSpeed, int encoderClicks) {
+
+        int startEncoder = leftMotor.getCurrentPosition();
+        int endEncoder = startEncoder+encoderClicks;
+
+        while (leftMotor.getCurrentPosition() < endEncoder) {
+            double targetSpeed = startSpeed + (endSpeed-startSpeed)/encoderClicks * (leftMotor.getCurrentPosition()-startEncoder);
+            leftMotor.setPower(targetSpeed);
+            rightMotor.setPower(targetSpeed);
+        }
+    }
+
+    // move a specified number of inches
+    void smoothMoveInches(double speed, double inches){
+
+        if (opMode.opModeIsActive()) {
+
+            final double COUNTS_PER_MOTOR_REV = 1120;    // NeverRest 40 at 1:1
+            final double DRIVE_GEAR_REDUCTION = 1.0;     // This is < 1.0 if geared UP
+            final double WHEEL_DIAMETER_INCHES = 4.0;     // For figuring circumference
+            final double COUNTS_PER_INCH =
+                    (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415);
+
+            final double MIN_SPEED = .2;    // NeverRest 40 at 1:1
+            final double MAX_ACCEL_RATE = .1; // max power acceleration per inch without skidding
+            final double MAX_DECEL_RATE = .1; // max power deceleration per inch without skidding
+            int newLeftTarget;
+            int newRightTarget;
+            int decelerationPoint;
+            int accelerationEncoderCount;
+            int decelerationEncoderCount;
+
+            double maxSpeed = speed; // our maximum speed during the whole move
+            double speedChange = speed - MIN_SPEED; // the maximum (ideal) amount of acceleration and deceleration
+
+            // Ensure that the opmode is still active
+            if (opMode.opModeIsActive()) {
+
+                // Determine new target position, and pass to motor controller
+                newLeftTarget = leftMotor.getCurrentPosition() + (int) (inches * COUNTS_PER_INCH);
+                newRightTarget = rightMotor.getCurrentPosition() + (int) (inches * COUNTS_PER_INCH);
+                if (inches < speedChange / MAX_ACCEL_RATE + speed / MAX_DECEL_RATE) { // not enough distance to accelerate and decelerate fully
+                    accelerationEncoderCount = (int) (100);
+                    decelerationEncoderCount = (int) (100);
+                    decelerationPoint = (int) (newLeftTarget - decelerationEncoderCount);
+                    maxSpeed = .3;
+
+                } else { // we can get to cruising speed
+                    accelerationEncoderCount = (int) (speedChange / MAX_ACCEL_RATE * COUNTS_PER_INCH);
+                    decelerationEncoderCount = (int) (speedChange / MAX_DECEL_RATE * COUNTS_PER_INCH);
+                    decelerationPoint = (int) (newLeftTarget - decelerationEncoderCount);
+                    maxSpeed = speed;
+                }
+                teamUtil.log("leftTarget:" + newLeftTarget);
+                teamUtil.log("accelerationEncoderCount:" + accelerationEncoderCount);
+                teamUtil.log("decelerationEncoderCount:" + decelerationEncoderCount);
+                teamUtil.log("decelerationPoint:" + decelerationPoint);
+
+                //leftMotor.setTargetPosition(newLeftTarget);
+                //rightMotor.setTargetPosition(newRightTarget);
+
+                leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+                // accelerate smoothly
+                teamUtil.log("Accelarating: left Position:" + leftMotor.getCurrentPosition());
+                accelerateForEncoderClicks(MIN_SPEED, maxSpeed, accelerationEncoderCount);
+
+                // continue motion at full speed
+                teamUtil.log("Cruising: left Position:" + leftMotor.getCurrentPosition());
+
+                while (opMode.opModeIsActive() && leftMotor.getCurrentPosition() < decelerationPoint) {
+                }
+
+                // decelerate smoothly
+                int clicksToGo = newLeftTarget - leftMotor.getCurrentPosition();
+                teamUtil.log("Decelerating: leftPosition:" + leftMotor.getCurrentPosition());
+                teamUtil.log("Decelerating: clicksToGo:" + clicksToGo);
+                accelerateForEncoderClicks(maxSpeed, MIN_SPEED, clicksToGo);
+
+                // Stop all motion;
+                teamUtil.log("stopping motors: leftPosition:" + leftMotor.getCurrentPosition());
+                leftMotor.setPower(0);
+                rightMotor.setPower(0);
+
+                // Turn off RUN_TO_POSITION
+                //leftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                //rightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+                //  sleep(250);   // optional pause after each move
+            }
+        }
     }
 
     // move a specified number of inches
@@ -132,24 +243,145 @@ public class autoDriver {
         leftMotor.setPower(0);
     }
 
+    void setZeroHeading () {
+        gyro.resetHeading();
+    }
+
+    public void motorsOn(double speed) {
+        leftMotor.setPower(speed);
+        rightMotor.setPower(speed);
+    }
+    public void motorsOff() {
+        leftMotor.setPower(0);
+        rightMotor.setPower(0);
+    }
+
+    // turn to absolute heading
+    // heading is in FTC coordinate system (e.g. 0 degrees is 12 o'clock, 90 degrees is 9 o'clock, etc.  360 and 0 are equal)
+    void spinLeftTo (float newHeading) {
+        float originalHeading = normalizeHeading(gyro.getAbsoluteHeading());
+        if (newHeading >= 360) {newHeading = newHeading -360;}
+        newHeading = newHeading - 8;
+        teamUtil.log("originalHeading:"+originalHeading);
+        teamUtil.log("newHeading:"+newHeading);
+        if (opMode.opModeIsActive()) {
+            leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+            leftMotor.setPower(-.2);
+            rightMotor.setPower(.45);
+            // now spin until we reach our goal
+            while (opMode.opModeIsActive() && !reachedSpinLeftTarget(originalHeading, newHeading, normalizeHeading(gyro.getAbsoluteHeading()))){
+                }
+            rightMotor.setPower(0);
+            leftMotor.setPower(0);
+        }
+    }
+
+    boolean reachedSpinLeftTarget(float originalHeading, float targetHeading, float currentHeading) {
+        if (originalHeading < targetHeading) {
+            return (currentHeading >= targetHeading);
+        } else {
+            return ((currentHeading >= targetHeading) && ((currentHeading-targetHeading) <10) && ((currentHeading-targetHeading) >=0));
+        }
+    }
+
+    // convert to a 0-360 coordinate system
+    float normalizeHeading(float heading) {
+        if (heading < 0) {
+            heading = 360+heading;
+        }
+        return heading;
+    }
+
+    // turn # of degrees at specified speed.  negative degrees is left
+    void spinTo (float heading) {
+        if (opMode.opModeIsActive()) {
+            double decelAngle;
+            float currentAngle = gyro.getHeading();
+            float goalAngle = heading;
+            if (goalAngle < currentAngle) {
+                decelAngle = currentAngle - .75 * (currentAngle - goalAngle);
+                goalAngle = goalAngle + 8;
+            } else {
+                decelAngle = currentAngle + .75 * (goalAngle - currentAngle);
+                goalAngle = goalAngle - 5;
+            }
+            leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+            // turn until we have made it
+            if (goalAngle < currentAngle) { // spinning left
+                leftMotor.setPower(-.2);
+                rightMotor.setPower(.4);
+                while (opMode.opModeIsActive() && (currentAngle > goalAngle) && (opMode.opModeIsActive())) {
+                    telemetry.addData("turning left", currentAngle);
+                    if (currentAngle < decelAngle) {
+                        leftMotor.setPower(-.2);
+                        rightMotor.setPower(.4);
+                    }
+                    currentAngle = gyro.getHeading();
+                    telemetry.update();
+                }
+            } else { // spining right
+                leftMotor.setPower(.4);
+                rightMotor.setPower(-.2);
+                while (opMode.opModeIsActive() && (currentAngle < goalAngle) && (opMode.opModeIsActive())) {
+                    telemetry.addData("turning right", currentAngle);
+                    if (currentAngle > decelAngle) {
+                        leftMotor.setPower(.4);
+                        rightMotor.setPower(-.2);
+                    }
+                    currentAngle = gyro.getHeading();
+                    telemetry.update();
+                }
+                rightMotor.setPower(0);
+                leftMotor.setPower(0);
+            }
+        }
+    }
+
     // turn # of degrees at specified speed.  negative degrees is left
     void spin (double speed, float degrees) {
         float currentAngle = gyro.resetHeading();
         float goalAngle = currentAngle + degrees;
+        if (degrees<0){
+            goalAngle=goalAngle+8;
+        } else {
+            goalAngle=goalAngle-5;
+        }
+        double decelAngle = currentAngle + degrees*.75; //decelerate during last 25% of turn
+        leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         // turn until we have made it
         if (degrees < 0) { // spinning left
-            leftMotor.setPower(-speed);
-            rightMotor.setPower(speed);
+            leftMotor.setPower(-.2);
+            rightMotor.setPower(.4);
             while ((currentAngle > goalAngle) && (opMode.opModeIsActive())) {
                 telemetry.addData("turning left", currentAngle);
+                if (currentAngle < decelAngle) {
+                    leftMotor.setPower(-.2);
+                    rightMotor.setPower(.4);
+                }
                 currentAngle = gyro.getHeading();
                 telemetry.update();
             }
         } else { // spining right
-            leftMotor.setPower(speed);
-            rightMotor.setPower(-speed);
+            leftMotor.setPower(.4);
+            rightMotor.setPower(-.2);
             while ((currentAngle < goalAngle) && (opMode.opModeIsActive())) {
                 telemetry.addData("turning right", currentAngle);
+                if (currentAngle > decelAngle) {
+                    leftMotor.setPower(.4);
+                    rightMotor.setPower(-.2);
+                }
                 currentAngle = gyro.getHeading();
                 telemetry.update();
             }
@@ -158,30 +390,11 @@ public class autoDriver {
         }
     }
 
-    void updateColorSensorData() {
-        // convert the RGB values to HSV values. multiply by the SCALE_FACTOR.
-        // then cast it back to int (SCALE_FACTOR is a double)
-        Color.RGBToHSV((int) (leftColor.red() * COLOR_SCALE_FACTOR),
-                (int) (leftColor.green() * COLOR_SCALE_FACTOR),
-                (int) (leftColor.blue() * COLOR_SCALE_FACTOR),
-                hsvValuesLeft);
-        Color.RGBToHSV((int) (rightColor.red() * COLOR_SCALE_FACTOR),
-                (int) (rightColor.green() * COLOR_SCALE_FACTOR),
-                (int) (rightColor.blue() * COLOR_SCALE_FACTOR),
-                hsvValuesRight);
-        if (true) {
-            //telemetry.addData("Distance (cm)",
-            //        String.format(Locale.US, "%.02f", sensorDistance.getDistance(DistanceUnit.CM)));
-            //telemetry.addData("Alpha", sensorColor.alpha());
-            telemetry.addData("Red Left ", leftColor.red());
-            telemetry.addData("Red Right ", rightColor.red());
-            //telemetry.addData("Green", sensorColor.green());
-            telemetry.addData("Blue Left ", leftColor.blue());
-            telemetry.addData("Blue Right ", rightColor.blue());
-            //telemetry.addData("Hue", hsvValues[0]);
-        }
+    void rightWaitForLine() {
+        while (opMode.opModeIsActive() && !rightColor.isOnTape()) {}
     }
-    void squareOnBlueLine(double speed) {
+
+/*    void squareOnBlueLine(double speed) {
         updateColorSensorData();
         int blackLeft = leftColor.blue();
         int blackRight = rightColor.blue();
@@ -200,7 +413,7 @@ public class autoDriver {
             }
         }
     }
-
+*/
     boolean squareOnWall(double speed) {
 
         if ((left2m.getDistance(DistanceUnit.INCH) > 50 ) || (right2m.getDistance(DistanceUnit.INCH) > 50)) {

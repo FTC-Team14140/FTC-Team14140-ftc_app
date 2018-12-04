@@ -22,6 +22,7 @@ package org.firstinspires.ftc.teamcode.coachcode;
         import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
         import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
         import org.firstinspires.ftc.teamcode.teamLibs.revHubIMUGyro;
+        import org.firstinspires.ftc.teamcode.teamLibs.teamColorSensor;
 
         import java.util.Locale;
 
@@ -37,8 +38,8 @@ public class teleOpDriver extends LinearOpMode{
     private autoDriver driver;
 
     private DigitalChannel digitalTouch;
-    private ColorSensor leftColor;
-    private ColorSensor rightColor;
+    private teamColorSensor leftColor;
+    private teamColorSensor rightColor;
     //private DistanceSensor sensorDistance;
     private DistanceSensor left2m;
     private DistanceSensor right2m;
@@ -64,8 +65,8 @@ public class teleOpDriver extends LinearOpMode{
         rightRearMotor = hardwareMap.get(DcMotor.class, "motorRight");
         laMotor = hardwareMap.get(DcMotor.class, "LAMotor");
         //digitalTouch = hardwareMap.get(DigitalChannel.class, "digitalTouch");
-        leftColor = hardwareMap.get(ColorSensor.class, "leftRearColor");
-        rightColor = hardwareMap.get(ColorSensor.class, "rightRearColor");
+        leftColor = new teamColorSensor(telemetry, hardwareMap.get(ColorSensor.class, "leftRearColor"));
+        rightColor = new teamColorSensor(telemetry, hardwareMap.get(ColorSensor.class, "rightRearColor"));
         //sensorDistance = hardwareMap.get(DistanceSensor.class, "sensorColorRange");
         //grabberServoFTC = hardwareMap.get(Servo.class, "grabberServo");
         //reachServoFTC = hardwareMap.get(Servo.class, "reachServo");
@@ -93,9 +94,10 @@ public class teleOpDriver extends LinearOpMode{
         rightRearMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         driver = new autoDriver (hardwareMap, this, telemetry, leftRearMotor, rightRearMotor, gyro, leftColor, rightColor, left2m, right2m);
+
         //vu.init();
-        detector = new coachDetect(telemetry, hardwareMap, hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
-        detector.init();
+        //detector = new coachDetect(telemetry, hardwareMap, hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
+        //detector.init();
 
         // Output status to the console
         telemetry.addData("Status", "Initialized");
@@ -107,13 +109,15 @@ public class teleOpDriver extends LinearOpMode{
         waitForStart();
 
         //vu.activate(); // start vuforia tracking
-        detector.start();
+        //detector.start();
+        rightColor.calibrate();
 
         // run until the end of the match (driver presses STOP)
         double tgtPowerLR = 0;
         double tgtPowerRR = 0;
         gyro.resetHeading();
         double reachPos = 0;
+        float heading = 0;
         while (opModeIsActive()) {
 
 
@@ -122,16 +126,41 @@ public class teleOpDriver extends LinearOpMode{
             leftRearMotor.setPower(tgtPowerLR);
             rightRearMotor.setPower(tgtPowerRR);
 
-            if(gamepad1.x) {
-                driver.spin(.3, -90);
+            if(gamepad1.right_stick_button) {
+                driver.setZeroHeading();
+                driver.smoothMoveInches(1,56);
+                driver.spinLeftTo(45);
+                driver.smoothMoveInches(1,67);
+                driver.spinLeftTo(90);
+                driver.smoothMoveInches(1,45);
+                driver.motorsOn(0.3);
+                driver.rightWaitForLine();
+                driver.moveInches(-.3,-12);
+                driver.spinLeftTo(180);
+                driver.motorsOn(0.3);
+                driver.rightWaitForLine();
+                driver.smoothMoveInches(1,45);
+                driver.spinLeftTo(225);
+                driver.smoothMoveInches(1,65);
+                driver.spinLeftTo(270);
+                driver.smoothMoveInches(1,60);
+
+
+            } else if(gamepad1.x) {
+                //driver.spinTo(1, -90);
+                //driver.spin(1, -90);
+                heading = heading + 90;
+                if (heading > 360) {heading = heading -360;}
+                driver.spinLeftTo(heading);
             } else if ( gamepad1.b) {
-                driver.spin(.3, 90);
+                //driver.spinTo(1, 90);
+                driver.spin(1, 90);
             } else if ( gamepad1.y) {
                 //driver.spin(.15, -90);
-                driver.moveInches(.2,12);
+                driver.smoothMoveInches(1,60);
             } else if ( gamepad1.a) {
                 //driver.spin(.15, 90);
-                driver.moveInches(-0.2,-12);
+                driver.moveInches(-0.5,-36);
             }
 
             /*else if (gamepad1.dpad_left) {
@@ -142,7 +171,7 @@ public class teleOpDriver extends LinearOpMode{
                 grabberServoFTC.setPosition(0.004 * 60);
             } */
               else if (gamepad1.dpad_down) {
-                driver.squareOnBlueLine(-.15);
+                //driver.squareOnBlueLine(-.15);
             } else if (gamepad1.dpad_up) {
                   driver.squareOnWall(.2);
             } else if (gamepad1.left_bumper) {
@@ -176,7 +205,7 @@ public class teleOpDriver extends LinearOpMode{
 
             //test out vuforia vumark navigation
             // vu.getLocation();
-            detector.track();
+            //detector.track();
 
             //telemetry.addData("Servo Position", servoTest.getPosition());
             //telemetry.addData("Left Motor Target Power", tgtPowerLR);
@@ -190,7 +219,7 @@ public class teleOpDriver extends LinearOpMode{
             telemetry.addData("Status", "Running");
             telemetry.update();
         }
-        detector.stop();
+        //detector.stop();
 
     }
 
