@@ -11,9 +11,11 @@ public class xRail {
     DcMotor motor;
     Telemetry telemetry;
 
-    private final int EXTEND_ACTUAL = 810;
+    private final int EXTEND_ACTUAL = 830;
     private final int EXTEND_TARGET = EXTEND_ACTUAL+22;
-    private final double TIMEOUT_SECONDS = 5;
+    private final int DECEL_TARGET = EXTEND_ACTUAL-175;
+
+    private final double TIMEOUT_SECONDS = 2.5;
 
     //private final int RETRACT = ;
 
@@ -74,4 +76,46 @@ public class xRail {
         }
         motor.setPower(0); // otherwise we will drain the battery...
     }
+
+
+
+
+
+
+    public void loadLander2(float initialSpeed) {
+
+        ElapsedTime runtime = new ElapsedTime();
+        motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        // lift and wait for it to get to the top
+        runtime.reset();
+        motor.setTargetPosition(EXTEND_TARGET);
+        teamUtil.log("starting at:"+initialSpeed);
+        motor.setPower(initialSpeed);
+        while ((runtime.seconds() < TIMEOUT_SECONDS) && (motor.getCurrentPosition()<DECEL_TARGET)) {
+            //telemetry.addData("xrail", motor.getCurrentPosition());
+            //telemetry.update();
+        }
+        teamUtil.log("decelerating to .2 at :"+motor.getCurrentPosition());
+        motor.setPower(.20);
+        while ((runtime.seconds() < TIMEOUT_SECONDS) && (motor.getCurrentPosition()<EXTEND_ACTUAL)) {
+            //telemetry.addData("xrail", motor.getCurrentPosition());
+            //telemetry.update();
+        }
+        teamUtil.log("retracting at :"+motor.getCurrentPosition());
+
+        // drop it back down gently
+        motor.setPower(0); // brake mode will slow it down
+        motor.setTargetPosition(0); // slowly back up to starting spot
+        motor.setPower(-.15);
+        while ((motor.getCurrentPosition()>5)) {
+            //telemetry.addData("xrail", motor.getCurrentPosition());
+            //telemetry.update();
+        }
+        motor.setPower(0); // otherwise we will drain the battery...
+        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        teamUtil.log("done at :"+motor.getCurrentPosition());
+
+    }
+
 }

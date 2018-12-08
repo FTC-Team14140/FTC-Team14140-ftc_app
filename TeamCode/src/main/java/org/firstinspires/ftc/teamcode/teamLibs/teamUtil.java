@@ -1,11 +1,12 @@
 package org.firstinspires.ftc.teamcode.teamLibs;
-
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.RobotLog;
 
 public class teamUtil {
 
     public static final double YELLOW_JACKET_ENCODER_CLICKS=145.6;
     public static final double NEVERREST40_ENCODER_CLICKS=1120;
+    public static LinearOpMode theOpMode;
 
     /**
      * This method puts the current thread to sleep for the given time in msec.

@@ -16,6 +16,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import org.firstinspires.ftc.teamcode.teamLibs.grabberArm;
 import org.firstinspires.ftc.teamcode.teamLibs.xRail;
 import org.firstinspires.ftc.teamcode.teamLibs.linearActuator;
+import org.firstinspires.ftc.teamcode.teamLibs.teamUtil;
 
 @TeleOp(name="Comp TeleOp", group="Linear Opmode")
 public class teamTeleop extends LinearOpMode {
@@ -33,6 +34,8 @@ public class teamTeleop extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+
+        teamUtil.theOpMode = this;
         // Get the objects for the various pieces of hardware
         //imu = hardwareMap.get(Gyroscope.class, "imu");
         motorLeft = hardwareMap.get(DcMotor.class, "motorLeft");

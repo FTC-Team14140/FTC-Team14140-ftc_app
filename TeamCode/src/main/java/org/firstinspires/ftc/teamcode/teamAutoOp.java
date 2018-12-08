@@ -25,6 +25,7 @@ public class teamAutoOp extends LinearOpMode {
     @Override
     public void runOpMode() {
 
+        teamUtil.theOpMode = this;
         //initialization code
         teamUtil.log("initializing Robot...");
         teamUtil.log("initializing linearActuator...");
@@ -47,8 +48,9 @@ public class teamAutoOp extends LinearOpMode {
         waitForStart();
 
         teamUtil.log("La.lowerRobot()...");
+        basicMove.motorsOn(0.2);
         La.extendFully();
-
+        basicMove.motorsOff();
         teamUtil.log("calibrating");
         leftColor.calibrate();
         rightColor.calibrate();
@@ -92,9 +94,11 @@ public class teamAutoOp extends LinearOpMode {
         //basicMove.moveInches(-1, -34);
         //basicMove.moveInches(.5,5);
 
-        basicMove.leftSpin(0.7, 78);
+        basicMove.leftSpin(0.3, 90);
         basicMove.moveInches(1,50);
+        grabber.extend();
         basicMove.moveInches(0.3,10);
+
 
     }
 

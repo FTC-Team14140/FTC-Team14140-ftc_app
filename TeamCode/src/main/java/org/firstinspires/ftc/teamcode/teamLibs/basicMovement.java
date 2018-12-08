@@ -30,120 +30,145 @@ public class basicMovement {
     // this will make the robot move a chosen number of inches at a chosen speed
     // TODO: need error handling if they pass in bad parameters
     public void moveInches (double speed, double inches) {
-        //resets the motors
-        motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        if (teamUtil.theOpMode.opModeIsActive()) {
+            //resets the motors
+            motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            motorRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        //sets the number of desired inches on both motors
-        motorLeft.setTargetPosition((int) (COUNTS_PER_INCH * inches));
-        motorRight.setTargetPosition((int) (COUNTS_PER_INCH * inches) );
+            motorLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            motorRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        //runs to the set number of inches at the desired speed
-        motorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            //sets the number of desired inches on both motors
+            motorLeft.setTargetPosition((int) (COUNTS_PER_INCH * inches));
+            motorRight.setTargetPosition((int) (COUNTS_PER_INCH * inches));
 
-        //sets the desired speed on both motors
-        motorLeft.setPower(speed);
-        motorRight.setPower(speed);
+            //runs to the set number of inches at the desired speed
+            motorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            motorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        //lets the two moving motors finish the task
-        while(motorLeft.isBusy() && motorRight.isBusy())
-        {
-            // TODO: Add some telemetry output here so we can see what's happening on the driver station phone
+            //sets the desired speed on both motors
+            motorLeft.setPower(speed);
+            motorRight.setPower(speed);
+
+            //lets the two moving motors finish the task
+            while (teamUtil.theOpMode.opModeIsActive() && motorLeft.isBusy() && motorRight.isBusy()) {
+                // TODO: Add some telemetry output here so we can see what's happening on the driver station phone
+            }
+
+            //turns off both motors
+            motorLeft.setPower(0);
+            motorRight.setPower(0);
+
+            //sets it back to normal
+            motorLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            motorRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
 
-        //turns off both motors
-        motorLeft.setPower(0);
-        motorRight.setPower(0);
-
-        //sets it back to normal
-        motorLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motorRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     public void motorsOn(double speed) {
-        motorLeft.setPower(speed);
-        motorRight.setPower(speed);
+        if (teamUtil.theOpMode.opModeIsActive()) {
+            motorLeft.setPower(speed);
+            motorRight.setPower(speed);
+        }
     }
     public void motorsOff() {
-        motorLeft.setPower(0);
-        motorRight.setPower(0);
+        if (teamUtil.theOpMode.opModeIsActive()) {
+            motorLeft.setPower(0);
+            motorRight.setPower(0);
+        }
     }
 
     public float getHeading() {
         return gyro.getHeading();
     }
 
-/*  Turns don't work yet...need to lock the 0 power motor and test
+
     //this block will let the user do a right turn with the desired # of degrees and speed
 
     public void rightTurn (double speed, double degrees) {
-        //here the gyro sensor is reset
-        gyro.resetHeading();
+        if (teamUtil.theOpMode.opModeIsActive()) {
+            //here the gyro sensor is reset
+            gyro.resetHeading();
 
-        //again, the powers and speeds are set
-        motorLeft.setPower(speed);
-        motorRight.setPower(0);
-        while (gyro.getHeading()<degrees) {
-            // TODO: Add some telemetry output here so we can see what's happening on the driver station phone
+            //again, the powers and speeds are set
+            motorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motorLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            motorRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+            motorLeft.setPower(speed);
+            motorRight.setPower(0);
+            while (gyro.getHeading() < degrees && teamUtil.theOpMode.opModeIsActive()) {
+
+            }
+
+            motorLeft.setPower(0);
+            motorRight.setPower(0);
+
+            motorLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            motorRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
-
-        //
-        motorLeft.setPower(0);
-        motorRight.setPower(0);
-
-        motorLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motorRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     public void leftTurn (double speed, double degrees) {
-        gyro.resetHeading();
-        motorLeft.setPower(0);
-        motorRight.setPower(speed);
-        while (gyro.getHeading()<-degrees) {
-            // TODO: Add some telemetry output here so we can see what's happening on the driver station phone
+        if (teamUtil.theOpMode.opModeIsActive()) {
+            motorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motorLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            motorRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+            gyro.resetHeading();
+            motorLeft.setPower(0);
+            motorRight.setPower(speed);
+            while ((gyro.getHeading() > -degrees) && teamUtil.theOpMode.opModeIsActive()) {
+                // TODO: Add some telemetry output here so we can see what's happening on the driver station phone
+
+            }
+            motorLeft.setPower(0);
+            motorRight.setPower(0);
+
+            motorLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            motorRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
-        motorLeft.setPower(0);
-        motorRight.setPower(0);
-
-        motorLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motorRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
-*/
+
 
     // TODO: need comments on this method and error handling if they pass in bad parameters
     public void leftSpin (double speed, double degrees) {
-        gyro.resetHeading();
-        motorLeft.setPower(-speed);
-        motorRight.setPower(speed);
-        while (gyro.getHeading()>-degrees) {
-            // TODO: Add some telemetry output here so we can see what's happening on the driver station phone
+        if (teamUtil.theOpMode.opModeIsActive()) {
+            gyro.resetHeading();
+            motorLeft.setPower(-speed);
+            motorRight.setPower(speed);
+            while ((gyro.getHeading() > -degrees) && teamUtil.theOpMode.opModeIsActive()) {
+                // TODO: Add some telemetry output here so we can see what's happening on the driver station phone
 
+            }
+            motorLeft.setPower(0);
+            motorRight.setPower(0);
+
+            motorLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            motorRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
-        motorLeft.setPower(0);
-        motorRight.setPower(0);
-
-        motorLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motorRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 }
 
     // TODO: need comments on this method and error handling if they pass in bad parameters
     public void rightSpin (double speed, double degrees) {
-        gyro.resetHeading();
-        motorLeft.setPower(speed);
-        motorRight.setPower(-speed);
-        while (gyro.getHeading()<degrees) {
-            // TODO: Add some telemetry output here so we can see what's happening on the driver station phone
+        if (teamUtil.theOpMode.opModeIsActive()) {
+            gyro.resetHeading();
+            motorLeft.setPower(speed);
+            motorRight.setPower(-speed);
+            while (gyro.getHeading() < degrees && teamUtil.theOpMode.opModeIsActive()) {
+                // TODO: Add some telemetry output here so we can see what's happening on the driver station phone
 
+            }
+            motorLeft.setPower(0);
+            motorRight.setPower(0);
+
+            motorLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            motorRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
-        motorLeft.setPower(0);
-        motorRight.setPower(0);
-
-        motorLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motorRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
 }

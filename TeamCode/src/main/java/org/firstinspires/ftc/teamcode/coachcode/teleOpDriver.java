@@ -23,6 +23,7 @@ package org.firstinspires.ftc.teamcode.coachcode;
         import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
         import org.firstinspires.ftc.teamcode.teamLibs.revHubIMUGyro;
         import org.firstinspires.ftc.teamcode.teamLibs.teamColorSensor;
+        import org.firstinspires.ftc.teamcode.teamLibs.xRail;
 
         import java.util.Locale;
 
@@ -35,6 +36,7 @@ public class teleOpDriver extends LinearOpMode{
     private DcMotor laMotor;
     //private coachGyro gyro;
     private revHubIMUGyro gyro;
+    private xRail xrail;
     private autoDriver driver;
 
     private DigitalChannel digitalTouch;
@@ -58,6 +60,7 @@ public class teleOpDriver extends LinearOpMode{
 
         // set up our IMU
         gyro = new revHubIMUGyro(hardwareMap.get(BNO055IMU.class, "imu"), telemetry);
+        xrail = new xRail(telemetry, hardwareMap.get(DcMotor.class, "xRailMotor"));
 
         // Get the objects for the various pieces of hardware
         //imu = hardwareMap.get(Gyroscope.class, "imu");
@@ -95,6 +98,8 @@ public class teleOpDriver extends LinearOpMode{
 
         driver = new autoDriver (hardwareMap, this, telemetry, leftRearMotor, rightRearMotor, gyro, leftColor, rightColor, left2m, right2m);
 
+        xrail.init();
+
         //vu.init();
         //detector = new coachDetect(telemetry, hardwareMap, hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
         //detector.init();
@@ -117,6 +122,7 @@ public class teleOpDriver extends LinearOpMode{
         double tgtPowerRR = 0;
         gyro.resetHeading();
         double reachPos = 0;
+        float extendSpeed = 0;
         float heading = 0;
         while (opModeIsActive()) {
 
@@ -187,6 +193,19 @@ public class teleOpDriver extends LinearOpMode{
             } else {
                 laMotor.setPower(0);
             }
+
+            if (gamepad2.right_bumper) {
+                extendSpeed = extendSpeed + (float) .1;
+                while (gamepad2.right_bumper) {
+                }
+            } else if (gamepad2.left_bumper) {
+                extendSpeed = extendSpeed - (float) .1;
+                while (gamepad2.left_bumper) {
+                }
+            } else if (gamepad2.left_stick_button) {
+                  xrail.loadLander2(extendSpeed);
+            }
+            telemetry.addData("extendSpeed", extendSpeed);
             telemetry.addData("reachPos", reachPos);
 
 

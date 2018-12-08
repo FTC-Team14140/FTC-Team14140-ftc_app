@@ -23,6 +23,7 @@ public class autoCrater extends LinearOpMode{
         @Override
         public void runOpMode() {
 
+            teamUtil.theOpMode = this;
             //initialization code
             teamUtil.log("initializing Robot...");
             teamUtil.log("initializing linearActuator...");
@@ -47,6 +48,7 @@ public class autoCrater extends LinearOpMode{
             basicMove.motorsOn(0.2);
             La.extendFully();
             basicMove.motorsOff();
+            basicMove.moveInches(-0.2, -.5);
             teamUtil.log("calibrating");
             leftColor.calibrate();
             rightColor.calibrate();

@@ -19,6 +19,7 @@ public class grabberArm {
     private final int WIDE = 0;
     private final int DROP = 90;
 
+
     public grabberArm(Telemetry theTel, HardwareMap hwMap, String grabServoName, String liftServoName) {
 
         telemetry = theTel;
@@ -88,6 +89,9 @@ public class grabberArm {
 
     public void triggerControl(float trigger){
         grabberServo.goTo((int) (WIDE+(GRAB-WIDE)*trigger));
+    }
+    public void extend () {
+        liftServo.goTo(165);
     }
 
    // private grabberArm = new grabberArm (hardwaremap, telemetery, "grabberServo", "liftServo")
