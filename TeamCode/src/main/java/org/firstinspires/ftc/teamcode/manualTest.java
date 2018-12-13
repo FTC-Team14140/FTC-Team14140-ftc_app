@@ -76,7 +76,7 @@ public class manualTest extends LinearOpMode {
             }
 */
             if(gamepad1.right_stick_button) {
-                xrail.loadLander();
+                xrail.loadLanderV2();
             }
 
             ////////////////////////////////////////////////////////////////////
@@ -94,6 +94,7 @@ public class manualTest extends LinearOpMode {
             } else {
                 La.stopMotor();
             }
+
 
 
 /*
