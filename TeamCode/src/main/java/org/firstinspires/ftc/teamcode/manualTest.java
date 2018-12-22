@@ -101,6 +101,7 @@ public class manualTest extends LinearOpMode {
 
             if(gamepad2.x){
                 //turn 90 to left
+                //teamutil.log
                 basicMove.leftTurn(.4, 90);
             } else if (gamepad2.y) {
                 basicMove.rightTurn(.4, 90);
