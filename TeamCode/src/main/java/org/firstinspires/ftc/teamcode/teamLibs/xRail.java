@@ -76,7 +76,34 @@ public class xRail {
         }
         motor.setPower(0); // otherwise we will drain the battery...
     }
+    public void loadLanderV2() {
 
+        ElapsedTime runtime = new ElapsedTime();
+
+        // lift and wait for it to get to the top
+        runtime.reset();
+        motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motor.setPower(0.50);
+        while ((runtime.seconds() < TIMEOUT_SECONDS) && (motor.getCurrentPosition()<DECEL_TARGET)) {
+            //telemetry.addData("xrail", motor.getCurrentPosition());
+            //telemetry.update();
+        }
+        motor.setPower(0.2);
+        while ((runtime.seconds() < TIMEOUT_SECONDS) && (motor.getCurrentPosition()<EXTEND_ACTUAL)) {
+            //telemetry.addData("xrail", motor.getCurrentPosition());
+            //telemetry.update();
+        }
+
+        // drop it back down gently
+
+        motor.setPower(-.15);
+        while ((runtime.seconds() < TIMEOUT_SECONDS) && (motor.getCurrentPosition()>5)) {
+            telemetry.addData("xrail", motor.getCurrentPosition());
+            telemetry.update();
+        }
+        motor.setPower(0); // otherwise we will drain the battery...
+    }
 
 
 
