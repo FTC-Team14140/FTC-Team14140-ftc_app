@@ -28,6 +28,7 @@ public class manualTest extends LinearOpMode {
     private distanceSensors rightDisSensor;
     private teamColorSensor leftColSensor;
     private teamColorSensor rightColSensor;
+    private basicMovement basicMove;
 
 
     @Override
@@ -47,6 +48,7 @@ public class manualTest extends LinearOpMode {
         rightDisSensor = new distanceSensors(telemetry, hardwareMap.get(Rev2mDistanceSensor.class, "rightFront2M"));
         leftColSensor = new teamColorSensor(telemetry, hardwareMap.get(ColorSensor.class, "leftRearColor"));
         rightColSensor = new teamColorSensor(telemetry, hardwareMap.get(ColorSensor.class, "rightRearColor"));
+        basicMove = new basicMovement(hardwareMap.get(DcMotor.class, "motorLeft"), hardwareMap.get(DcMotor.class, "motorRight"), hardwareMap.get(BNO055IMU.class,"imu"), telemetry);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -96,17 +98,15 @@ public class manualTest extends LinearOpMode {
             }
 
 
-/*
-            if(gamepad1.x){
-                //rotate 45 to left
-            } else if (gamepad1.b){
-                //rotate 45 to the right
-            } else if (gamepad1.a){
-                //rotate 180
-            } else if (gamepad1.y) {
-                //TBD
-            } else if (gamepad1.right_stick_x)
-*/
+
+            if(gamepad2.x){
+                //turn 90 to left
+                basicMove.leftTurn(.4, 90);
+            } else if (gamepad2.y) {
+                basicMove.rightTurn(.4, 90);
+                //turn 90 to the right
+            }
+
             //this.gamepad1.x
             //this.gamepad1.y
             //this.gamepad1.a
