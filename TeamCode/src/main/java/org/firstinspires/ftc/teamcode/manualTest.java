@@ -17,6 +17,7 @@ import org.firstinspires.ftc.teamcode.teamLibs.grabberArm;
 import org.firstinspires.ftc.teamcode.teamLibs.xRail;
 import org.firstinspires.ftc.teamcode.teamLibs.linearActuator;
 import org.firstinspires.ftc.teamcode.teamLibs.teamColorSensor;
+import org.firstinspires.ftc.teamcode.teamLibs.teamUtil;
 
 @TeleOp(name="Manual Test", group="Linear Opmode")
 public class manualTest extends LinearOpMode {
@@ -101,9 +102,10 @@ public class manualTest extends LinearOpMode {
 
             if(gamepad2.x){
                 //turn 90 to left
-                //teamutil.log
+                teamUtil.log("calling left Turn");
                 basicMove.leftTurn(.4, 90);
             } else if (gamepad2.y) {
+                teamUtil.log("calling right Turn");
                 basicMove.rightTurn(.4, 90);
                 //turn 90 to the right
             }

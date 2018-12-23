@@ -11,7 +11,7 @@ public class xRail {
     DcMotor motor;
     Telemetry telemetry;
 
-    private final int EXTEND_ACTUAL = 830;
+    private final int EXTEND_ACTUAL = 830; // was 830
     private final int EXTEND_TARGET = EXTEND_ACTUAL+22;
     private final int DECEL_TARGET = EXTEND_ACTUAL-175;
 
@@ -84,13 +84,13 @@ public class xRail {
         runtime.reset();
         motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motor.setPower(0.50);
+        motor.setPower(0.990);
         while ((runtime.seconds() < TIMEOUT_SECONDS) && (motor.getCurrentPosition()<DECEL_TARGET)) {
             //telemetry.addData("xrail", motor.getCurrentPosition());
             //telemetry.update();
         }
-        motor.setPower(0.2);
-        while ((runtime.seconds() < TIMEOUT_SECONDS) && (motor.getCurrentPosition()<EXTEND_ACTUAL)) {
+        motor.setPower(0.99);
+        while ((runtime.seconds() < TIMEOUT_SECONDS) && (motor.getCurrentPosition()< 2000 /*EXTEND_ACTUAL*/)) {
             //telemetry.addData("xrail", motor.getCurrentPosition());
             //telemetry.update();
         }
