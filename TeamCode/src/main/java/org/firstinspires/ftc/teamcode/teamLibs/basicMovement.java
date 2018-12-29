@@ -87,6 +87,7 @@ public class basicMovement {
     //this block will let the user do a right turn with the desired # of degrees and speed
 
     public void rightTurn (double speed, double degrees) {
+        teamUtil.log("In right Turn");
         if (teamUtil.theOpMode.opModeIsActive()) {
             //here the gyro sensor is reset
             gyro.resetHeading();
@@ -96,28 +97,32 @@ public class basicMovement {
             motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             motorLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             motorRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
+            teamUtil.log("Starting right Turn");
             motorLeft.setPower(speed);
             motorRight.setPower(0);
             while (gyro.getHeading() < degrees && teamUtil.theOpMode.opModeIsActive()) {
 
             }
+            teamUtil.log("End of right Turn");
+
 
             motorLeft.setPower(0);
             motorRight.setPower(0);
-
+            teamUtil.log("Braking");
             motorLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             motorRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
     }
 
     public void leftTurn (double speed, double degrees) {
+        teamUtil.log("In left Turn");
         if (teamUtil.theOpMode.opModeIsActive()) {
             motorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             motorLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             motorRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+            teamUtil.log("Starting left Turn");
             gyro.resetHeading();
             motorLeft.setPower(0);
             motorRight.setPower(speed);
@@ -125,8 +130,12 @@ public class basicMovement {
                 // TODO: Add some telemetry output here so we can see what's happening on the driver station phone
 
             }
+            teamUtil.log("End of left Turn");
+
             motorLeft.setPower(0);
             motorRight.setPower(0);
+            teamUtil.log("Braking");
+
 
             motorLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             motorRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

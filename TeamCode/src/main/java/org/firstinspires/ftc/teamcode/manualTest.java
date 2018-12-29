@@ -38,7 +38,7 @@ public class manualTest extends LinearOpMode {
         //imu = hardwareMap.get(Gyroscope.class, "imu");
         //when we say go forwards, we really mean backwards
 
-
+        teamUtil.theOpMode = this;
         //grabber = new grabberArm (telemetry, hardwareMap, "grabberServo", "liftServo");
         xrail = new xRail(telemetry, hardwareMap.get(DcMotor.class, "xRailMotor"));
         //gyro = new revHubIMUGyro(hardwareMap.get(BNO055IMU.class, "imu"), telemetry );
@@ -103,10 +103,10 @@ public class manualTest extends LinearOpMode {
             if(gamepad2.x){
                 //turn 90 to left
                 teamUtil.log("calling left Turn");
-                basicMove.leftTurn(.4, 90);
+                basicMove.leftTurn(.9, 90);
             } else if (gamepad2.y) {
                 teamUtil.log("calling right Turn");
-                basicMove.rightTurn(.4, 90);
+                basicMove.rightTurn(.9, 90);
                 //turn 90 to the right
             }
 
