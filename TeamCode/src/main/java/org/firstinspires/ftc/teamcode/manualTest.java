@@ -13,10 +13,15 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gyroscope;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
+
 import org.firstinspires.ftc.teamcode.teamLibs.grabberArm;
 import org.firstinspires.ftc.teamcode.teamLibs.xRail;
 import org.firstinspires.ftc.teamcode.teamLibs.linearActuator;
 import org.firstinspires.ftc.teamcode.teamLibs.teamColorSensor;
+import org.firstinspires.ftc.teamcode.teamLibs.goBuildAServo2000;
+import org.firstinspires.ftc.teamcode.teamLibs.teamUtil;
+
 import org.firstinspires.ftc.teamcode.teamLibs.teamUtil;
 
 @TeleOp(name="Manual Test", group="Linear Opmode")
@@ -30,6 +35,10 @@ public class manualTest extends LinearOpMode {
     private teamColorSensor leftColSensor;
     private teamColorSensor rightColSensor;
     private basicMovement basicMove;
+    goBuildAServo2000 baseServo;
+    goBuildAServo2000 armServo;
+    int baseServoDegrees = 80;
+    int armServoDegrees = 130;
 
 
     @Override
@@ -51,11 +60,17 @@ public class manualTest extends LinearOpMode {
         rightColSensor = new teamColorSensor(telemetry, hardwareMap.get(ColorSensor.class, "rightRearColor"));
         basicMove = new basicMovement(hardwareMap.get(DcMotor.class, "motorLeft"), hardwareMap.get(DcMotor.class, "motorRight"), hardwareMap.get(BNO055IMU.class,"imu"), telemetry);
 
-        // Wait for the game to start (driver presses PLAY)
+        baseServo = new goBuildAServo2000(hardwareMap.get(Servo.class, "retrieveBaseServo"), telemetry);
+        armServo = new goBuildAServo2000(hardwareMap.get(Servo.class, "retrieveArmServo"), telemetry);
+
+                // Wait for the game to start (driver presses PLAY)
+        baseServo.goTo(baseServoDegrees);
+        armServo.goTo(armServoDegrees);
         waitForStart();
 
 
         //gyro.resetHeading();
+        boolean movingServos = false;
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -100,7 +115,7 @@ public class manualTest extends LinearOpMode {
 
 
 
-            if(gamepad2.x){
+          /*  if(gamepad2.x){
                 //turn 90 to left
                 teamUtil.log("calling left Turn");
                 basicMove.leftTurn(.9, 90);
@@ -109,6 +124,56 @@ public class manualTest extends LinearOpMode {
                 basicMove.rightTurn(.9, 90);
                 //turn 90 to the right
             }
+            */
+             if (gamepad2.left_stick_y >0) {
+                if (baseServoDegrees > 80) {
+                    baseServoDegrees = baseServoDegrees - 5;
+                }
+                movingServos = true;
+            } else if (gamepad2.left_stick_y <0) {
+                if (baseServoDegrees <148) {
+                    baseServoDegrees = baseServoDegrees + 5;
+                }
+                movingServos = true;
+            }
+            if (gamepad2.right_stick_y <0) {
+                if (armServoDegrees > 30) {
+                    armServoDegrees = armServoDegrees - 5;
+                }
+                movingServos = true;
+            } else if (gamepad2.right_stick_y >0) {
+                if (armServoDegrees <132) {
+                    armServoDegrees = armServoDegrees + 5;
+                }
+                movingServos = true;
+            }
+
+            if(gamepad2.a) {
+                baseServoDegrees = 150;
+                armServoDegrees = 40;
+                movingServos = true;
+            } else if(gamepad2.y) {
+                baseServoDegrees = 135;
+                armServoDegrees = 110;
+                movingServos = true;
+            } else if(gamepad2.x) {
+                baseServoDegrees = 110;
+                armServoDegrees = 135;
+                movingServos = true;
+            } else if(gamepad2.b) {
+                baseServoDegrees = 150;
+                armServoDegrees = 60;
+                movingServos = true;
+            }
+            if (movingServos) {
+                baseServo.goTo(baseServoDegrees);
+                armServo.goTo(armServoDegrees);
+                teamUtil.sleep(100);
+            }
+            movingServos = false;
+
+            telemetry.addData("armServoDegrees", armServoDegrees  );
+            telemetry.addData("baseServoDegrees", baseServoDegrees  );
 
             //this.gamepad1.x
             //this.gamepad1.y
