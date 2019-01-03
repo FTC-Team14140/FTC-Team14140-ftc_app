@@ -58,7 +58,7 @@ public class manualTest extends LinearOpMode {
         //rightColSensor = new teamColorSensor(telemetry, hardwareMap.get(ColorSensor.class, "rightRearColor"));
         //basicMove = new basicMovement(hardwareMap.get(DcMotor.class, "motorLeft"), hardwareMap.get(DcMotor.class, "motorRight"), hardwareMap.get(BNO055IMU.class,"imu"), telemetry);
 
-        sweeper = new sweeperArm(telemetry, hardwareMap, "baseServo", "armServo");
+        sweeper = new sweeperArm(telemetry, hardwareMap, "retrieveBaseServo", "retrieveArmServo");
 
                 // Wait for the game to start (driver presses PLAY)
         sweeper.retract();
@@ -127,7 +127,7 @@ public class manualTest extends LinearOpMode {
             } else if(gamepad2.b) {
                 sweeper.extendUp();
             } else if(gamepad2.y) {
-                sweeper.craterBase();
+                sweeper.sweep();
             } else if(gamepad2.x) {
                 sweeper.craterTop();
             } else if(gamepad2.right_bumper){

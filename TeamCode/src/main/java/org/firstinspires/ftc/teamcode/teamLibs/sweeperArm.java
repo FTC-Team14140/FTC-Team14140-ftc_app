@@ -20,7 +20,7 @@ public class sweeperArm {
     private final int ARM_EXTENDUP = 35;
     private final int BASE_EXTEND = 210;
     private final int ARM_EXTENDDOWN = 50;
-    private final int BASE_DCRATER = 195;
+    private final int BASE_DCRATER = 200;
     private final int ARM_DCRATER = 80;
     private final int BASE_TCRATER = 175;
     private final int ARM_TCRATER = 115;
@@ -54,8 +54,12 @@ public class sweeperArm {
         baseServo.goTo(BASE_TCRATER);
         armServo.goTo(ARM_TCRATER);
     }
-    public void joystickMovement () {
-
+    public void sweep () {
+        baseServo.goTo(BASE_DCRATER);
+        armServo.goTo(ARM_DCRATER);
+        teamUtil.sleep(200);
+        baseServo.goTo(BASE_TCRATER);
+        armServo.goTo(ARM_TCRATER);
     }
 
 }
