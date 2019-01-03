@@ -17,6 +17,9 @@ public class basicMovement {
 
     //The counts per inch is the number of ticks per revolution divided by the circumference of the wheel
     private double     COUNTS_PER_INCH = 89.7158;
+    private final double MIN_SPEED = 0.2;
+    private final double MAX_ACEL_PER_INCH = 0.15;
+    private final double MAX_DECEL_PER_INCH = 0.15;
 
     //stashes the values for later
     public basicMovement (DcMotor leftMotor, DcMotor rightMotor, BNO055IMU theimu, Telemetry theTelemetry) {
@@ -25,6 +28,7 @@ public class basicMovement {
         motorLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         gyro = new revHubIMUGyro ( theimu, theTelemetry );
         telemetry = theTelemetry;
+
     }
 
     // this will make the robot move a chosen number of inches at a chosen speed
@@ -177,7 +181,71 @@ public class basicMovement {
 
             motorLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             motorRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+
+        }
+    }
+    public void smoothMovement(double speed, double distance) {
+
+        int startPosition = 0;
+        double maxSpeed = speed;
+        int totalEncoders = (int) (distance * COUNTS_PER_INCH);
+        int endPosition = (int) (startPosition + totalEncoders);
+        double totalAcceleration = maxSpeed - MIN_SPEED;
+        if ((totalEncoders/2) < ((totalAcceleration * MAX_ACEL_PER_INCH) * COUNTS_PER_INCH)); {
+            maxSpeed = MIN_SPEED + (totalEncoders/2) / (MAX_ACEL_PER_INCH * COUNTS_PER_INCH);
+            totalAcceleration = maxSpeed - MIN_SPEED;
+        }
+        double acellerationInchs = totalAcceleration/MAX_ACEL_PER_INCH;
+        int acellerationEncoders = (int) (acellerationInchs * COUNTS_PER_INCH);
+        double totalDecell = maxSpeed - MIN_SPEED;
+        double decellerationInch = totalDecell/MAX_DECEL_PER_INCH;
+        int decelerationEncoders = (int) (decellerationInch * COUNTS_PER_INCH);
+        int cruisePosition = (int) (startPosition + acellerationEncoders);
+        int cruiseEncoders = (int) (totalEncoders - acellerationEncoders - decelerationEncoders);
+        int decelerationSpot = (int) (startPosition + acellerationEncoders + cruiseEncoders);
+        double motorSpeed = speed;
+
+        //Need Loop
+        //telemetry.addData("description", data);
+        //telemetry.update();
+        motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        teamUtil.log("smooth Move Inches");
+        teamUtil.log("startPosition: "+ startPosition);
+        teamUtil.log("cruisePosition: "+ cruisePosition);
+        teamUtil.log("decelerationSpot: "+ decelerationSpot);
+        telemetry.addData("startPosition: ", startPosition);
+        telemetry.addData("cruisePosition: ", cruisePosition);
+        telemetry.addData("decelerationSpot: ", decelerationSpot);
+        telemetry.addData("endSpot: ", endPosition);
+        telemetry.update();
+        while (motorLeft.getCurrentPosition() < cruisePosition) {
+            motorSpeed = totalAcceleration/cruisePosition * motorLeft.getCurrentPosition() + MIN_SPEED;
+            motorLeft.setPower(motorSpeed);
+            motorRight.setPower(motorSpeed);
+        }
+        teamUtil.log("at cruising speed");
+        while (motorLeft.getCurrentPosition() < decelerationSpot) {
+
+        }
+        teamUtil.log("decelerating");
+        while (motorLeft.getCurrentPosition() < endPosition){
+            motorSpeed = (MIN_SPEED - maxSpeed) / (endPosition - decelerationSpot) * motorLeft.getCurrentPosition()- decelerationSpot + maxSpeed;
+            motorRight.setPower(motorSpeed);
+        }
+
+        motorLeft.setPower(0);
+        motorRight.setPower(0);
+
+
         }
     }
 
-}
+
+
