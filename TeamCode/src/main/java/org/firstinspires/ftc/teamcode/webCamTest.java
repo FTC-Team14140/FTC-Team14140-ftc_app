@@ -159,6 +159,51 @@ public class webCamTest extends LinearOpMode {
         }
     }
 
+ /*
+    private int detect() {
+
+        if (tfod != null) {
+            // getUpdatedRecognitions() will return null if no new information is available since
+            // the last time that call was made.
+            List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+            if (updatedRecognitions != null) {
+                telemetry.addData("# Object Detected", updatedRecognitions.size());
+                // make sure we have two or more
+                if (updatedRecognitions.size() == 2) {
+                    Recognition firstObject = updatedRecognitions.get(0);
+                    Recognition secondObject = updatedRecognitions.get(1);
+                    int firstX = -1;
+                    int secondX = -1;
+                    String firstLabel = firstObject.getLabel();
+                    String secondLabel = secondObject.getLabel();
+
+
+                    if ((firstLabel == LABEL_SILVER_MINERAL) && (secondLabel == LABEL_SILVER_MINERAL)) {
+                        // gold is far left
+                        return(1);
+                    } else if (firstLabel == LABEL_GOLD_MINERAL) {
+                        if (firstObject.getLeft() < secondObject.getLeft()) {
+                            // gold is in the middle
+                            return(2);
+                        } else {
+                            // gold is on the far right
+                            return(3);
+                        }
+                    } else {
+                        if (firstObject.getLeft() > secondObject.getLeft()) {
+                            // gold is in the middle
+                            return(2);
+                        } else {
+                            // gold is on the far right
+                            return(3);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+/*
     /**
      * Initialize the Vuforia localization engine.
      */

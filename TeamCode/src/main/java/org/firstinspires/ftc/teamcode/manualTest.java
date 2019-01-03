@@ -21,6 +21,7 @@ import org.firstinspires.ftc.teamcode.teamLibs.linearActuator;
 import org.firstinspires.ftc.teamcode.teamLibs.teamColorSensor;
 import org.firstinspires.ftc.teamcode.teamLibs.goBuildAServo2000;
 import org.firstinspires.ftc.teamcode.teamLibs.teamUtil;
+import org.firstinspires.ftc.teamcode.teamLibs.sweeperArm;
 
 import org.firstinspires.ftc.teamcode.teamLibs.teamUtil;
 
@@ -35,10 +36,7 @@ public class manualTest extends LinearOpMode {
     private teamColorSensor leftColSensor;
     private teamColorSensor rightColSensor;
     private basicMovement basicMove;
-    goBuildAServo2000 baseServo;
-    goBuildAServo2000 armServo;
-    int baseServoDegrees = 80;
-    int armServoDegrees = 130;
+    private sweeperArm sweeper;
 
 
     @Override
@@ -49,23 +47,21 @@ public class manualTest extends LinearOpMode {
 
         teamUtil.theOpMode = this;
         //grabber = new grabberArm (telemetry, hardwareMap, "grabberServo", "liftServo");
-        xrail = new xRail(telemetry, hardwareMap.get(DcMotor.class, "xRailMotor"));
+        //xrail = new xRail(telemetry, hardwareMap.get(DcMotor.class, "xRailMotor"));
         //gyro = new revHubIMUGyro(hardwareMap.get(BNO055IMU.class, "imu"), telemetry );
-        La = new linearActuator(telemetry, hardwareMap.get(DcMotor.class, "LAMotor"));
-        xrail.init();
+        //La = new linearActuator(telemetry, hardwareMap.get(DcMotor.class, "LAMotor"));
+        //xrail.init();
         //grabber.initialize();
-        leftDisSensor = new distanceSensors(telemetry, hardwareMap.get(Rev2mDistanceSensor.class, "leftFront2M"));
-        rightDisSensor = new distanceSensors(telemetry, hardwareMap.get(Rev2mDistanceSensor.class, "rightFront2M"));
-        leftColSensor = new teamColorSensor(telemetry, hardwareMap.get(ColorSensor.class, "leftRearColor"));
-        rightColSensor = new teamColorSensor(telemetry, hardwareMap.get(ColorSensor.class, "rightRearColor"));
-        basicMove = new basicMovement(hardwareMap.get(DcMotor.class, "motorLeft"), hardwareMap.get(DcMotor.class, "motorRight"), hardwareMap.get(BNO055IMU.class,"imu"), telemetry);
+        //leftDisSensor = new distanceSensors(telemetry, hardwareMap.get(Rev2mDistanceSensor.class, "leftFront2M"));
+        //rightDisSensor = new distanceSensors(telemetry, hardwareMap.get(Rev2mDistanceSensor.class, "rightFront2M"));
+        //leftColSensor = new teamColorSensor(telemetry, hardwareMap.get(ColorSensor.class, "leftRearColor"));
+        //rightColSensor = new teamColorSensor(telemetry, hardwareMap.get(ColorSensor.class, "rightRearColor"));
+        //basicMove = new basicMovement(hardwareMap.get(DcMotor.class, "motorLeft"), hardwareMap.get(DcMotor.class, "motorRight"), hardwareMap.get(BNO055IMU.class,"imu"), telemetry);
 
-        baseServo = new goBuildAServo2000(hardwareMap.get(Servo.class, "retrieveBaseServo"), telemetry);
-        armServo = new goBuildAServo2000(hardwareMap.get(Servo.class, "retrieveArmServo"), telemetry);
+        sweeper = new sweeperArm(telemetry, hardwareMap, "baseServo", "armServo");
 
                 // Wait for the game to start (driver presses PLAY)
-        baseServo.goTo(baseServoDegrees);
-        armServo.goTo(armServoDegrees);
+        sweeper.retract();
         waitForStart();
 
 
@@ -93,13 +89,13 @@ public class manualTest extends LinearOpMode {
                 grabber.triggerControl(gamepad2.right_trigger);
             }
 */
-            if(gamepad1.right_stick_button) {
-                xrail.loadLander();
-            }
+            //if(gamepad1.right_stick_button) {
+                //xrail.loadLander();
+            //}
 
             ////////////////////////////////////////////////////////////////////
             // Code to control the linear actuator
-            if(gamepad1.a) {
+/*            if(gamepad1.a) {
                 La.retractFullyNoWait();
             } else if(gamepad1.y) {
                 La.extendFullyNoWait();
@@ -112,7 +108,7 @@ public class manualTest extends LinearOpMode {
             } else {
                 La.stopMotor();
             }
-
+*/
 
 
           /*  if(gamepad2.x){
@@ -125,55 +121,19 @@ public class manualTest extends LinearOpMode {
                 //turn 90 to the right
             }
             */
-             if (gamepad2.left_stick_y >0) {
-                if (baseServoDegrees > 80) {
-                    baseServoDegrees = baseServoDegrees - 5;
-                }
-                movingServos = true;
-            } else if (gamepad2.left_stick_y <0) {
-                if (baseServoDegrees <148) {
-                    baseServoDegrees = baseServoDegrees + 5;
-                }
-                movingServos = true;
-            }
-            if (gamepad2.right_stick_y <0) {
-                if (armServoDegrees > 30) {
-                    armServoDegrees = armServoDegrees - 5;
-                }
-                movingServos = true;
-            } else if (gamepad2.right_stick_y >0) {
-                if (armServoDegrees <132) {
-                    armServoDegrees = armServoDegrees + 5;
-                }
-                movingServos = true;
-            }
 
             if(gamepad2.a) {
-                baseServoDegrees = 150;
-                armServoDegrees = 40;
-                movingServos = true;
-            } else if(gamepad2.y) {
-                baseServoDegrees = 135;
-                armServoDegrees = 110;
-                movingServos = true;
-            } else if(gamepad2.x) {
-                baseServoDegrees = 110;
-                armServoDegrees = 135;
-                movingServos = true;
+                sweeper.retract();
             } else if(gamepad2.b) {
-                baseServoDegrees = 150;
-                armServoDegrees = 60;
-                movingServos = true;
+                sweeper.extendUp();
+            } else if(gamepad2.y) {
+                sweeper.craterBase();
+            } else if(gamepad2.x) {
+                sweeper.craterTop();
+            } else if(gamepad2.right_bumper){
+                 sweeper.extendDown();
             }
-            if (movingServos) {
-                baseServo.goTo(baseServoDegrees);
-                armServo.goTo(armServoDegrees);
-                teamUtil.sleep(100);
-            }
-            movingServos = false;
 
-            telemetry.addData("armServoDegrees", armServoDegrees  );
-            telemetry.addData("baseServoDegrees", baseServoDegrees  );
 
             //this.gamepad1.x
             //this.gamepad1.y
@@ -200,12 +160,12 @@ public class manualTest extends LinearOpMode {
            // telemetry.addData("MotorLeft Power", motorLeft.getPower());
            // telemetry.addData("MotorRight Power", motorRight.getPower());
             telemetry.addData("Status", "Running");
-            telemetry.addData("distanceLeft", leftDisSensor.getDistance()  );
-            telemetry.addData("distanceRight", rightDisSensor.getDistance()  );
-            telemetry.addData("colorLeftRed", leftColSensor.redValue() );
-            telemetry.addData("colorRightRed", rightColSensor.redValue());
-            telemetry.addData("colorLeftBlue", leftColSensor.blueValue() );
-            telemetry.addData("colorRightblue", rightColSensor.blueValue());
+            //telemetry.addData("distanceLeft", leftDisSensor.getDistance()  );
+            //telemetry.addData("distanceRight", rightDisSensor.getDistance()  );
+            //telemetry.addData("colorLeftRed", leftColSensor.redValue() );
+            //telemetry.addData("colorRightRed", rightColSensor.redValue());
+            //telemetry.addData("colorLeftBlue", leftColSensor.blueValue() );
+           // telemetry.addData("colorRightblue", rightColSensor.blueValue());
             telemetry.update();
 
         }
