@@ -21,6 +21,7 @@ import org.firstinspires.ftc.teamcode.teamLibs.linearActuator;
 import org.firstinspires.ftc.teamcode.teamLibs.teamColorSensor;
 import org.firstinspires.ftc.teamcode.teamLibs.goBuildAServo2000;
 import org.firstinspires.ftc.teamcode.teamLibs.teamUtil;
+import org.firstinspires.ftc.teamcode.teamLibs.sweeperArm;
 
 import org.firstinspires.ftc.teamcode.teamLibs.teamUtil;
 
@@ -35,10 +36,7 @@ public class manualTest extends LinearOpMode {
     private teamColorSensor leftColSensor;
     private teamColorSensor rightColSensor;
     private basicMovement basicMove;
-    goBuildAServo2000 baseServo;
-    goBuildAServo2000 armServo;
-    int baseServoDegrees =140;
-    int armServoDegrees = 140;
+    private sweeperArm sweeper;
 
 
     @Override
@@ -60,12 +58,10 @@ public class manualTest extends LinearOpMode {
         //rightColSensor = new teamColorSensor(telemetry, hardwareMap.get(ColorSensor.class, "rightRearColor"));
         //basicMove = new basicMovement(hardwareMap.get(DcMotor.class, "motorLeft"), hardwareMap.get(DcMotor.class, "motorRight"), hardwareMap.get(BNO055IMU.class,"imu"), telemetry);
 
-        baseServo = new goBuildAServo2000(hardwareMap.get(Servo.class, "retrieveBaseServo"), telemetry);
-        armServo = new goBuildAServo2000(hardwareMap.get(Servo.class, "retrieveArmServo"), telemetry);
+        sweeper = new sweeperArm(telemetry, hardwareMap, "baseServo", "armServo");
 
                 // Wait for the game to start (driver presses PLAY)
-        baseServo.goTo(baseServoDegrees);
-        armServo.goTo(armServoDegrees);
+        sweeper.retract();
         waitForStart();
 
 
@@ -125,59 +121,19 @@ public class manualTest extends LinearOpMode {
                 //turn 90 to the right
             }
             */
-             if (gamepad2.left_stick_y >0) {
-                //if (baseServoDegrees > 80) {
-                    baseServoDegrees = baseServoDegrees - 5;
-                //}
-                movingServos = true;
-            } else if (gamepad2.left_stick_y <0) {
-               // if (baseServoDegrees <148) {
-                    baseServoDegrees = baseServoDegrees + 5;
-               // }
-                movingServos = true;
-            }
-            if (gamepad2.right_stick_y <0) {
-               // if (armServoDegrees > 30) {
-                    armServoDegrees = armServoDegrees - 5;
-               // }
-                movingServos = true;
-            } else if (gamepad2.right_stick_y >0) {
-               // if (armServoDegrees <132) {
-                    armServoDegrees = armServoDegrees + 5;
-               // }
-                movingServos = true;
-            }
 
             if(gamepad2.a) {
-                baseServoDegrees = 140;
-                armServoDegrees = 140;
-                movingServos = true;
+                sweeper.retract();
             } else if(gamepad2.b) {
-                baseServoDegrees = 210;
-                armServoDegrees = 35;
-                movingServos = true;
+                sweeper.extendUp();
             } else if(gamepad2.y) {
-                baseServoDegrees = 195;
-                armServoDegrees = 80;
-                movingServos = true;
+                sweeper.craterBase();
             } else if(gamepad2.x) {
-                baseServoDegrees = 175;
-                armServoDegrees = 115;
-                movingServos = true;
+                sweeper.craterTop();
             } else if(gamepad2.right_bumper){
-                 baseServoDegrees = 210;
-                 armServoDegrees = 50;
-                 movingServos = true;
-            }
-            if (movingServos == true) {
-                baseServo.goTo(baseServoDegrees);
-                armServo.goTo(armServoDegrees);
-                //teamUtil.sleep(100);
-                movingServos = false;
+                 sweeper.extendDown();
             }
 
-            telemetry.addData("armServoDegrees", armServoDegrees  );
-            telemetry.addData("baseServoDegrees", baseServoDegrees  );
 
             //this.gamepad1.x
             //this.gamepad1.y
