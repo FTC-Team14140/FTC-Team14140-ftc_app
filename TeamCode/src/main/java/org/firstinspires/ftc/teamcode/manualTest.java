@@ -13,10 +13,16 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gyroscope;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
+
 import org.firstinspires.ftc.teamcode.teamLibs.grabberArm;
 import org.firstinspires.ftc.teamcode.teamLibs.xRail;
 import org.firstinspires.ftc.teamcode.teamLibs.linearActuator;
 import org.firstinspires.ftc.teamcode.teamLibs.teamColorSensor;
+import org.firstinspires.ftc.teamcode.teamLibs.goBuildAServo2000;
+import org.firstinspires.ftc.teamcode.teamLibs.teamUtil;
+import org.firstinspires.ftc.teamcode.teamLibs.sweeperArm;
+
 import org.firstinspires.ftc.teamcode.teamLibs.teamUtil;
 
 @TeleOp(name="Manual Test", group="Linear Opmode")
@@ -30,6 +36,7 @@ public class manualTest extends LinearOpMode {
     private teamColorSensor leftColSensor;
     private teamColorSensor rightColSensor;
     private basicMovement basicMove;
+    private sweeperArm sweeper;
 
 
     @Override
@@ -40,22 +47,26 @@ public class manualTest extends LinearOpMode {
 
         teamUtil.theOpMode = this;
         //grabber = new grabberArm (telemetry, hardwareMap, "grabberServo", "liftServo");
-        xrail = new xRail(telemetry, hardwareMap.get(DcMotor.class, "xRailMotor"));
+        //xrail = new xRail(telemetry, hardwareMap.get(DcMotor.class, "xRailMotor"));
         //gyro = new revHubIMUGyro(hardwareMap.get(BNO055IMU.class, "imu"), telemetry );
-        La = new linearActuator(telemetry, hardwareMap.get(DcMotor.class, "LAMotor"));
-        xrail.init();
+        //La = new linearActuator(telemetry, hardwareMap.get(DcMotor.class, "LAMotor"));
+        //xrail.init();
         //grabber.initialize();
-        leftDisSensor = new distanceSensors(telemetry, hardwareMap.get(Rev2mDistanceSensor.class, "leftFront2M"));
-        rightDisSensor = new distanceSensors(telemetry, hardwareMap.get(Rev2mDistanceSensor.class, "rightFront2M"));
-        leftColSensor = new teamColorSensor(telemetry, hardwareMap.get(ColorSensor.class, "leftRearColor"));
-        rightColSensor = new teamColorSensor(telemetry, hardwareMap.get(ColorSensor.class, "rightRearColor"));
-        basicMove = new basicMovement(hardwareMap.get(DcMotor.class, "motorLeft"), hardwareMap.get(DcMotor.class, "motorRight"), hardwareMap.get(BNO055IMU.class,"imu"), telemetry);
+        //leftDisSensor = new distanceSensors(telemetry, hardwareMap.get(Rev2mDistanceSensor.class, "leftFront2M"));
+        //rightDisSensor = new distanceSensors(telemetry, hardwareMap.get(Rev2mDistanceSensor.class, "rightFront2M"));
+        //leftColSensor = new teamColorSensor(telemetry, hardwareMap.get(ColorSensor.class, "leftRearColor"));
+        //rightColSensor = new teamColorSensor(telemetry, hardwareMap.get(ColorSensor.class, "rightRearColor"));
+        //basicMove = new basicMovement(hardwareMap.get(DcMotor.class, "motorLeft"), hardwareMap.get(DcMotor.class, "motorRight"), hardwareMap.get(BNO055IMU.class,"imu"), telemetry);
 
-        // Wait for the game to start (driver presses PLAY)
+        sweeper = new sweeperArm(telemetry, hardwareMap, "retrieveBaseServo", "retrieveArmServo");
+
+                // Wait for the game to start (driver presses PLAY)
+        sweeper.retract();
         waitForStart();
 
 
         //gyro.resetHeading();
+        boolean movingServos = false;
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -78,13 +89,13 @@ public class manualTest extends LinearOpMode {
                 grabber.triggerControl(gamepad2.right_trigger);
             }
 */
-            if(gamepad1.right_stick_button) {
-                xrail.loadLander();
-            }
+            //if(gamepad1.right_stick_button) {
+                //xrail.loadLander();
+            //}
 
             ////////////////////////////////////////////////////////////////////
             // Code to control the linear actuator
-            if(gamepad1.a) {
+/*            if(gamepad1.a) {
                 La.retractFullyNoWait();
             } else if(gamepad1.y) {
                 La.extendFullyNoWait();
@@ -97,10 +108,10 @@ public class manualTest extends LinearOpMode {
             } else {
                 La.stopMotor();
             }
+*/
 
 
-
-            if(gamepad2.x){
+          /*  if(gamepad2.x){
                 //turn 90 to left
                 teamUtil.log("calling left Turn");
                 basicMove.leftTurn(.9, 90);
@@ -109,6 +120,20 @@ public class manualTest extends LinearOpMode {
                 basicMove.rightTurn(.9, 90);
                 //turn 90 to the right
             }
+            */
+
+            if(gamepad2.a) {
+                sweeper.retract();
+            } else if(gamepad2.b) {
+                sweeper.extendUp();
+            } else if(gamepad2.y) {
+                sweeper.sweep();
+            } else if(gamepad2.x) {
+                sweeper.craterTop();
+            } else if(gamepad2.right_bumper){
+                 sweeper.extendDown();
+            }
+
 
             //this.gamepad1.x
             //this.gamepad1.y
@@ -135,12 +160,12 @@ public class manualTest extends LinearOpMode {
            // telemetry.addData("MotorLeft Power", motorLeft.getPower());
            // telemetry.addData("MotorRight Power", motorRight.getPower());
             telemetry.addData("Status", "Running");
-            telemetry.addData("distanceLeft", leftDisSensor.getDistance()  );
-            telemetry.addData("distanceRight", rightDisSensor.getDistance()  );
-            telemetry.addData("colorLeftRed", leftColSensor.redValue() );
-            telemetry.addData("colorRightRed", rightColSensor.redValue());
-            telemetry.addData("colorLeftBlue", leftColSensor.blueValue() );
-            telemetry.addData("colorRightblue", rightColSensor.blueValue());
+            //telemetry.addData("distanceLeft", leftDisSensor.getDistance()  );
+            //telemetry.addData("distanceRight", rightDisSensor.getDistance()  );
+            //telemetry.addData("colorLeftRed", leftColSensor.redValue() );
+            //telemetry.addData("colorRightRed", rightColSensor.redValue());
+            //telemetry.addData("colorLeftBlue", leftColSensor.blueValue() );
+           // telemetry.addData("colorRightblue", rightColSensor.blueValue());
             telemetry.update();
 
         }
