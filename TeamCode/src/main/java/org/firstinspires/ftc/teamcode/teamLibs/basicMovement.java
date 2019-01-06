@@ -186,16 +186,29 @@ public class basicMovement {
         }
     }
     public void smoothMovement(double speed, double distance) {
-
+        //This is where we create all of our variables and do the math to find out the inches and encoder values
         int startPosition = 0;
         double maxSpeed = speed;
         int totalEncoders = (int) (distance * COUNTS_PER_INCH);
+        if (speed < 0 ) {
+
+            totalEncoders = (int)(-distance * COUNTS_PER_INCH);
+        }
         int endPosition = (int) (startPosition + totalEncoders);
         double totalAcceleration = maxSpeed - MIN_SPEED;
-        if ((totalEncoders/2) < ((totalAcceleration * MAX_ACEL_PER_INCH) * COUNTS_PER_INCH)); {
-            maxSpeed = MIN_SPEED + (totalEncoders/2) / (MAX_ACEL_PER_INCH * COUNTS_PER_INCH);
+        telemetry.addData( "Total Acel", totalAcceleration);
+        telemetry.update();
+        teamUtil.log("totalAccel: "+ totalAcceleration);
+        teamUtil.log("maxSpeed: "+ maxSpeed);
+        teamUtil.log("totalEncoders: "+ totalEncoders );
+        //This if statement tells if the acceleration is greater than the ammount of time you have to
+        //acellerate and if so than change the speed so it can acellerate and deceleration in the distance you put in
+        if (totalEncoders/2 < (totalAcceleration / MAX_ACEL_PER_INCH) * COUNTS_PER_INCH); {
+            maxSpeed = (MIN_SPEED + (MAX_ACEL_PER_INCH / COUNTS_PER_INCH * totalEncoders / 2));
             totalAcceleration = maxSpeed - MIN_SPEED;
-        }
+            teamUtil.log("In if statement: "+ totalAcceleration);
+            }
+
         double acellerationInchs = totalAcceleration/MAX_ACEL_PER_INCH;
         int acellerationEncoders = (int) (acellerationInchs * COUNTS_PER_INCH);
         double totalDecell = maxSpeed - MIN_SPEED;
@@ -205,7 +218,12 @@ public class basicMovement {
         int cruiseEncoders = (int) (totalEncoders - acellerationEncoders - decelerationEncoders);
         int decelerationSpot = (int) (startPosition + acellerationEncoders + cruiseEncoders);
         double motorSpeed = speed;
-
+        teamUtil.log("totalAccel: "+ totalAcceleration);
+        teamUtil.log("maxSpeed: "+ maxSpeed);
+        teamUtil.log("totalEncoders: "+ totalEncoders );
+        teamUtil.log("Variables Complete");
+        telemetry.addData( "Variables Complete", decelerationSpot);
+        telemetry.update();
         //Need Loop
         //telemetry.addData("description", data);
         //telemetry.update();
@@ -225,27 +243,34 @@ public class basicMovement {
         telemetry.addData("decelerationSpot: ", decelerationSpot);
         telemetry.addData("endSpot: ", endPosition);
         telemetry.update();
+        teamUtil.log("acel");
+        //This loop tells if you are in acelleration and sets up the statment to change the power to acel
         while (motorLeft.getCurrentPosition() < cruisePosition) {
             motorSpeed = totalAcceleration/cruisePosition * motorLeft.getCurrentPosition() + MIN_SPEED;
             motorLeft.setPower(motorSpeed);
             motorRight.setPower(motorSpeed);
         }
+        //This loop is for the cruise so that the speed stay's the same
         teamUtil.log("at cruising speed");
         while (motorLeft.getCurrentPosition() < decelerationSpot) {
 
         }
+        //This is the loop for the decel so that the cruising to the minspeed
         teamUtil.log("decelerating");
         while (motorLeft.getCurrentPosition() < endPosition){
-            motorSpeed = (MIN_SPEED - maxSpeed) / (endPosition - decelerationSpot) * motorLeft.getCurrentPosition()- decelerationSpot + maxSpeed;
+            motorSpeed = (MIN_SPEED - maxSpeed) / (endPosition - decelerationSpot) * (motorLeft.getCurrentPosition()- decelerationSpot) + maxSpeed;
             motorRight.setPower(motorSpeed);
+            motorLeft.setPower(motorSpeed);
         }
-
+        teamUtil.log("stop");
+        //This sets the motor's off
         motorLeft.setPower(0);
         motorRight.setPower(0);
 
-
         }
     }
+
+
 
 
 
