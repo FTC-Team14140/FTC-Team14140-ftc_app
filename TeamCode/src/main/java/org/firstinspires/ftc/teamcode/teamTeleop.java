@@ -17,6 +17,7 @@ import org.firstinspires.ftc.teamcode.teamLibs.grabberArm;
 import org.firstinspires.ftc.teamcode.teamLibs.xRail;
 import org.firstinspires.ftc.teamcode.teamLibs.linearActuator;
 import org.firstinspires.ftc.teamcode.teamLibs.teamUtil;
+import org.firstinspires.ftc.teamcode.teamLibs.sweeperArm;
 
 @TeleOp(name="Comp TeleOp", group="Linear Opmode")
 public class teamTeleop extends LinearOpMode {
@@ -25,6 +26,7 @@ public class teamTeleop extends LinearOpMode {
     private DcMotor motorRight;
     private grabberArm grabber;
     private xRail xrail;
+    private sweeperArm sweeper;
     private linearActuator La;
     private basicMovement basicMove;
     final static double DPAD_SPEED = .5;
@@ -48,6 +50,7 @@ public class teamTeleop extends LinearOpMode {
         //gyro = new revHubIMUGyro(hardwareMap.get(BNO055IMU.class, "imu"), telemetry );
         La = new linearActuator(telemetry, hardwareMap.get(DcMotor.class, "LAMotor"));
         basicMove = new basicMovement(motorLeft, motorRight, hardwareMap.get(BNO055IMU.class,"imu"), telemetry);
+        sweeper = new sweeperArm(telemetry, hardwareMap, "retrieveBaseServo", "retrieveArmServo");
         xrail.init();
 
         // Wait for the game to start (driver presses PLAY)
@@ -122,13 +125,19 @@ public class teamTeleop extends LinearOpMode {
             ////////////////////////////////////////////////////////////////////
             // Code to control the grabber servos
             if(gamepad2.x){
-                grabber.wideOpen();
+                //grabber.wideOpen();
+                sweeper.craterTop();
             } else if(gamepad2.a) {
-                grabber.skinnyOpen();
+                //grabber.skinnyOpen();
+                sweeper.retract();
             } else if(gamepad2.b) {
-                grabber.grab();
+                //grabber.grab();
+                sweeper.extendUp();
             } else if(gamepad2.y) {
-                grabber.deposit();
+                //grabber.deposit();
+                sweeper.craterBase();
+            } else if (gamepad2.right_bumper) {
+                sweeper.extendDown();
             } else if(gamepad2.dpad_up) {
                 grabber.holdUp();
             } else if(gamepad2.dpad_down) {
