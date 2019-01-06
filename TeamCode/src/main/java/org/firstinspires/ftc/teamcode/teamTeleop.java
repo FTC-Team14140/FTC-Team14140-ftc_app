@@ -149,7 +149,7 @@ public class teamTeleop extends LinearOpMode {
             ////////////////////////////////////////////////////////////////////
             // Code to control the xrail system
             if(gamepad2.right_stick_button) {
-                xrail.loadLanderV2();
+                xrail.fullDump(1);
             }
 
             ////////////////////////////////////////////////////////////////////

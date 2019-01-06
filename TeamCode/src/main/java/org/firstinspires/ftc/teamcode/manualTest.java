@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.teamLibs.basicMovement;
 import org.firstinspires.ftc.teamcode.teamLibs.revHubIMUGyro;
@@ -22,6 +23,7 @@ import org.firstinspires.ftc.teamcode.teamLibs.teamColorSensor;
 import org.firstinspires.ftc.teamcode.teamLibs.goBuildAServo2000;
 import org.firstinspires.ftc.teamcode.teamLibs.teamUtil;
 import org.firstinspires.ftc.teamcode.teamLibs.sweeperArm;
+import org.firstinspires.ftc.teamcode.teamLibs.mineralDetector;
 
 import org.firstinspires.ftc.teamcode.teamLibs.teamUtil;
 
@@ -56,7 +58,7 @@ public class manualTest extends LinearOpMode {
         //rightDisSensor = new distanceSensors(telemetry, hardwareMap.get(Rev2mDistanceSensor.class, "rightFront2M"));
         //leftColSensor = new teamColorSensor(telemetry, hardwareMap.get(ColorSensor.class, "leftRearColor"));
         //rightColSensor = new teamColorSensor(telemetry, hardwareMap.get(ColorSensor.class, "rightRearColor"));
-        //basicMove = new basicMovement(hardwareMap.get(DcMotor.class, "motorLeft"), hardwareMap.get(DcMotor.class, "motorRight"), hardwareMap.get(BNO055IMU.class,"imu"), telemetry);
+        basicMove = new basicMovement(hardwareMap.get(DcMotor.class, "motorLeft"), hardwareMap.get(DcMotor.class, "motorRight"), hardwareMap.get(BNO055IMU.class,"imu"), telemetry);
 
         sweeper = new sweeperArm(telemetry, hardwareMap, "retrieveBaseServo", "retrieveArmServo");
 
@@ -121,6 +123,32 @@ public class manualTest extends LinearOpMode {
                 //turn 90 to the right
             }
             */
+
+            if(gamepad1.left_stick_button) {
+                teamUtil.log("creating Detector");
+                mineralDetector detector = new mineralDetector(telemetry, hardwareMap);
+                teamUtil.log("Initializing Detector");
+                detector.initialize(hardwareMap.get(WebcamName.class, "Webcam 1"));
+                teamUtil.log("Start Tracking");
+                detector.startTracking();
+                int which = detector.detect();
+                teamUtil.log("Detected: " + which);
+                while (which == 0) {
+                    teamUtil.sleep(50);
+                    which = detector.detect();
+                    teamUtil.log("Detected: " + which);
+                }
+                if (which == 1) {
+                    basicMove.leftSpin(.5, 45);
+                } else if (which == 2) {
+                    basicMove.moveInches (.5, 5);
+                } else if (which == 3) {
+                    basicMove.rightSpin(.5, 45);
+                }
+                teamUtil.log("Stopping Tracking");
+                detector.stopTracking();
+            }
+
 
             if(gamepad2.a) {
                 sweeper.retract();

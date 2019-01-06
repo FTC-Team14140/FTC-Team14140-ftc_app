@@ -159,7 +159,7 @@ public class webCamTest extends LinearOpMode {
         }
     }
 
- /*
+
     private int detect() {
 
         if (tfod != null) {
@@ -201,6 +201,7 @@ public class webCamTest extends LinearOpMode {
                 }
             }
         }
+        return (0);
     }
 
 /*
