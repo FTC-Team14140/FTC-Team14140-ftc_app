@@ -65,8 +65,8 @@ public class mineralDetector {
             // the last time that call was made.
             List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
             if (updatedRecognitions != null) {
-                telemetry.addData("# Object Detected", updatedRecognitions.size());
-                // make sure we have two or more
+                teamUtil.log("# Minerals Detected: " + updatedRecognitions.size());
+                // make sure we have exactly two
                 if (updatedRecognitions.size() == 2) {
                     Recognition firstObject = updatedRecognitions.get(0);
                     Recognition secondObject = updatedRecognitions.get(1);
@@ -128,6 +128,7 @@ public class mineralDetector {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
+        tfodParameters.minimumConfidence = 0.90; // set the minimum confidence level for detection very high
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_GOLD_MINERAL, LABEL_SILVER_MINERAL);
     }
