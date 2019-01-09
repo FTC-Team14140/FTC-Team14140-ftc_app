@@ -58,11 +58,11 @@ public class manualTest extends LinearOpMode {
         //rightDisSensor = new distanceSensors(telemetry, hardwareMap.get(Rev2mDistanceSensor.class, "rightFront2M"));
         //leftColSensor = new teamColorSensor(telemetry, hardwareMap.get(ColorSensor.class, "leftRearColor"));
         //rightColSensor = new teamColorSensor(telemetry, hardwareMap.get(ColorSensor.class, "rightRearColor"));
-        basicMove = new basicMovement(hardwareMap.get(DcMotor.class, "motorLeft"), hardwareMap.get(DcMotor.class, "motorRight"), hardwareMap.get(BNO055IMU.class,"imu"), telemetry);
+        basicMove = new basicMovement(hardwareMap.get(DcMotor.class, "motorLeft"), hardwareMap.get(DcMotor.class, "motorRight"), hardwareMap.get(BNO055IMU.class, "imu"), telemetry);
 
         sweeper = new sweeperArm(telemetry, hardwareMap, "retrieveBaseServo", "retrieveArmServo");
 
-                // Wait for the game to start (driver presses PLAY)
+        // Wait for the game to start (driver presses PLAY)
         sweeper.retract();
         waitForStart();
 
@@ -92,7 +92,7 @@ public class manualTest extends LinearOpMode {
             }
 */
             //if(gamepad1.right_stick_button) {
-                //xrail.loadLander();
+            //xrail.loadLander();
             //}
 
             ////////////////////////////////////////////////////////////////////
@@ -124,7 +124,7 @@ public class manualTest extends LinearOpMode {
             }
             */
 
-            if(gamepad1.left_stick_button) {
+            if (gamepad1.left_stick_button) {
                 teamUtil.log("creating Detector");
                 mineralDetector detector = new mineralDetector(telemetry, hardwareMap);
                 teamUtil.log("Initializing Detector");
@@ -133,74 +133,88 @@ public class manualTest extends LinearOpMode {
                 detector.startTracking();
                 int which = detector.detect();
                 teamUtil.log("Detected: " + which);
-                while (which == 0) {
-                    teamUtil.sleep(50);
+                while (opModeIsActive()) {
+                    teamUtil.sleep(250);
                     which = detector.detect();
+                    telemetry.addData("Detected: ", which);
+                    telemetry.update();
+
                     teamUtil.log("Detected: " + which);
                 }
-                if (which == 1) {
+                /*if (which == 1) {
                     basicMove.leftSpin(.5, 45);
                 } else if (which == 2) {
-                    basicMove.moveInches (.5, 5);
+                    basicMove.moveInches(.5, 5);
                 } else if (which == 3) {
                     basicMove.rightSpin(.5, 45);
-                }
+                }*/
                 teamUtil.log("Stopping Tracking");
                 detector.stopTracking();
             }
 
 
-            if(gamepad2.a) {
+            if (gamepad2.a) {
                 sweeper.retract();
-            } else if(gamepad2.b) {
+            } else if (gamepad2.b) {
                 sweeper.extendUp();
-            } else if(gamepad2.y) {
+            } else if (gamepad2.y) {
                 sweeper.sweep();
-            } else if(gamepad2.x) {
+            } else if (gamepad2.x) {
                 sweeper.craterTop();
-            } else if(gamepad2.right_bumper){
-                 sweeper.extendDown();
+            } else if (gamepad2.right_bumper) {
+                sweeper.extendDown();
+            } else if (gamepad2.left_stick_y != 0) {
+                sweeper.stickControl(-gamepad2.left_stick_y, gamepad2.left_stick_button);
             }
 
 
-            //this.gamepad1.x
-            //this.gamepad1.y
-            //this.gamepad1.a
-            //this.gamepad1.b
-            //this.gamepad1.right_bumper
-            //this.gamepad1.left_bumper
-            //this.gamepad1.right_trigger
-            //this.gamepad1.left_trigger
-            //this.gamepad1.dpad_down
-            //this.gamepad1.dpad_up
-            //this.gamepad1.dpad_right
-            //this.gamepad1.dpad_left
-            //this.gamepad1.right_stick_button
-            //this.gamepad1.right_stick_x
-            //this.gamepad1.right_stick_y
-            //this.gamepad1.left_stick_button
-            //this.gamepad1.left_stick_x
-            //this.gamepad1.left_stick_y
 
-            //telemetry.addData("Servo Position", servoTest.getPosition());
-            //telemetry.addData("MotorLeft Target Power", tgtPowerLeft);
-            //telemetry.addData("MotorRight Target Power", tgtPowerRight);
-           // telemetry.addData("MotorLeft Power", motorLeft.getPower());
-           // telemetry.addData("MotorRight Power", motorRight.getPower());
-            telemetry.addData("Status", "Running");
-            //telemetry.addData("distanceLeft", leftDisSensor.getDistance()  );
-            //telemetry.addData("distanceRight", rightDisSensor.getDistance()  );
-            //telemetry.addData("colorLeftRed", leftColSensor.redValue() );
-            //telemetry.addData("colorRightRed", rightColSensor.redValue());
-            //telemetry.addData("colorLeftBlue", leftColSensor.blueValue() );
-           // telemetry.addData("colorRightblue", rightColSensor.blueValue());
-            telemetry.update();
+
+            if (gamepad1.a) {
+                basicMove.forwardMovement(0.8, 36);
+            } else  if (gamepad1.b) {
+                basicMove.backwardMovement(0.7, 24);
+            }
+
+            //this.gamepad1.x
+                //this.gamepad1.y
+                //this.gamepad1.a
+                //this.gamepad1.b
+                //this.gamepad1.right_bumper
+                //this.gamepad1.left_bumper
+                //this.gamepad1.right_trigger
+                //this.gamepad1.left_trigger
+                //this.gamepad1.dpad_down
+                //this.gamepad1.dpad_up
+                //this.gamepad1.dpad_right
+                //this.gamepad1.dpad_left
+                //this.gamepad1.right_stick_button
+                //this.gamepad1.right_stick_x
+                //this.gamepad1.right_stick_y
+                //this.gamepad1.left_stick_button
+                //this.gamepad1.left_stick_x
+                //this.gamepad1.left_stick_y
+
+                //telemetry.addData("Servo Position", servoTest.getPosition());
+                //telemetry.addData("MotorLeft Target Power", tgtPowerLeft);
+                //telemetry.addData("MotorRight Target Power", tgtPowerRight);
+                // telemetry.addData("MotorLeft Power", motorLeft.getPower());
+                // telemetry.addData("MotorRight Power", motorRight.getPower());
+                //telemetry.addData("Status", "Running");
+                //telemetry.addData("distanceLeft", leftDisSensor.getDistance()  );
+                //telemetry.addData("distanceRight", rightDisSensor.getDistance()  );
+                //telemetry.addData("colorLeftRed", leftColSensor.redValue() );
+                //telemetry.addData("colorRightRed", rightColSensor.redValue());
+                //telemetry.addData("colorLeftBlue", leftColSensor.blueValue() );
+                // telemetry.addData("colorRightblue", rightColSensor.blueValue());
+                //telemetry.update();
+
+            }
 
         }
 
     }
 
-}
 
 
 

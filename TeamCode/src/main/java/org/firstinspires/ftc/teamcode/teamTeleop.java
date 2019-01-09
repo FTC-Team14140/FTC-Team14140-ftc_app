@@ -126,38 +126,39 @@ public class teamTeleop extends LinearOpMode {
             motorLeft.setPower(tgtPowerLeft*speedFactor);
 
             ////////////////////////////////////////////////////////////////////
-            // Code to control the grabber servos
+            // Code to control the sweeper servos
             if(gamepad2.x && !grabberOut){
-                //grabber.wideOpen();
                 sweeper.craterTop();
                 sweeperOut = true;
             } else if(gamepad2.a) {
-                //grabber.skinnyOpen();
                 sweeper.retract();
                 sweeperOut = false;
             } else if(gamepad2.b && !grabberOut) {
-                //grabber.grab();
                 sweeper.extendUp();
                 sweeperOut = true;
             } else if(gamepad2.y && !grabberOut) {
-                //grabber.deposit();
                 sweeper.craterBase();
                 sweeperOut = true;
             } else if (gamepad2.right_bumper && !grabberOut) {
                 sweeper.extendDown();
                 sweeperOut = true;
+            } else  if ((gamepad2.left_stick_y != 0) && !grabberOut) { // maybe this should only work if the sweeper is already out?
+                sweeper.stickControl(-gamepad2.left_stick_y, gamepad2.left_stick_button);
+            }
 
+            ///////////////////////////////////////////////////////////////////
+            // Code to control the grabber servos
+            else if (gamepad2.left_bumper && grabberOut) {
+                grabber.deposit();
+                grabberOut = false;
             } else if(gamepad2.dpad_up) {
                 grabber.holdUp();
                 grabberOut = false;
             } else if(gamepad2.dpad_down && !sweeperOut ) {
                 grabber.grabberDown();
                 grabberOut = true;
-            } else if (gamepad2.right_trigger > 0) {
+            } else if ((gamepad2.right_trigger > 0) && grabberOut && !grabber.isArmRunning()) {
                 grabber.triggerControl(gamepad2.right_trigger);
-            } else if (gamepad2.left_bumper) {
-                grabber.deposit();
-                grabberOut = false;
             }
 
             ////////////////////////////////////////////////////////////////////

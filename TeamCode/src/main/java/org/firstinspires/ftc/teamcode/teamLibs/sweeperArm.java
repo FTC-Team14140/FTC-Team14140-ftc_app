@@ -17,13 +17,23 @@ public class sweeperArm {
     private boolean sweeperRunning = false;
     //variables integers below are degress for servo positions
     private final int RETRACT = 140;
-    private final int ARM_EXTENDUP = 35;
+
+    // full extended up and down
     private final int BASE_EXTEND = 210;
-    private final int ARM_EXTENDDOWN = 50;
+    private final int ARM_EXTENDUP = 20;
+    private final int ARM_EXTENDDOWN = 45;
+
+    // at the base of the crater up and down
     private final int BASE_DCRATER = 200;
     private final int ARM_DCRATER = 80;
+    private final int BASE_DCRATER_UP = 190;
+    private final int ARM_DCRATER_UP = 70;
+
+    // at the top of the crater up and down
     private final int BASE_TCRATER = 175;
     private final int ARM_TCRATER = 115;
+    private final int BASE_TCRATER_UP = 175;
+    private final int ARM_TCRATER_UP = 115;
 
 
     public sweeperArm(Telemetry theTel, HardwareMap hwMap, String baseServoName, String armServoName) {
@@ -61,5 +71,30 @@ public class sweeperArm {
         baseServo.goTo(BASE_TCRATER);
         armServo.goTo(ARM_TCRATER);
     }
+    public void stickControl(float stick, boolean down){
+        int base = 0;
+        int arm = 0;
+        if (stick > 0) {
+            if (down) {
+                base = (int) (BASE_DCRATER + (BASE_EXTEND - BASE_DCRATER) * stick);
+                arm = (int) (ARM_DCRATER - (ARM_DCRATER - ARM_EXTENDDOWN) * stick);
+            } else {
+                base = (int) (BASE_DCRATER_UP + (BASE_EXTEND - BASE_DCRATER_UP) * stick);
+                arm = (int) (ARM_DCRATER_UP - (ARM_DCRATER_UP - ARM_EXTENDUP) * stick);
+            }
+        } else {
+            if (down) {
+                base = (int) (BASE_TCRATER + (BASE_DCRATER - BASE_TCRATER) * stick);
+                arm = (int) (ARM_DCRATER + (ARM_TCRATER - ARM_DCRATER) * stick *-1);
+            } else {
+                base = (int) (BASE_TCRATER + (BASE_DCRATER - BASE_TCRATER) * stick);
+                arm = (int) (ARM_DCRATER + (ARM_TCRATER - ARM_DCRATER) * stick *-1);
+            }
+
+        }
+        baseServo.goTo(base);
+        armServo.goTo(arm);
+    }
+
 
 }
