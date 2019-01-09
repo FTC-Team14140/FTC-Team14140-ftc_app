@@ -30,6 +30,9 @@ public class teamTeleop extends LinearOpMode {
     private linearActuator La;
     private basicMovement basicMove;
     final static double DPAD_SPEED = .5;
+    private boolean grabberOut = false;
+    private boolean sweeperOut = false;
+
 
     // 0.15 is the threshold that the motor starts to accelerate
     private static final double deadSpot = 0.15;
@@ -124,26 +127,37 @@ public class teamTeleop extends LinearOpMode {
 
             ////////////////////////////////////////////////////////////////////
             // Code to control the grabber servos
-            if(gamepad2.x){
+            if(gamepad2.x && !grabberOut){
                 //grabber.wideOpen();
                 sweeper.craterTop();
+                sweeperOut = true;
             } else if(gamepad2.a) {
                 //grabber.skinnyOpen();
                 sweeper.retract();
-            } else if(gamepad2.b) {
+                sweeperOut = false;
+            } else if(gamepad2.b && !grabberOut) {
                 //grabber.grab();
                 sweeper.extendUp();
-            } else if(gamepad2.y) {
+                sweeperOut = true;
+            } else if(gamepad2.y && !grabberOut) {
                 //grabber.deposit();
                 sweeper.craterBase();
-            } else if (gamepad2.right_bumper) {
+                sweeperOut = true;
+            } else if (gamepad2.right_bumper && !grabberOut) {
                 sweeper.extendDown();
+                sweeperOut = true;
+
             } else if(gamepad2.dpad_up) {
                 grabber.holdUp();
-            } else if(gamepad2.dpad_down) {
+                grabberOut = false;
+            } else if(gamepad2.dpad_down && !sweeperOut ) {
                 grabber.grabberDown();
+                grabberOut = true;
             } else if (gamepad2.right_trigger > 0) {
                 grabber.triggerControl(gamepad2.right_trigger);
+            } else if (gamepad2.left_bumper) {
+                grabber.deposit();
+                grabberOut = false;
             }
 
             ////////////////////////////////////////////////////////////////////
@@ -165,8 +179,6 @@ public class teamTeleop extends LinearOpMode {
             } else {
                 La.stopMotor();
             }
-
-
 
             //telemetry.addData("Servo Position", servoTest.getPosition());
             //telemetry.addData("MotorLeft Target Power", tgtPowerLeft);
