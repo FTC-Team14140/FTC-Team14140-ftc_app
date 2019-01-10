@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.RobotLog;
 
+import org.firstinspires.ftc.teamcode.teamLibs.sweeperArm;
 import org.firstinspires.ftc.teamcode.teamLibs.teamColorSensor;
 import org.firstinspires.ftc.teamcode.teamLibs.basicMovement;
 import org.firstinspires.ftc.teamcode.teamLibs.linearActuator;
@@ -21,6 +22,7 @@ public class teamAutoOp extends LinearOpMode {
     private grabberArm grabber;
     private teamColorSensor leftColor;
     private teamColorSensor rightColor;
+    private sweeperArm sweeper;
 
     @Override
     public void runOpMode() {
@@ -39,11 +41,13 @@ public class teamAutoOp extends LinearOpMode {
         teamUtil.log("initializing colorSensors...");
         leftColor = new teamColorSensor(telemetry,hardwareMap.get(ColorSensor.class,"leftRearColor"));
         rightColor = new teamColorSensor(telemetry,hardwareMap.get(ColorSensor.class,"rightRearColor"));
+        sweeper = new sweeperArm(telemetry, hardwareMap, "retrieveBaseServo", "retrieveArmServo");
 
 
         teamUtil.log("Initialized, Waiting for Start...");
 
         grabber.autoInitialize();
+        sweeper.retract();
 
         waitForStart();
 
@@ -78,7 +82,7 @@ public class teamAutoOp extends LinearOpMode {
         sleep(1000);
         grabber.wideOpen();
         sleep(500);
-        grabber.holdUp();
+        grabber.up();
         basicMove.moveInches(-1,-30);
         basicMove.motorsOn(-0.3);
         while (!leftColor.isOnTape()){
@@ -94,7 +98,7 @@ public class teamAutoOp extends LinearOpMode {
         //basicMove.moveInches(-1, -34);
         //basicMove.moveInches(.5,5);
 
-        basicMove.leftSpin(0.3, 90);
+        basicMove.leftSpin(0.3, 88);
         basicMove.moveInches(1,50);
         grabber.extend();
         basicMove.moveInches(0.3,10);

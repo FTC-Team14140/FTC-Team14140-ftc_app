@@ -52,6 +52,10 @@ public class grabberArm {
         grabberServo.goTo(GRAB);
         liftServo.goTo(UP_SPOT);
     }
+    public void up () {
+        liftServo.goTo(UP_SPOT);
+        grabberServo.goTo(SKINNY);
+    }
 
     public void deposit () {
         if (armRunning == false) {
