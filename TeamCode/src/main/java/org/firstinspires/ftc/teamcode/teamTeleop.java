@@ -130,7 +130,7 @@ public class teamTeleop extends LinearOpMode {
            /* if(gamepad2.x && !grabberOut){
                 sweeper.craterTop();
                 sweeperOut = true;
-            } else */
+            } else
             if(gamepad2.a) {
                 sweeper.retract();
                 sweeperOut = false;
@@ -143,13 +143,13 @@ public class teamTeleop extends LinearOpMode {
             } else if (gamepad2.right_bumper && !grabberOut) {
                 sweeper.extendDown();
                 sweeperOut = true;
-            } //else  if ((gamepad2.left_stick_y != 0) && !grabberOut) { // maybe this should only work if the sweeper is already out?
+            } */  //else  if ((gamepad2.left_stick_y != 0) && !grabberOut) { // maybe this should only work if the sweeper is already out?
               //  sweeper.stickControl(-gamepad2.left_stick_y, gamepad2.left_stick_button);
             //}
 
             ///////////////////////////////////////////////////////////////////
             // Code to control the grabber servos
-            else if (gamepad2.left_bumper && grabberOut) {
+             if (gamepad2.left_bumper && grabberOut) {
                 grabber.deposit();
                 grabberOut = false;
             } else if(gamepad2.dpad_up) {

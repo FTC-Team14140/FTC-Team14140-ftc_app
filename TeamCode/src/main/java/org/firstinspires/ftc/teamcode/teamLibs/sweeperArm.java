@@ -46,6 +46,7 @@ public class sweeperArm {
     //methods to move srevos
     public void retract () {
         baseServo.goTo(RETRACT);
+        teamUtil.sleep(250);
         armServo.goTo(RETRACT);
     }
     public void extendUpNoWait () {
