@@ -185,11 +185,26 @@ public class basicMovement {
 
         }
     }
-    public void smoothMovement(double speed, double distance) {
+    public void forwardMovement(double speed, double distance) {
+        final double MIN_SPEED = 0.1;
+        smoothMovement(speed, distance);
+
+
+    }
+
+
+    public void backwardMovement (double speed, double distance){
+        final double MIN_SPEED = -0.1;
+        smoothMovement(-speed, -distance);
+
+
+    }
+
+    private void smoothMovement(double speed, double distance) {
 
         int startPosition = 0;
         double maxSpeed = speed;
-        int totalEncoders = (int) (distance * COUNTS_PER_INCH);
+       int totalEncoders = (int) (distance * COUNTS_PER_INCH);
         int endPosition = (int) (startPosition + totalEncoders);
         double totalAcceleration = maxSpeed - MIN_SPEED;
         if ((totalEncoders/2) < ((totalAcceleration * MAX_ACEL_PER_INCH) * COUNTS_PER_INCH)); {

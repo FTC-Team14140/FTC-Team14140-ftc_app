@@ -127,24 +127,25 @@ public class teamTeleop extends LinearOpMode {
 
             ////////////////////////////////////////////////////////////////////
             // Code to control the sweeper servos
-            if(gamepad2.x && !grabberOut){
+           /* if(gamepad2.x && !grabberOut){
                 sweeper.craterTop();
                 sweeperOut = true;
-            } else if(gamepad2.a) {
+            } else */
+            if(gamepad2.a) {
                 sweeper.retract();
                 sweeperOut = false;
             } else if(gamepad2.b && !grabberOut) {
-                sweeper.extendUp();
+                sweeper.extendUpNoWait();
                 sweeperOut = true;
             } else if(gamepad2.y && !grabberOut) {
-                sweeper.craterBase();
+                sweeper.sweep();
                 sweeperOut = true;
             } else if (gamepad2.right_bumper && !grabberOut) {
                 sweeper.extendDown();
                 sweeperOut = true;
-            } else  if ((gamepad2.left_stick_y != 0) && !grabberOut) { // maybe this should only work if the sweeper is already out?
-                sweeper.stickControl(-gamepad2.left_stick_y, gamepad2.left_stick_button);
-            }
+            } //else  if ((gamepad2.left_stick_y != 0) && !grabberOut) { // maybe this should only work if the sweeper is already out?
+              //  sweeper.stickControl(-gamepad2.left_stick_y, gamepad2.left_stick_button);
+            //}
 
             ///////////////////////////////////////////////////////////////////
             // Code to control the grabber servos
@@ -164,7 +165,7 @@ public class teamTeleop extends LinearOpMode {
             ////////////////////////////////////////////////////////////////////
             // Code to control the xrail system
             if(gamepad2.right_stick_button) {
-                xrail.fullDump(1);
+                xrail.fullDumpNoWait();
             }
 
             ////////////////////////////////////////////////////////////////////

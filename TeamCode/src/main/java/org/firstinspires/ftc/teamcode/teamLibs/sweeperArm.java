@@ -19,7 +19,7 @@ public class sweeperArm {
     private final int RETRACT = 140;
 
     // full extended up and down
-    private final int BASE_EXTEND = 210;
+    private final int BASE_EXTEND = 215;
     private final int ARM_EXTENDUP = 20;
     private final int ARM_EXTENDDOWN = 45;
 
@@ -48,9 +48,25 @@ public class sweeperArm {
         baseServo.goTo(RETRACT);
         armServo.goTo(RETRACT);
     }
+    public void extendUpNoWait () {
+        if (sweeperRunning == false) {
+            sweeperRunning = true;
+            Thread t1 = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    extendUp();
+                }
+            });
+            t1.start();
+        }
+    }
+
     public void extendUp () {
-        baseServo.goTo(BASE_EXTEND);
         armServo.goTo(ARM_EXTENDUP);
+        teamUtil.sleep(250);
+        baseServo.goTo(BASE_EXTEND);
+        sweeperRunning = false;
+
     }
     public void extendDown () {
         baseServo.goTo(BASE_EXTEND);

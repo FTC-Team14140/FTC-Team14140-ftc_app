@@ -14,6 +14,7 @@ public class xRail {
     private final int EXTEND_ACTUAL = 830; // was 830
     private final int EXTEND_TARGET = EXTEND_ACTUAL+22;
     private final int DECEL_TARGET = EXTEND_ACTUAL-175;
+    private boolean xrailRunning = false;
 
     private final double TIMEOUT_SECONDS = 2.5;
 
@@ -143,7 +144,18 @@ public class xRail {
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         teamUtil.log("done at :" + motor.getCurrentPosition());
     }
-
+        public void fullDumpNoWait () {
+            if (xrailRunning == false) {
+                xrailRunning = true;
+                Thread t1 = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    fullDump(1);
+                }
+            });
+                t1.start();
+        }
+    }
         public void fullDump(float initialSpeed)  {
             ElapsedTime runtime = new ElapsedTime();
             motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -158,13 +170,12 @@ public class xRail {
             }
 
             int lastPosition;
-            motor.setPower(0.4
-            );
+            motor.setPower(1);
             lastPosition = motor.getCurrentPosition();//sets last position to the current encoder position of the robot
             teamUtil.sleep(500);//wait's 100ms so the motor has time to run a little
             while (teamUtil.theOpMode.opModeIsActive() && (lastPosition != motor.getCurrentPosition())) {
                 lastPosition = motor.getCurrentPosition();//This while loop makes it so if the positon of the motor is the same
-                teamUtil.sleep(100);           //after 100ms than we know it hit the bottom and stalled
+                teamUtil.sleep(250);           //after 100ms than we know it hit the bottom and stalled
             }
 
             teamUtil.log("retracting at :" + motor.getCurrentPosition());
@@ -180,6 +191,7 @@ public class xRail {
             motor.setPower(0); // otherwise we will drain the battery...
             motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             teamUtil.log("done at :" + motor.getCurrentPosition());
+            xrailRunning = false;
         }
     }
 
