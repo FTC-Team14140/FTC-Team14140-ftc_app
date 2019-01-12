@@ -170,7 +170,7 @@ public class xRail {
             }
 
             int lastPosition;
-            motor.setPower(1);
+            motor.setPower(.5);
             lastPosition = motor.getCurrentPosition();//sets last position to the current encoder position of the robot
             teamUtil.sleep(500);//wait's 100ms so the motor has time to run a little
             while (teamUtil.theOpMode.opModeIsActive() && (lastPosition != motor.getCurrentPosition())) {
