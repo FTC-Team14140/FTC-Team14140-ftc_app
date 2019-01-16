@@ -39,6 +39,7 @@ public class manualTest extends LinearOpMode {
     private teamColorSensor rightColSensor;
     private basicMovement basicMove;
     private sweeperArm sweeper;
+    mineralDetector detector;
 
 
     @Override
@@ -48,22 +49,35 @@ public class manualTest extends LinearOpMode {
         //when we say go forwards, we really mean backwards
 
         teamUtil.theOpMode = this;
+
+        // Create and initialize the Mineral Detector
+        // This code should appear at the start of the opMode before initializing other
+        // hardware classes otherwise we are getting wierd USB bus errors...
+        teamUtil.log("creating Detector");
+        detector = new mineralDetector(telemetry, hardwareMap);
+        teamUtil.log("Initializing Detector");
+        detector.initialize(hardwareMap.get(WebcamName.class, "Webcam 1"));
+
         //grabber = new grabberArm (telemetry, hardwareMap, "grabberServo", "liftServo");
-        //xrail = new xRail(telemetry, hardwareMap.get(DcMotor.class, "xRailMotor"));
         //gyro = new revHubIMUGyro(hardwareMap.get(BNO055IMU.class, "imu"), telemetry );
         //La = new linearActuator(telemetry, hardwareMap.get(DcMotor.class, "LAMotor"));
+
+        //xrail = new xRail(telemetry, hardwareMap.get(DcMotor.class, "xRailMotor"));
         //xrail.init();
+
         //grabber.initialize();
+
         //leftDisSensor = new distanceSensors(telemetry, hardwareMap.get(Rev2mDistanceSensor.class, "leftFront2M"));
         //rightDisSensor = new distanceSensors(telemetry, hardwareMap.get(Rev2mDistanceSensor.class, "rightFront2M"));
         //leftColSensor = new teamColorSensor(telemetry, hardwareMap.get(ColorSensor.class, "leftRearColor"));
         //rightColSensor = new teamColorSensor(telemetry, hardwareMap.get(ColorSensor.class, "rightRearColor"));
+
         basicMove = new basicMovement(hardwareMap.get(DcMotor.class, "motorLeft"), hardwareMap.get(DcMotor.class, "motorRight"), hardwareMap.get(BNO055IMU.class, "imu"), telemetry);
 
-        sweeper = new sweeperArm(telemetry, hardwareMap, "retrieveBaseServo", "retrieveArmServo");
+        //sweeper = new sweeperArm(telemetry, hardwareMap, "retrieveBaseServo", "retrieveArmServo");
+        //sweeper.retract();
 
         // Wait for the game to start (driver presses PLAY)
-        sweeper.retract();
         waitForStart();
 
 
@@ -125,10 +139,6 @@ public class manualTest extends LinearOpMode {
             */
 
             if (gamepad1.left_stick_button) {
-                teamUtil.log("creating Detector");
-                mineralDetector detector = new mineralDetector(telemetry, hardwareMap);
-                teamUtil.log("Initializing Detector");
-                detector.initialize(hardwareMap.get(WebcamName.class, "Webcam 1"));
                 teamUtil.log("Start Tracking");
                 detector.startTracking();
                 int which = detector.detect();
@@ -152,7 +162,7 @@ public class manualTest extends LinearOpMode {
                 detector.stopTracking();
             }
 
-
+/*
             if (gamepad2.a) {
                 sweeper.retract();
             } else if (gamepad2.b) {
@@ -166,14 +176,16 @@ public class manualTest extends LinearOpMode {
             } else if (gamepad2.left_stick_y != 0) {
                 sweeper.stickControl(-gamepad2.left_stick_y, gamepad2.left_stick_button);
             }
-
+*/
 
 
 
             if (gamepad1.a) {
-                basicMove.forwardMovement(0.8, 36);
+                basicMove.forwardMovement(0.8, 24);
             } else  if (gamepad1.b) {
                 basicMove.backwardMovement(0.7, 24);
+            } else if (gamepad1.x) {
+                basicMove.smoothMovement(0.7, 24);
             }
 
             //this.gamepad1.x

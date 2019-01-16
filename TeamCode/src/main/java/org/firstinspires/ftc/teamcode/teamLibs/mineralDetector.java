@@ -29,24 +29,23 @@ public class mineralDetector {
     public void initialize (WebcamName camName) {
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
+        teamUtil.log("Initializing Vuforia");
         initVuforia(camName);
 
+        teamUtil.log("Initializing TFOD");
         if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
             initTfod();
         } else {
             telemetry.addData("Sorry!", "This device is not compatible with TFOD");
         }
-
-        /** Wait for the game to begin */
-        telemetry.addData(">", "Press Play to start tracking");
-        telemetry.update();
-
     }
 
     public void startTracking () {
+        teamUtil.log("Trying to Start Tracking");
         if (teamUtil.theOpMode.opModeIsActive()) {
             /** Activate Tensor Flow Object Detection. */
             if (tfod != null) {
+                teamUtil.log("Calling activate() on tfod");
                 tfod.activate();
             }
         }
@@ -54,6 +53,7 @@ public class mineralDetector {
 
     public void stopTracking () {
             if (tfod != null) {
+                teamUtil.log("Calling shutdown() on tfod");
                 tfod.shutdown();
             }
     }
@@ -63,15 +63,14 @@ public class mineralDetector {
         if (tfod != null) {
             // getUpdatedRecognitions() will return null if no new information is available since
             // the last time that call was made.
+            teamUtil.log("Detecting ");
             List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
             if (updatedRecognitions != null) {
-                teamUtil.log("# Minerals Detected: " + updatedRecognitions.size());
+                teamUtil.log(getRecognizedObjectsString(updatedRecognitions));
                 // make sure we have exactly two
                 if (updatedRecognitions.size() == 2) {
                     Recognition firstObject = updatedRecognitions.get(0);
                     Recognition secondObject = updatedRecognitions.get(1);
-                    int firstX = -1;
-                    int secondX = -1;
                     String firstLabel = firstObject.getLabel();
                     String secondLabel = secondObject.getLabel();
 
@@ -102,6 +101,22 @@ public class mineralDetector {
         return (0);
     }
 
+    // format a string for the log showing what we have detected
+    private String getRecognizedObjectsString (List<Recognition> theList) {
+        String logString = "";
+        logString += "#: " + theList.size();
+        for (Recognition recognition : theList) {
+            logString += " | ";
+            if (recognition.getLabel() == LABEL_SILVER_MINERAL) {
+                logString += "S,";
+            } else {
+                logString += "G,";
+            }
+            logString += ((int) (recognition.getConfidence() * 100)) + ",";
+            logString += ((int) recognition.getBottom());
+        }
+        return logString;
+    }
     /*
         /**
          * Initialize the Vuforia localization engine.
@@ -128,7 +143,7 @@ public class mineralDetector {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minimumConfidence = 0.90; // set the minimum confidence level for detection very high
+        tfodParameters.minimumConfidence = 0.60; // set the minimum confidence level for detection
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_GOLD_MINERAL, LABEL_SILVER_MINERAL);
     }
