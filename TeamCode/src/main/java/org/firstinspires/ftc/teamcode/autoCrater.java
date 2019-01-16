@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.teamcode.teamLibs.basicMovement;
 import org.firstinspires.ftc.teamcode.teamLibs.grabberArm;
 import org.firstinspires.ftc.teamcode.teamLibs.linearActuator;
+import org.firstinspires.ftc.teamcode.teamLibs.sweeperArm;
 import org.firstinspires.ftc.teamcode.teamLibs.teamUtil;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import org.firstinspires.ftc.teamcode.teamLibs.teamColorSensor;
@@ -19,6 +20,7 @@ public class autoCrater extends LinearOpMode{
         private grabberArm grabber;
         private teamColorSensor leftColor;
         private teamColorSensor rightColor;
+        private sweeperArm sweeper;
 
         @Override
         public void runOpMode() {
@@ -37,10 +39,12 @@ public class autoCrater extends LinearOpMode{
             teamUtil.log("initializing colorSensors...");
             leftColor = new teamColorSensor(telemetry,hardwareMap.get(ColorSensor.class,"leftRearColor"));
             rightColor = new teamColorSensor(telemetry,hardwareMap.get(ColorSensor.class,"rightRearColor"));
+            sweeper = new sweeperArm(telemetry, hardwareMap, "retrieveBaseServo", "retrieveArmServo");
 
             teamUtil.log("Initialized, Waiting for Start...");
 
             grabber.autoInitialize();
+            sweeper.retract();
 
             waitForStart();
 

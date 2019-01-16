@@ -17,6 +17,7 @@ import org.firstinspires.ftc.teamcode.teamLibs.grabberArm;
 import org.firstinspires.ftc.teamcode.teamLibs.xRail;
 import org.firstinspires.ftc.teamcode.teamLibs.linearActuator;
 import org.firstinspires.ftc.teamcode.teamLibs.teamUtil;
+import org.firstinspires.ftc.teamcode.teamLibs.sweeperArm;
 
 @TeleOp(name="Comp TeleOp", group="Linear Opmode")
 public class teamTeleop extends LinearOpMode {
@@ -25,9 +26,13 @@ public class teamTeleop extends LinearOpMode {
     private DcMotor motorRight;
     private grabberArm grabber;
     private xRail xrail;
+    private sweeperArm sweeper;
     private linearActuator La;
     private basicMovement basicMove;
     final static double DPAD_SPEED = .5;
+    private boolean grabberOut = false;
+    private boolean sweeperOut = false;
+
 
     // 0.15 is the threshold that the motor starts to accelerate
     private static final double deadSpot = 0.15;
@@ -48,6 +53,7 @@ public class teamTeleop extends LinearOpMode {
         //gyro = new revHubIMUGyro(hardwareMap.get(BNO055IMU.class, "imu"), telemetry );
         La = new linearActuator(telemetry, hardwareMap.get(DcMotor.class, "LAMotor"));
         basicMove = new basicMovement(motorLeft, motorRight, hardwareMap.get(BNO055IMU.class,"imu"), telemetry);
+        sweeper = new sweeperArm(telemetry, hardwareMap, "retrieveBaseServo", "retrieveArmServo");
         xrail.init();
 
         // Wait for the game to start (driver presses PLAY)
@@ -120,27 +126,46 @@ public class teamTeleop extends LinearOpMode {
             motorLeft.setPower(tgtPowerLeft*speedFactor);
 
             ////////////////////////////////////////////////////////////////////
+            // Code to control the sweeper servos
+           /* if(gamepad2.x && !grabberOut){
+                sweeper.craterTop();
+                sweeperOut = true;
+            } else
+            if(gamepad2.a) {
+                sweeper.retract();
+                sweeperOut = false;
+            } else if(gamepad2.b && !grabberOut) {
+                sweeper.extendUpNoWait();
+                sweeperOut = true;
+            } else if(gamepad2.y && !grabberOut) {
+                sweeper.sweep();
+                sweeperOut = true;
+            } else if (gamepad2.right_bumper && !grabberOut) {
+                sweeper.extendDown();
+                sweeperOut = true;
+            } */  //else  if ((gamepad2.left_stick_y != 0) && !grabberOut) { // maybe this should only work if the sweeper is already out?
+              //  sweeper.stickControl(-gamepad2.left_stick_y, gamepad2.left_stick_button);
+            //}
+
+            ///////////////////////////////////////////////////////////////////
             // Code to control the grabber servos
-            if(gamepad2.x){
-                grabber.wideOpen();
-            } else if(gamepad2.a) {
-                grabber.skinnyOpen();
-            } else if(gamepad2.b) {
-                grabber.grab();
-            } else if(gamepad2.y) {
+             if (gamepad2.left_bumper && grabberOut) {
                 grabber.deposit();
+                grabberOut = false;
             } else if(gamepad2.dpad_up) {
                 grabber.holdUp();
-            } else if(gamepad2.dpad_down) {
+                grabberOut = false;
+            } else if(gamepad2.dpad_down && !sweeperOut ) {
                 grabber.grabberDown();
-            } else if (gamepad2.right_trigger > 0) {
+                grabberOut = true;
+            } else if ((gamepad2.right_trigger > 0) && grabberOut && !grabber.isArmRunning()) {
                 grabber.triggerControl(gamepad2.right_trigger);
             }
 
             ////////////////////////////////////////////////////////////////////
             // Code to control the xrail system
             if(gamepad2.right_stick_button) {
-                xrail.loadLanderV2();
+                xrail.fullDumpNoWait();
             }
 
             ////////////////////////////////////////////////////////////////////
@@ -156,8 +181,6 @@ public class teamTeleop extends LinearOpMode {
             } else {
                 La.stopMotor();
             }
-
-
 
             //telemetry.addData("Servo Position", servoTest.getPosition());
             //telemetry.addData("MotorLeft Target Power", tgtPowerLeft);

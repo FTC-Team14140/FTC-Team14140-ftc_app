@@ -33,6 +33,9 @@ public class grabberArm {
         grabberServo.goTo(WIDE);
     }
 
+    public boolean isArmRunning() {
+        return armRunning;
+    }
     public void grab () {
         grabberServo.goTo(GRAB);
     }
@@ -46,7 +49,12 @@ public class grabberArm {
     }
 
     public void holdUp () {
+        grabberServo.goTo(GRAB);
         liftServo.goTo(UP_SPOT);
+    }
+    public void up () {
+        liftServo.goTo(UP_SPOT);
+        grabberServo.goTo(SKINNY);
     }
 
     public void deposit () {
@@ -63,11 +71,12 @@ public class grabberArm {
     }
 
     public void depositWait () {
+        grabberServo.goTo(GRAB); //
         liftServo.goTo(DROP);
         teamUtil.sleep(1000);
-        grabberServo.goTo(SKINNY);
+        grabberServo.goTo(SKINNY); //
         teamUtil.sleep(250);
-        liftServo.goTo(UP_SPOT);
+        holdUp();
         armRunning = false;
     }
 

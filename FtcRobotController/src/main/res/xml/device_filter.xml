@@ -46,5 +46,8 @@ https://developer.android.com/guide/topics/connectivity/usb/host
    <!-- Update: turns out we need that if we are to get onNewIntent() notifications
         in our activity when cameras attach. See FtcRobotControllerActivity. -->
    <usb-device class="14" subclass="2"/>
+   <usb-device class="239" subclass="2"/> <!-- Logitech c310 webcam is showing up with class ef instead of e...-->
+
+   <usb-device vendor-id="1133" product-id="2075" /> <!-- Logitech c310 webcam -->
 
 </resources>
