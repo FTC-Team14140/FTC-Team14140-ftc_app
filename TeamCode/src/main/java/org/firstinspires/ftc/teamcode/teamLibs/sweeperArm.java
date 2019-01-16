@@ -88,6 +88,13 @@ public class sweeperArm {
         baseServo.goTo(BASE_TCRATER);
         armServo.goTo(ARM_TCRATER);
     }
+
+    // forces the servos to the specified position...be careful!!
+    public void goTo(int base, int arm) {
+        baseServo.goTo(base);
+        armServo.goTo(arm);
+
+    }
     public void stickControl(float stick, boolean down){
         int base = 0;
         int arm = 0;

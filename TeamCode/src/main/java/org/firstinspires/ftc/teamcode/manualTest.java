@@ -57,6 +57,7 @@ public class manualTest extends LinearOpMode {
         detector = new mineralDetector(telemetry, hardwareMap);
         teamUtil.log("Initializing Detector");
         detector.initialize(hardwareMap.get(WebcamName.class, "Webcam 1"));
+        telemetry.addData("Status", "Detector Initialized");
 
         //grabber = new grabberArm (telemetry, hardwareMap, "grabberServo", "liftServo");
         //gyro = new revHubIMUGyro(hardwareMap.get(BNO055IMU.class, "imu"), telemetry );
@@ -78,6 +79,8 @@ public class manualTest extends LinearOpMode {
         //sweeper.retract();
 
         // Wait for the game to start (driver presses PLAY)
+        telemetry.addData("Status", "Initialized...Ready to Run");
+        telemetry.update();
         waitForStart();
 
 
@@ -178,6 +181,36 @@ public class manualTest extends LinearOpMode {
             }
 */
 
+            ////////////////////////////////////////////////////////////////////
+            // Code to manually control the sweeper servos (in order to get positions
+            /*
+           int base = 140;
+           int arm = 140;
+           if(gamepad2.x){
+                base += 1;
+                sweeper.goTo(base, arm);
+                telemetry.addData("Sweeper Base:", base);
+                telemetry.addData("Sweeper arm:", arm);
+                teamUtil.sleep(100);
+            } else if(gamepad2.y) {
+               base -= 1;
+               sweeper.goTo(base, arm);
+               telemetry.addData("Sweeper Base:", base);
+               telemetry.addData("Sweeper arm:", arm);
+               teamUtil.sleep(100);
+            } else if(gamepad2.a) {
+               arm -= 1;
+               sweeper.goTo(base, arm);
+               telemetry.addData("Sweeper Base:", base);
+               telemetry.addData("Sweeper arm:", arm);
+               teamUtil.sleep(100);
+           }else if(gamepad2.b) {
+               arm += 1;
+               sweeper.goTo(base, arm);
+               telemetry.addData("Sweeper Base:", base);
+               telemetry.addData("Sweeper arm:", arm);
+               teamUtil.sleep(100);
+           } */
 
 
             if (gamepad1.a) {
@@ -221,7 +254,7 @@ public class manualTest extends LinearOpMode {
                 //telemetry.addData("colorRightRed", rightColSensor.redValue());
                 //telemetry.addData("colorLeftBlue", leftColSensor.blueValue() );
                 // telemetry.addData("colorRightblue", rightColSensor.blueValue());
-                //telemetry.update();
+                telemetry.update();
 
             }
 
