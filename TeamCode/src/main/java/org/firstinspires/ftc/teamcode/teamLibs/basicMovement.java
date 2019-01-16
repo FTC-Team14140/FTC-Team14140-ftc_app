@@ -17,7 +17,7 @@ public class basicMovement {
 
     //The counts per inch is the number of ticks per revolution divided by the circumference of the wheel
     private double     COUNTS_PER_INCH = 89.7158;
-    private final double MIN_SPEED = 0.2;
+    private final double MIN_SPEED = 0.15;
     private final double MAX_ACEL_PER_INCH = 0.15;
     private final double MAX_DECEL_PER_INCH = 0.15;
 
@@ -186,30 +186,34 @@ public class basicMovement {
         }
     }
     public void forwardMovement(double speed, double distance) {
-        final double MIN_SPEED = 0.1;
         smoothMovement(speed, distance);
-
-
     }
 
 
     public void backwardMovement (double speed, double distance){
-        final double MIN_SPEED = -0.1;
         smoothMovement(-speed, -distance);
-
-
     }
 
-    private void smoothMovement(double speed, double distance) {
-
+    public void smoothMovement(double speed, double distance) {
         int startPosition = 0;
         double maxSpeed = speed;
-       int totalEncoders = (int) (distance * COUNTS_PER_INCH);
+        int totalEncoders = (int) (distance * COUNTS_PER_INCH);
         int endPosition = (int) (startPosition + totalEncoders);
         double totalAcceleration = maxSpeed - MIN_SPEED;
-        if ((totalEncoders/2) < ((totalAcceleration * MAX_ACEL_PER_INCH) * COUNTS_PER_INCH)); {
-            maxSpeed = MIN_SPEED + (totalEncoders/2) / (MAX_ACEL_PER_INCH * COUNTS_PER_INCH);
+        teamUtil.log("smoothMovement...Inital Calcs ");
+        teamUtil.log("startPosition... "+ startPosition);
+        teamUtil.log("MIN_SPEED... "+ MIN_SPEED);
+        teamUtil.log("maxSpeed... "+ maxSpeed);
+        teamUtil.log("totalEncoders... "+ totalEncoders);
+        teamUtil.log("endPosition... "+ endPosition);
+        teamUtil.log("totalAcceleration... "+ totalAcceleration);
+        // TODO: There is still a bug here as this assumes max acel and max decel rates are the same...
+        if ((totalEncoders/2) < ((totalAcceleration / MAX_ACEL_PER_INCH) * COUNTS_PER_INCH)) { // BUG: there was a semicolon after the test and before the open bracket...
+            maxSpeed = MIN_SPEED + (totalEncoders/2) * (MAX_ACEL_PER_INCH / COUNTS_PER_INCH);  // BUG: This formula had division and multiplication reversed...
             totalAcceleration = maxSpeed - MIN_SPEED;
+            teamUtil.log("Adjusting Max Speed (not enough distance for accel and decel)");
+            teamUtil.log("maxSpeed... "+ maxSpeed);
+            teamUtil.log("totalAcceleration... "+ totalAcceleration);
         }
         double acellerationInchs = totalAcceleration/MAX_ACEL_PER_INCH;
         int acellerationEncoders = (int) (acellerationInchs * COUNTS_PER_INCH);
@@ -231,19 +235,23 @@ public class basicMovement {
         motorLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        teamUtil.log("smooth Move Inches");
-        teamUtil.log("startPosition: "+ startPosition);
         teamUtil.log("cruisePosition: "+ cruisePosition);
         teamUtil.log("decelerationSpot: "+ decelerationSpot);
-        telemetry.addData("startPosition: ", startPosition);
-        telemetry.addData("cruisePosition: ", cruisePosition);
-        telemetry.addData("decelerationSpot: ", decelerationSpot);
-        telemetry.addData("endSpot: ", endPosition);
-        telemetry.update();
+        //telemetry.addData("startPosition: ", startPosition);
+        //telemetry.addData("cruisePosition: ", cruisePosition);
+        //telemetry.addData("decelerationSpot: ", decelerationSpot);
+        //telemetry.addData("endSpot: ", endPosition);
+        //telemetry.update();
+
+        double lastMotorSpeed = 2;
         while (motorLeft.getCurrentPosition() < cruisePosition) {
             motorSpeed = totalAcceleration/cruisePosition * motorLeft.getCurrentPosition() + MIN_SPEED;
             motorLeft.setPower(motorSpeed);
             motorRight.setPower(motorSpeed);
+            if (motorSpeed != lastMotorSpeed) {
+                teamUtil.log("Accelerating: " + motorSpeed);
+                lastMotorSpeed = motorSpeed;
+            }
         }
         teamUtil.log("at cruising speed");
         while (motorLeft.getCurrentPosition() < decelerationSpot) {
@@ -251,14 +259,18 @@ public class basicMovement {
         }
         teamUtil.log("decelerating");
         while (motorLeft.getCurrentPosition() < endPosition){
-            motorSpeed = (MIN_SPEED - maxSpeed) / (endPosition - decelerationSpot) * motorLeft.getCurrentPosition()- decelerationSpot + maxSpeed;
+            motorSpeed = (MIN_SPEED - maxSpeed) / (endPosition - decelerationSpot) * (motorLeft.getCurrentPosition()- decelerationSpot) + maxSpeed; // BUG: () were missing
+            motorLeft.setPower(motorSpeed); // BUG: This line was missing
             motorRight.setPower(motorSpeed);
+            if (motorSpeed != lastMotorSpeed) {
+                teamUtil.log("Decelerating: " + motorSpeed);
+                lastMotorSpeed = motorSpeed;
+            }
         }
 
         motorLeft.setPower(0);
         motorRight.setPower(0);
-
-
+        teamUtil.log("turning motors off");
         }
     }
 
