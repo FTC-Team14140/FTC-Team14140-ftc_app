@@ -208,7 +208,7 @@ public class basicMovement {
         teamUtil.log("endPosition... "+ endPosition);
         teamUtil.log("totalAcceleration... "+ totalAcceleration);
         // TODO: There is still a bug here as this assumes max acel and max decel rates are the same...
-        if ((totalEncoders/2) < ((totalAcceleration / MAX_ACEL_PER_INCH) * COUNTS_PER_INCH)) {
+        if ((totalEncoders/2) > ((totalAcceleration / MAX_ACEL_PER_INCH) * COUNTS_PER_INCH)) {
             maxSpeed = MIN_SPEED + (totalEncoders/2) * (MAX_ACEL_PER_INCH / COUNTS_PER_INCH);
             totalAcceleration = maxSpeed - MIN_SPEED;
             teamUtil.log("Adjusting Max Speed (not enough distance for accel and decel)");
@@ -246,7 +246,7 @@ public class basicMovement {
         //telemetry.update();
 
         double lastMotorSpeed = 2;
-        while (motorLeft.getCurrentPosition() < cruisePosition) {
+        while (motorLeft.getCurrentPosition() > cruisePosition) {
             motorSpeed = totalAcceleration/cruisePosition * motorLeft.getCurrentPosition() + MIN_SPEED;
             motorLeft.setPower(motorSpeed);
             motorRight.setPower(motorSpeed);
@@ -256,11 +256,11 @@ public class basicMovement {
             }
         }
         teamUtil.log("at cruising speed");
-        while (motorLeft.getCurrentPosition() < decelerationSpot) {
+        while (motorLeft.getCurrentPosition() > decelerationSpot) {
 
         }
         teamUtil.log("decelerating");
-        while (motorLeft.getCurrentPosition() < endPosition){
+        while (motorLeft.getCurrentPosition() > endPosition){
             motorSpeed = (MIN_SPEED - maxSpeed) / (endPosition - decelerationSpot) * (motorLeft.getCurrentPosition()- decelerationSpot) + maxSpeed; // BUG: () were missing
             motorLeft.setPower(motorSpeed); // BUG: This line was missing
             motorRight.setPower(motorSpeed);
