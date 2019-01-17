@@ -214,11 +214,11 @@ public class manualTest extends LinearOpMode {
 
 
             if (gamepad1.a) {
-                basicMove.forwardMovement(0.8, 24);
+                basicMove.smoothMovement(0.8, 5);
             } else  if (gamepad1.b) {
-                basicMove.backwardMovement(0.7, 24);
+                basicMove.backwardMovement(0.8, 36);
             } else if (gamepad1.x) {
-                basicMove.smoothMovement(1, 24);
+                basicMove.backwardMovement(1, 36);
             }else if (gamepad1.y) {
                 basicMove.smoothMovement(1, 10);
             }
