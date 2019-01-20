@@ -7,6 +7,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.RobotLog;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.teamLibs.mineralDetector;
 import org.firstinspires.ftc.teamcode.teamLibs.sweeperArm;
 import org.firstinspires.ftc.teamcode.teamLibs.teamColorSensor;
 import org.firstinspires.ftc.teamcode.teamLibs.basicMovement;
@@ -23,11 +25,21 @@ public class teamAutoOp extends LinearOpMode {
     private teamColorSensor leftColor;
     private teamColorSensor rightColor;
     private sweeperArm sweeper;
+    private mineralDetector detector;
 
     @Override
     public void runOpMode() {
 
         teamUtil.theOpMode = this;
+        // Create and initialize the Mineral Detector
+        // This code should appear at the start of the opMode before initializing other
+        // hardware classes otherwise we are getting wierd USB bus errors...
+        teamUtil.log("creating Detector");
+        detector = new mineralDetector(telemetry, hardwareMap);
+        teamUtil.log("Initializing Detector");
+        detector.initialize(hardwareMap.get(WebcamName.class, "Webcam 1"));
+        telemetry.addData("Status", "Detector Initialized");
+
         //initialization code
         teamUtil.log("initializing Robot...");
         teamUtil.log("initializing linearActuator...");
@@ -47,15 +59,19 @@ public class teamAutoOp extends LinearOpMode {
         teamUtil.log("Initialized, Waiting for Start...");
 
         grabber.autoInitialize();
-        sweeper.retract();
+        //sweeper.retract();
 
         waitForStart();
 
         teamUtil.log("La.lowerRobot()...");
         basicMove.motorsOn(0.2);
-        La.extendFully();
+        int cubePosition = La.extendDetect(detector);
         basicMove.motorsOff();
-        teamUtil.log("calibrating");
+        telemetry.addData("cubePosition:", cubePosition);
+        telemetry.update();
+        sleep(6000);
+
+        /*teamUtil.log("calibrating");
         leftColor.calibrate();
         rightColor.calibrate();
         teamUtil.log("Unlatching");
@@ -102,6 +118,7 @@ public class teamAutoOp extends LinearOpMode {
         basicMove.moveInches(1,50);
         grabber.extend();
         basicMove.moveInches(0.3,10);
+        */
 
 
     }

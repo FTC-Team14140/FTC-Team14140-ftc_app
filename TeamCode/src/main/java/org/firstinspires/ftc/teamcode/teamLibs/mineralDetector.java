@@ -20,10 +20,27 @@ public class mineralDetector {
     private TFObjectDetector tfod;
     private Telemetry telemetry;
     private HardwareMap hardwareMap;
+    private int[] Voting = new int[4];
 
     public mineralDetector (Telemetry t, HardwareMap map) {
         telemetry = t;
         hardwareMap = map;
+    }
+
+    public void resetVote() {
+        for (int i = 0; i < 4; i++ ){
+            Voting [i] = 0;
+        }
+    }
+
+    public int getVote() {
+        if (Voting[0] > Voting[1] && Voting[0] > Voting[2] && Voting[0] > Voting[3]) {
+            return (0);
+        } else if (Voting[1] > Voting[0] && Voting[1] > Voting[2] && Voting[1] > Voting[3]) {
+            return (1);
+        } else if (Voting[2] > Voting[0] && Voting[2] > Voting[1] && Voting[2] > Voting[3]) {
+            return (2);
+        } else return (3);
     }
 
     public void initialize (WebcamName camName) {
@@ -100,6 +117,11 @@ public class mineralDetector {
         }
         return (0);
     }
+
+    public void detectVote() {
+        Voting[detect()] += 1;
+    }
+
 
     // format a string for the log showing what we have detected
     private String getRecognizedObjectsString (List<Recognition> theList) {
