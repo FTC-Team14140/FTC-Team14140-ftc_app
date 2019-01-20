@@ -163,8 +163,61 @@ public class basicMovement {
             motorLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             motorRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
+    }
 
-}
+
+    public void decelLeftSpin ( double speed, double degrees) {
+        if (teamUtil.theOpMode.opModeIsActive()) {
+            gyro.resetHeading();
+            motorLeft.setPower(-speed);
+            motorRight.setPower(speed);
+            while ((gyro.getHeading() > -degrees+15) && teamUtil.theOpMode.opModeIsActive()) {
+                // TODO: Add some telemetry output here so we can see what's happening on the driver station phone
+
+            }motorLeft.setPower(-0.3);
+            motorRight.setPower(0.3);
+
+            while ((gyro.getHeading() > -degrees) && teamUtil.theOpMode.opModeIsActive()) {
+                // TODO: Add some telemetry output here so we can see what's happening on the driver station phone
+
+            }
+            motorLeft.setPower(0);
+            motorRight.setPower(0);
+
+            motorLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            motorRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        }
+
+
+    }
+
+    public void decelRightSpin ( double speed, double degrees) {
+        if (teamUtil.theOpMode.opModeIsActive()) {
+            gyro.resetHeading();
+            motorLeft.setPower(speed);
+            motorRight.setPower(-speed);
+            while ((gyro.getHeading() < degrees-15) && teamUtil.theOpMode.opModeIsActive()) {
+                // TODO: Add some telemetry output here so we can see what's happening on the driver station phone
+
+            }motorLeft.setPower(0.3);
+            motorRight.setPower(-0.3);
+
+            while ((gyro.getHeading() < degrees) && teamUtil.theOpMode.opModeIsActive()) {
+                // TODO: Add some telemetry output here so we can see what's happening on the driver station phone
+
+            }
+            motorLeft.setPower(0);
+            motorRight.setPower(0);
+
+            motorLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            motorRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        }
+
+
+    }
+
+
+
 
     // TODO: need comments on this method and error handling if they pass in bad parameters
     public void rightSpin (double speed, double degrees) {
