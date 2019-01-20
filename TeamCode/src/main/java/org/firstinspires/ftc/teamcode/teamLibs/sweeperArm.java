@@ -12,26 +12,27 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class sweeperArm {
 
     private Telemetry telemetry;
-    private goBuildAServo2000 baseServo;
+    private HiTecServo baseServo;
     private goBuildAServo2000 armServo;
     private boolean sweeperRunning = false;
     //variables integers below are degress for servo positions
-    private final int RETRACT = 140;
+    private final int RETRACT_ARM = 138;
+    private final int RETRACT_BASE = 59;
 
     // full extended up and down
-    private final int BASE_EXTEND = 215;
-    private final int ARM_EXTENDUP = 20;
+    private final int BASE_EXTEND = 127;
+    private final int ARM_EXTENDUP = 30;
     private final int ARM_EXTENDDOWN = 45;
 
     // at the base of the crater up and down
-    private final int BASE_DCRATER = 200;
-    private final int ARM_DCRATER = 80;
+    private final int BASE_DCRATER = 111;
+    private final int ARM_DCRATER = 82;
     private final int BASE_DCRATER_UP = 190;
     private final int ARM_DCRATER_UP = 70;
 
     // at the top of the crater up and down
-    private final int BASE_TCRATER = 175;
-    private final int ARM_TCRATER = 115;
+    private final int BASE_TCRATER = 90;
+    private final int ARM_TCRATER = 113;
     private final int BASE_TCRATER_UP = 175;
     private final int ARM_TCRATER_UP = 115;
 
@@ -40,14 +41,14 @@ public class sweeperArm {
 
         telemetry = theTel;
 
-        baseServo = new goBuildAServo2000(hwMap.get(Servo.class, baseServoName), telemetry);
+        baseServo = new HiTecServo(hwMap.get(Servo.class, baseServoName), telemetry);
         armServo = new goBuildAServo2000(hwMap.get(Servo.class, armServoName), telemetry);
     }
     //methods to move srevos
     public void retract () {
-        baseServo.goTo(RETRACT);
+        baseServo.goTo(RETRACT_BASE);
         teamUtil.sleep(250);
-        armServo.goTo(RETRACT);
+        armServo.goTo(RETRACT_ARM);
     }
     public void extendUpNoWait () {
         if (sweeperRunning == false) {
