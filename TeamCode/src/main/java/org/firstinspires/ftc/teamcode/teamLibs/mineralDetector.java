@@ -104,8 +104,16 @@ public class mineralDetector {
                     }
                     String firstLabel = firstObject.getLabel();
                     String secondLabel = secondObject.getLabel();
-
-
+                    String logString = "";
+                    logString += " | ";
+                    logString += firstObject.getLabel();
+                    logString += ((int) (firstObject.getConfidence() * 100)) + ",";
+                    logString += ((int) firstObject.getBottom());
+                    logString += " | ";
+                    logString += secondObject.getLabel();
+                    logString += ((int) (secondObject.getConfidence() * 100)) + ",";
+                    logString += ((int) secondObject.getBottom());
+                    teamUtil.log(logString);
                     if ((firstLabel == LABEL_SILVER_MINERAL) && (secondLabel == LABEL_SILVER_MINERAL)) {
                         // gold is far left
                         return(1);
