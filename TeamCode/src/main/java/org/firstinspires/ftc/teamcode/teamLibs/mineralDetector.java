@@ -85,7 +85,7 @@ public class mineralDetector {
             if (updatedRecognitions != null) {
                 teamUtil.log(getRecognizedObjectsString(updatedRecognitions));
                 // make sure we have exactly two
-                if (updatedRecognitions.size() > 2) {
+                if (updatedRecognitions.size() >= 2) {
                     Recognition firstObject = null;
                     Recognition secondObject = null;
                     for (Recognition recognition : updatedRecognitions) {
