@@ -10,10 +10,12 @@ import org.firstinspires.ftc.teamcode.teamLibs.revHubIMUGyro;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gyroscope;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import org.firstinspires.ftc.teamcode.teamLibs.grabberArm;
+import org.firstinspires.ftc.teamcode.teamLibs.teamColorSensor;
 import org.firstinspires.ftc.teamcode.teamLibs.xRail;
 import org.firstinspires.ftc.teamcode.teamLibs.linearActuator;
 import org.firstinspires.ftc.teamcode.teamLibs.teamUtil;
@@ -28,6 +30,8 @@ public class teamTeleop extends LinearOpMode {
     private xRail xrail;
     private sweeperArm sweeper;
     private linearActuator La;
+    private teamColorSensor leftColor;
+    private teamColorSensor rightColor;
     private basicMovement basicMove;
     final static double DPAD_SPEED = .5;
     private boolean grabberOut = false;
@@ -53,6 +57,9 @@ public class teamTeleop extends LinearOpMode {
         //gyro = new revHubIMUGyro(hardwareMap.get(BNO055IMU.class, "imu"), telemetry );
         La = new linearActuator(telemetry, hardwareMap.get(DcMotor.class, "LAMotor"));
         basicMove = new basicMovement(motorLeft, motorRight, hardwareMap.get(BNO055IMU.class,"imu"), telemetry);
+        teamUtil.log("initializing colorSensors...");
+        leftColor = new teamColorSensor(telemetry,hardwareMap.get(ColorSensor.class,"leftRearColor"));
+        rightColor = new teamColorSensor(telemetry,hardwareMap.get(ColorSensor.class,"rightRearColor"));
         sweeper = new sweeperArm(telemetry, hardwareMap, "retrieveBaseServo", "retrieveArmServo");
         xrail.init();
 
@@ -192,6 +199,27 @@ public class teamTeleop extends LinearOpMode {
             telemetry.update();
         }
 
+    }
+
+    public void autoDump() {
+        boolean leftTapeSeen = false;
+        boolean rightTapeSeen = false;
+        basicMove.motorsOn(-0.2);
+        while (!leftTapeSeen || !rightTapeSeen){
+            teamUtil.log("sensing for line...");
+            if(leftColor.isOnTape()){
+                motorLeft.setPower(0);
+                leftTapeSeen = true;
+                teamUtil.log("Left color sensor on tape");
+            }
+            if (rightColor.isOnTape()){
+                motorRight.setPower(0);
+                rightTapeSeen = true;
+                teamUtil.log("Left color sensor on tape");
+            }
+        }
+        basicMove.moveInches(-0.3, -4);
+        //xrail.fullDumpNoWait();
     }
 
 }
