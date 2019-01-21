@@ -76,7 +76,7 @@ public class mineralDetector {
     }
 
     public int detect() {
-
+    final int THRESHOLD = 200;
         if (tfod != null) {
             // getUpdatedRecognitions() will return null if no new information is available since
             // the last time that call was made.
@@ -85,9 +85,23 @@ public class mineralDetector {
             if (updatedRecognitions != null) {
                 teamUtil.log(getRecognizedObjectsString(updatedRecognitions));
                 // make sure we have exactly two
-                if (updatedRecognitions.size() == 2) {
-                    Recognition firstObject = updatedRecognitions.get(0);
-                    Recognition secondObject = updatedRecognitions.get(1);
+                if (updatedRecognitions.size() > 2) {
+                    Recognition firstObject = null;
+                    Recognition secondObject = null;
+                    for (Recognition recognition : updatedRecognitions) {
+                        if (recognition.getBottom() > THRESHOLD) {
+                            if (firstObject == null) {
+                                firstObject = recognition;
+                            }else if (secondObject == null){
+                                secondObject = recognition;
+                            }else {
+                                return (0);
+                            }
+                        }
+                    }
+                    if (firstObject == null || secondObject == null) {
+                        return  (0);
+                    }
                     String firstLabel = firstObject.getLabel();
                     String secondLabel = secondObject.getLabel();
 
