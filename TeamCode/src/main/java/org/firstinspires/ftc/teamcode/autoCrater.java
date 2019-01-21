@@ -5,9 +5,11 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.teamLibs.basicMovement;
 import org.firstinspires.ftc.teamcode.teamLibs.grabberArm;
 import org.firstinspires.ftc.teamcode.teamLibs.linearActuator;
+import org.firstinspires.ftc.teamcode.teamLibs.mineralDetector;
 import org.firstinspires.ftc.teamcode.teamLibs.sweeperArm;
 import org.firstinspires.ftc.teamcode.teamLibs.teamUtil;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -21,6 +23,7 @@ public class autoCrater extends LinearOpMode{
         private teamColorSensor leftColor;
         private teamColorSensor rightColor;
         private sweeperArm sweeper;
+        private mineralDetector detector;
 
         @Override
         public void runOpMode() {
@@ -28,6 +31,16 @@ public class autoCrater extends LinearOpMode{
             teamUtil.theOpMode = this;
             //initialization code
             teamUtil.log("initializing Robot...");
+
+            // Create and initialize the Mineral Detector
+            // This code should appear at the start of the opMode before initializing other
+            // hardware classes otherwise we are getting wierd USB bus errors...
+            teamUtil.log("creating Detector");
+            detector = new mineralDetector(telemetry, hardwareMap);
+            teamUtil.log("Initializing Detector");
+            detector.initialize(hardwareMap.get(WebcamName.class, "Webcam 1"));
+            telemetry.addData("Status", "Detector Initialized");
+
             teamUtil.log("initializing linearActuator...");
             La = new linearActuator(telemetry, hardwareMap.get(DcMotor.class, "LAMotor"));
             teamUtil.log("initializing grabberArm...");
@@ -41,17 +54,25 @@ public class autoCrater extends LinearOpMode{
             rightColor = new teamColorSensor(telemetry,hardwareMap.get(ColorSensor.class,"rightRearColor"));
             sweeper = new sweeperArm(telemetry, hardwareMap, "retrieveBaseServo", "retrieveArmServo");
 
-            teamUtil.log("Initialized, Waiting for Start...");
-
             grabber.autoInitialize();
             sweeper.retract();
+
+            teamUtil.log("Initialized, Waiting for Start...");
+            telemetry.addData("Status", "AUTO CRATER: Ready to Ruckus!");
+            telemetry.update();
 
             waitForStart();
 
             teamUtil.log("La.lowerRobot()...");
+
+
             basicMove.motorsOn(0.2);
-            La.extendFully();
+            int cubePosition = La.extendDetect(detector);
             basicMove.motorsOff();
+            telemetry.addData("cubePosition:", cubePosition);
+            telemetry.update();
+            teamUtil.log("CubePosition: " + cubePosition);
+
             basicMove.moveInches(-0.2, -.5);
             teamUtil.log("calibrating");
             leftColor.calibrate();
@@ -62,25 +83,70 @@ public class autoCrater extends LinearOpMode{
             basicMove.leftSpin(0.5, 10);
             teamUtil.log("retracting");
             La.retractFullyNoWait();
-            basicMove.moveInches(0.6,19);
-            basicMove.moveInches(-0.6, -10);
-            basicMove.leftSpin(0.4,85);
-            teamUtil.log("heading = "+basicMove.getHeading());
-            basicMove.moveInches(1,52);
-            basicMove.moveInches(0.3, 5);
-            teamUtil.log("spinning left = "+(40+(basicMove.getHeading()+85)));
-            basicMove.leftSpin(0.4,40+(basicMove.getHeading()+85));
-            basicMove.moveInches(1, 37);
-            basicMove.moveInches(0.3,5);
-            teamUtil.log("dropping");
-            grabber.grabberDown();
-            sleep(1000);
-            grabber.wideOpen();
-            sleep(500);
-            grabber.holdUp();
-            grabber.skinnyOpen();
-            basicMove.moveInches(-1,-65);
-            basicMove.moveInches(-0.3,-5);
+
+            if (cubePosition == 2 || cubePosition == 0) {
+                basicMove.moveInches(0.6,19);
+                basicMove.moveInches(-0.6, -10);
+                basicMove.leftSpin(0.4,85);
+                teamUtil.log("heading = "+basicMove.getHeading());
+                basicMove.moveInches(1,52);
+                basicMove.moveInches(0.3, 5);
+                teamUtil.log("spinning left = "+(40+(basicMove.getHeading()+85)));
+                basicMove.leftSpin(0.4,40+(basicMove.getHeading()+85));
+                basicMove.moveInches(1, 37);
+                basicMove.moveInches(0.3,5);
+                teamUtil.log("dropping");
+                grabber.grabberDown();
+                sleep(1000);
+                grabber.wideOpen();
+                sleep(500);
+                grabber.holdUp();
+                grabber.skinnyOpen();
+                basicMove.moveInches(-1,-65);
+                basicMove.moveInches(-0.3,-5);
+            } else if (cubePosition == 3) {
+                basicMove.moveInches(0.5, 5);
+                basicMove.decelLeftSpin(0.5, 115);
+                basicMove.moveInches(-0.5, -5);
+                basicMove.moveInches(0.5, 5);
+                basicMove.decelRightSpin(0.5, 30);
+                basicMove.moveInches(1,57);
+                basicMove.moveInches(0.3, 5);
+                teamUtil.log("spinning left = "+(40+(basicMove.getHeading()-25)));
+                basicMove.leftSpin(0.4,40+(basicMove.getHeading()-25));
+                basicMove.moveInches(1, 37);
+                basicMove.moveInches(0.3,5);
+                teamUtil.log("dropping");
+                grabber.grabberDown();
+                sleep(1000);
+                grabber.wideOpen();
+                sleep(500);
+                grabber.holdUp();
+                grabber.skinnyOpen();
+                basicMove.moveInches(-1,-65);
+                basicMove.moveInches(-0.3,-5);
+
+            } else if (cubePosition == 1) {
+                basicMove.decelLeftSpin(0.5, 45);
+                basicMove.moveInches(0.5, 25);
+                basicMove.moveInches(-0.3, -10);
+                basicMove.decelLeftSpin(0.5, 40);
+                basicMove.moveInches(1,47);
+                basicMove.moveInches(0.3, 5);
+                teamUtil.log("spinning left = "+(40+(basicMove.getHeading()+35)));
+                basicMove.leftSpin(0.4,40+(basicMove.getHeading()+35));
+                basicMove.moveInches(1, 30);
+                basicMove.moveInches(0.3,3);
+                teamUtil.log("dropping");
+                grabber.grabberDown();
+                sleep(1000);
+                grabber.wideOpen();
+                sleep(500);
+                grabber.holdUp();
+                grabber.skinnyOpen();
+                basicMove.moveInches(-1,-60);
+                basicMove.moveInches(-0.3,-5);
+            }
 
         }
 

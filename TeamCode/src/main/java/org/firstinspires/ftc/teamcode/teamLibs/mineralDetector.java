@@ -34,11 +34,9 @@ public class mineralDetector {
     }
 
     public int getVote() {
-        if (Voting[0] > Voting[1] && Voting[0] > Voting[2] && Voting[0] > Voting[3]) {
-            return (0);
-        } else if (Voting[1] > Voting[0] && Voting[1] > Voting[2] && Voting[1] > Voting[3]) {
+        if (Voting[1] > Voting[2] && Voting[1] > Voting[3]) {
             return (1);
-        } else if (Voting[2] > Voting[0] && Voting[2] > Voting[1] && Voting[2] > Voting[3]) {
+        } else if (Voting[2] > Voting[1] && Voting[2] > Voting[3]) {
             return (2);
         } else return (3);
     }

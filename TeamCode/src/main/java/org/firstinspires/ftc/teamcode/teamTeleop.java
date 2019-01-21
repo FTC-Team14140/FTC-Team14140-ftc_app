@@ -20,6 +20,7 @@ import org.firstinspires.ftc.teamcode.teamLibs.xRail;
 import org.firstinspires.ftc.teamcode.teamLibs.linearActuator;
 import org.firstinspires.ftc.teamcode.teamLibs.teamUtil;
 import org.firstinspires.ftc.teamcode.teamLibs.sweeperArm;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name="Comp TeleOp", group="Linear Opmode")
 public class teamTeleop extends LinearOpMode {
@@ -61,7 +62,12 @@ public class teamTeleop extends LinearOpMode {
         leftColor = new teamColorSensor(telemetry,hardwareMap.get(ColorSensor.class,"leftRearColor"));
         rightColor = new teamColorSensor(telemetry,hardwareMap.get(ColorSensor.class,"rightRearColor"));
         sweeper = new sweeperArm(telemetry, hardwareMap, "retrieveBaseServo", "retrieveArmServo");
+        leftColor.calibrate();
+        rightColor.calibrate();
         xrail.init();
+
+        telemetry.addData("Status", "TELEOP: Ready to Ruckus!");
+        telemetry.update();
 
         // Wait for the game to start (driver presses PLAY)
          waitForStart();
@@ -131,6 +137,10 @@ public class teamTeleop extends LinearOpMode {
             // Set the robots motors to the corresponding power with the high/low gear speed factor included
             motorRight.setPower(tgtPowerRight*speedFactor);
             motorLeft.setPower(tgtPowerLeft*speedFactor);
+
+            if (gamepad1.right_trigger > .5 && gamepad1.left_trigger > 0.5) {
+                autoDump();
+            }
 
             ////////////////////////////////////////////////////////////////////
             // Code to control the sweeper servos
@@ -202,24 +212,30 @@ public class teamTeleop extends LinearOpMode {
     }
 
     public void autoDump() {
+        ElapsedTime runtime = new ElapsedTime();
         boolean leftTapeSeen = false;
         boolean rightTapeSeen = false;
-        basicMove.motorsOn(-0.2);
-        while (!leftTapeSeen || !rightTapeSeen){
+        runtime.reset();
+        basicMove.motorsOn(-0.3);
+        while (!leftColor.isOnTape() && !rightColor.isOnTape()&& runtime.seconds()<3) {
+        }
+/*        while ((!leftTapeSeen || !rightTapeSeen) && runtime.seconds()<3){
             teamUtil.log("sensing for line...");
-            if(leftColor.isOnTape()){
-                motorLeft.setPower(0);
+            if(!leftTapeSeen && leftColor.isOnTape()){
+                motorLeft.setPower(.3);
                 leftTapeSeen = true;
                 teamUtil.log("Left color sensor on tape");
             }
-            if (rightColor.isOnTape()){
-                motorRight.setPower(0);
+            if (!rightTapeSeen && rightColor.isOnTape()){
+                motorRight.setPower(.3);
                 rightTapeSeen = true;
                 teamUtil.log("Left color sensor on tape");
             }
         }
+        */
         basicMove.moveInches(-0.3, -4);
-        //xrail.fullDumpNoWait();
+        xrail.fullDumpNoWait();
+        basicMove.motorsOff();
     }
 
 }

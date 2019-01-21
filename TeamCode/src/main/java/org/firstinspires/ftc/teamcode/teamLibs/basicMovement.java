@@ -17,7 +17,7 @@ public class basicMovement {
 
     //The counts per inch is the number of ticks per revolution divided by the circumference of the wheel
     private double     COUNTS_PER_INCH = 89.7158;
-    private final double MIN_SPEED = 0.15;
+    private final double MIN_SPEED = 0.11;
     private final double MAX_ACEL_PER_INCH = 0.15;
     private final double MAX_DECEL_PER_INCH = 0.15;
 
@@ -199,7 +199,8 @@ public class basicMovement {
             while ((gyro.getHeading() < degrees-15) && teamUtil.theOpMode.opModeIsActive()) {
                 // TODO: Add some telemetry output here so we can see what's happening on the driver station phone
 
-            }motorLeft.setPower(0.3);
+            }
+            motorLeft.setPower(0.3);
             motorRight.setPower(-0.3);
 
             while ((gyro.getHeading() < degrees) && teamUtil.theOpMode.opModeIsActive()) {
@@ -328,7 +329,7 @@ public class basicMovement {
         teamUtil.log("turning motors off");
     }
 
-    public void smoothMovement(double speed, double distance) {
+    private void smoothMovement(double speed, double distance) {
         final double MIN_SPEED = 0.15;
         int startPosition = 0;
         double maxSpeed = speed;

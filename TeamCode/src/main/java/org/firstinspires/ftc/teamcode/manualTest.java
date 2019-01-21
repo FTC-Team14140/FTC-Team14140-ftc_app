@@ -40,6 +40,7 @@ public class manualTest extends LinearOpMode {
     private basicMovement basicMove;
     private sweeperArm sweeper;
     mineralDetector detector;
+    private Servo theServo;
 
 
     @Override
@@ -72,11 +73,11 @@ public class manualTest extends LinearOpMode {
         //rightDisSensor = new distanceSensors(telemetry, hardwareMap.get(Rev2mDistanceSensor.class, "rightFront2M"));
         //leftColSensor = new teamColorSensor(telemetry, hardwareMap.get(ColorSensor.class, "leftRearColor"));
         //rightColSensor = new teamColorSensor(telemetry, hardwareMap.get(ColorSensor.class, "rightRearColor"));
-
         basicMove = new basicMovement(hardwareMap.get(DcMotor.class, "motorLeft"), hardwareMap.get(DcMotor.class, "motorRight"), hardwareMap.get(BNO055IMU.class, "imu"), telemetry);
 
-        //sweeper = new sweeperArm(telemetry, hardwareMap, "retrieveBaseServo", "retrieveArmServo");
+        sweeper = new sweeperArm(telemetry, hardwareMap, "retrieveBaseServo", "retrieveArmServo");
         //sweeper.retract();
+        //theServo =  hardwareMap.get(Servo.class, "baseServo");
 
         // Wait for the game to start (driver presses PLAY)
         telemetry.addData("Status", "Initialized...Ready to Run");
@@ -88,6 +89,8 @@ public class manualTest extends LinearOpMode {
         boolean movingServos = false;
 
         // run until the end of the match (driver presses STOP)
+        int base = 100;
+        int arm = 100;
         while (opModeIsActive()) {
 
             //telemetry.addData( "Gyro Heading",gyro.getHeading());
@@ -127,7 +130,15 @@ public class manualTest extends LinearOpMode {
             } else {
                 La.stopMotor();
             }
+
 */
+            if(gamepad1.left_bumper) {
+                double servoPos = gamepad1.right_trigger;
+                theServo.setPosition(servoPos);
+                telemetry.addData("servoPos", servoPos  );
+            }
+
+
 
 
           /*  if(gamepad2.x){
@@ -154,18 +165,19 @@ public class manualTest extends LinearOpMode {
 
                     teamUtil.log("Detected: " + which);
                 }
+            }
                 /*if (which == 1) {
                     basicMove.leftSpin(.5, 45);
                 } else if (which == 2) {
                     basicMove.moveInches(.5, 5);
                 } else if (which == 3) {
                     basicMove.rightSpin(.5, 45);
-                }*/
+                }
                 teamUtil.log("Stopping Tracking");
                 detector.stopTracking();
             }
 
-/*
+
             if (gamepad2.a) {
                 sweeper.retract();
             } else if (gamepad2.b) {
@@ -176,16 +188,15 @@ public class manualTest extends LinearOpMode {
                 sweeper.craterTop();
             } else if (gamepad2.right_bumper) {
                 sweeper.extendDown();
-            } else if (gamepad2.left_stick_y != 0) {
-                sweeper.stickControl(-gamepad2.left_stick_y, gamepad2.left_stick_button);
-            }
-*/
+            }*/
+            //else if (gamepad2.left_stick_y != 0) {
+              //  sweeper.stickControl(-gamepad2.left_stick_y, gamepad2.left_stick_button);
+            //}
+
 
             ////////////////////////////////////////////////////////////////////
             // Code to manually control the sweeper servos (in order to get positions
-            /*
-           int base = 140;
-           int arm = 140;
+/*
            if(gamepad2.x){
                 base += 1;
                 sweeper.goTo(base, arm);
@@ -210,18 +221,27 @@ public class manualTest extends LinearOpMode {
                telemetry.addData("Sweeper Base:", base);
                telemetry.addData("Sweeper arm:", arm);
                teamUtil.sleep(100);
-           } */
+           }
 
 
             if (gamepad1.a) {
-                basicMove.smoothMovement(0.8, 5);
+                basicMove.forwardMovement(1, 5);
             } else  if (gamepad1.b) {
-                basicMove.backwardMovement(0.8, 36);
+                basicMove.backwardMovement(1, 5);
             } else if (gamepad1.x) {
                 basicMove.backwardMovement(1, 36);
             }else if (gamepad1.y) {
-                basicMove.smoothMovement(1, 10);
-            }
+                basicMove.forwardMovement(1, 36);
+            }*/
+                if (gamepad1.a) {
+                    basicMove.decelLeftSpin(0.5, 90);
+                } else  if (gamepad1.b) {
+                    basicMove.decelRightSpin(0.5, 90);
+                } else if (gamepad1.x) {
+                    basicMove.moveInches(0.75, 36);
+                }else if (gamepad1.y) {
+                    basicMove.moveInches(-0.75, -36);
+                }
 
             //this.gamepad1.x
                 //this.gamepad1.y
@@ -254,6 +274,7 @@ public class manualTest extends LinearOpMode {
                 //telemetry.addData("colorRightRed", rightColSensor.redValue());
                 //telemetry.addData("colorLeftBlue", leftColSensor.blueValue() );
                 // telemetry.addData("colorRightblue", rightColSensor.blueValue());
+             //telemetry.addData("heading:", basicMove.getHeading());
                 telemetry.update();
 
             }

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -16,6 +17,7 @@ import org.firstinspires.ftc.teamcode.teamLibs.linearActuator;
 import org.firstinspires.ftc.teamcode.teamLibs.grabberArm;
 import org.firstinspires.ftc.teamcode.teamLibs.teamUtil;
 import com.qualcomm.robotcore.hardware.ColorSensor;
+import org.firstinspires.ftc.teamcode.teamLibs.distanceSensors;
 
 @Autonomous(name="Auto Depot", group="Linear Opmode")
 public class teamAutoOp extends LinearOpMode {
@@ -26,6 +28,10 @@ public class teamAutoOp extends LinearOpMode {
     private teamColorSensor rightColor;
     private sweeperArm sweeper;
     private mineralDetector detector;
+    private distanceSensors leftDisSensor;
+    private distanceSensors rightDisSensor;
+
+
 
     @Override
     public void runOpMode() {
@@ -55,11 +61,16 @@ public class teamAutoOp extends LinearOpMode {
         rightColor = new teamColorSensor(telemetry,hardwareMap.get(ColorSensor.class,"rightRearColor"));
         sweeper = new sweeperArm(telemetry, hardwareMap, "retrieveBaseServo", "retrieveArmServo");
 
+        leftDisSensor = new distanceSensors(telemetry, hardwareMap.get(Rev2mDistanceSensor.class, "leftFront2M"));
+        rightDisSensor = new distanceSensors(telemetry, hardwareMap.get(Rev2mDistanceSensor.class, "rightFront2M"));
 
-        teamUtil.log("Initialized, Waiting for Start...");
 
         grabber.autoInitialize();
-        //sweeper.retract();
+        sweeper.retract();
+
+        teamUtil.log("Initialized, Waiting for Start...");
+        telemetry.addData("Status", "AUTO DEPOT: Ready to Ruckus!");
+        telemetry.update();
 
         waitForStart();
 
@@ -69,57 +80,120 @@ public class teamAutoOp extends LinearOpMode {
         basicMove.motorsOff();
         telemetry.addData("cubePosition:", cubePosition);
         telemetry.update();
-        sleep(6000);
+        teamUtil.log("CubePosition: " + cubePosition);
 
-        /*teamUtil.log("calibrating");
-        leftColor.calibrate();
-        rightColor.calibrate();
-        teamUtil.log("Unlatching");
-        basicMove.rightSpin(0.5, 10);
-        basicMove.moveInches(0.3, 6);
-        basicMove.leftSpin(0.5, 10);
-        La.retractFullyNoWait();
-        //basicMove.moveInches(0.5, 45);
-        //grabber.grabberDown();
-        //sleep(1000);
-        //grabber.wideOpen();
-        //sleep(500);
-        //grabber.holdUp();
-        //grabber.skinnyOpen();
-        //basicMove.rightSpin(0.3, 45);
-        //basicMove.moveInches(-1, -58);
-        //basicMove.moveInches(-0.3, -5);
+        //sleep(6000);
 
-        //new code
-        basicMove.moveInches(1, 45);
-        basicMove.moveInches(0.3,5);
-        basicMove.moveInches(-0.3, -5);
-        grabber.grabberDown();
-        sleep(1000);
-        grabber.wideOpen();
-        sleep(500);
-        grabber.up();
-        basicMove.moveInches(-1,-30);
-        basicMove.motorsOn(-0.3);
-        while (!leftColor.isOnTape()){
+        if (cubePosition == 2 || cubePosition == 0) {
+            teamUtil.log("calibrating");
+            leftColor.calibrate();
+            rightColor.calibrate();
+            teamUtil.log("Unlatching");
+            basicMove.rightSpin(0.5, 10);
+            basicMove.moveInches(0.3, 6);
+            basicMove.leftSpin(0.5, 10);
+            La.retractFullyNoWait();
+            //basicMove.moveInches(0.5, 45);
+            //grabber.grabberDown();
+            //sleep(1000);
+            //grabber.wideOpen();
+            //sleep(500);
+            //grabber.holdUp();
+            //grabber.skinnyOpen();
+            //basicMove.rightSpin(0.3, 45);
+            //basicMove.moveInches(-1, -58);
+            //basicMove.moveInches(-0.3, -5);
+
+            //new code
+            basicMove.moveInches(1, 45);
+            basicMove.moveInches(0.3, 5);
+            basicMove.moveInches(-0.3, -5);
+            grabber.grabberDown();
+            sleep(1000);
+            grabber.wideOpen();
+            sleep(500);
+            grabber.up();
+            basicMove.moveInches(-1, -30);
+            basicMove.motorsOn(-0.3);
+            while (!leftColor.isOnTape()) {
+
+            }
+            basicMove.motorsOff();
+            teamUtil.sleep(500);
+            basicMove.motorsOn(0.3);
+            while (!leftColor.isOnTape()) {
+
+            }
+            basicMove.motorsOff();
+            //basicMove.moveInches(-1, -34);
+            //basicMove.moveInches(.5,5);
+
+            basicMove.leftSpin(0.3, 88);
+            basicMove.moveInches(1, 50);
+            grabber.extend();
+            basicMove.moveInches(0.3, 10);
+        } else if (cubePosition == 1) {
+            teamUtil.log("calibrating");
+            leftColor.calibrate();
+            rightColor.calibrate();
+            teamUtil.log("Unlatching");
+            basicMove.rightSpin(0.5, 10);
+            basicMove.moveInches(0.3, 6);
+            basicMove.leftSpin(0.5, 10);
+            La.retractFullyNoWait();
+
+            basicMove.decelLeftSpin(0.5, 45);
+            basicMove.moveInches(1, 30);
+            basicMove.motorsOn(0.3);
+            while (leftDisSensor.getDistance()>5) {
+
+            }
+            basicMove.motorsOff();
+            basicMove.moveInches(-0.3, -3);
+            basicMove.decelRightSpin(0.5, 90);
+            basicMove.moveInches(0.5,40);
+            grabber.grabberDown();
+            sleep(1000);
+            grabber.wideOpen();
+            sleep(500);
+            grabber.up();
+            basicMove.moveInches(-1, -45);
+            basicMove.decelRightSpin(0.5, 15);
+            basicMove.moveInches(-0.5, -10);
+
+        } else if (cubePosition == 3) {
+            teamUtil.log("calibrating");
+            leftColor.calibrate();
+            rightColor.calibrate();
+            teamUtil.log("Unlatching");
+            basicMove.rightSpin(0.5, 10);
+            basicMove.moveInches(0.3, 6);
+            La.retractFullyNoWait();
+
+            basicMove.decelRightSpin(0.5, 30);
+            basicMove.moveInches(1, 30);
+            basicMove.motorsOn(0.3);
+            while (leftDisSensor.getDistance()>5) {
+
+            }
+            basicMove.motorsOff();
+            basicMove.moveInches(-0.5, -12);
+            basicMove.decelLeftSpin(0.5, 83);
+            basicMove.moveInches(0.7,35);
+            grabber.grabberDown();
+            sleep(1000);
+            grabber.wideOpen();
+            sleep(500);
+            grabber.up();
+            basicMove.moveInches(-0.3, -10);
+            basicMove.decelLeftSpin(0.5, 45);
+            basicMove.moveInches(0.7, 25);
+            basicMove.decelLeftSpin(0.5, 40);
+            basicMove.moveInches(1, 43);
+            grabber.extend();
+            basicMove.moveInches(0.3, 10);
 
         }
-        basicMove.motorsOff();
-        teamUtil.sleep(500);
-        basicMove.motorsOn(0.3);
-        while (!leftColor.isOnTape()){
-
-        }
-        basicMove.motorsOff();
-        //basicMove.moveInches(-1, -34);
-        //basicMove.moveInches(.5,5);
-
-        basicMove.leftSpin(0.3, 88);
-        basicMove.moveInches(1,50);
-        grabber.extend();
-        basicMove.moveInches(0.3,10);
-        */
-
 
     }
 
