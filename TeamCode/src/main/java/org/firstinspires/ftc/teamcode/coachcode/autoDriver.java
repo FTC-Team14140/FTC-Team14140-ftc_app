@@ -394,6 +394,39 @@ public class autoDriver {
         while (opMode.opModeIsActive() && !rightColor.isOnTape()) {}
     }
 
+    void squareOnLine(double speed) {
+         double     COUNTS_PER_INCH = 89.7158;
+         double     WHEEL_BASE = 16;
+
+        ElapsedTime runtime = new ElapsedTime();
+        int leftEncoder = 0;
+        int rightEncoder = 0;
+        leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftMotor.setPower(speed);
+        rightMotor.setPower(speed);
+        runtime.reset();
+        while ((leftEncoder == 0 || rightEncoder == 0) && runtime.seconds()<3) {
+            teamUtil.log("sensing for line...");
+            if (leftEncoder == 0 && leftColor.isOnTape()) {
+                leftEncoder = leftMotor.getCurrentPosition();
+                teamUtil.log("Left color sensor on tape at : " + leftEncoder);
+            }
+            if (rightEncoder == 0 && rightColor.isOnTape()) {
+                rightEncoder = rightMotor.getCurrentPosition();
+                teamUtil.log("Right color sensor on tape at : " + rightEncoder);
+            }
+        }
+        float turnAngle = (float)-Math.toDegrees(Math.atan((rightEncoder-leftEncoder)/(WHEEL_BASE*COUNTS_PER_INCH)));
+        teamUtil.log("Spin Degrees: " + turnAngle);
+        if (speed > 0) {
+            spin(.3, turnAngle);
+        } else {
+            spin(.3, -turnAngle);
+        }
+    }
 /*    void squareOnBlueLine(double speed) {
         updateColorSensorData();
         int blackLeft = leftColor.blue();
