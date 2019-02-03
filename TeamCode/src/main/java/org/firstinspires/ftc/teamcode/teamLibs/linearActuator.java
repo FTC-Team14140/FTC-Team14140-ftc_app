@@ -22,7 +22,7 @@ public class linearActuator {
     public linearActuator(Telemetry thetelemetry, DcMotor motor1) {
         telemetry = thetelemetry;
         motor = motor1;
-        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        //motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
     }
 

@@ -145,29 +145,33 @@ public class teamTeleop extends LinearOpMode {
             ////////////////////////////////////////////////////////////////////
             // Code to control the sweeper servos
             if(gamepad2.x && !grabberOut){
-                sweeper.craterTop();
+                teamUtil.log("extending to up position");
                 sweeperOut = true;
+                sweeper.extendUpNoWait();
+                //sweeper.craterTop();
             } else
             if(gamepad2.a) {
                 sweeper.retract();
                 sweeperOut = false;
             } else if(gamepad2.b && !grabberOut) {
-                sweeper.extendUpNoWait();
                 sweeperOut = true;
-            } else if(gamepad2.y && !grabberOut) {
-                sweeper.sweep();
-                sweeperOut = true;
-            } else if (gamepad2.right_bumper && !grabberOut) {
                 sweeper.extendDown();
+                //sweeper.extendUpNoWait();
+            } else if(gamepad2.y && !grabberOut) {
                 sweeperOut = true;
-            }
+                sweeper.megaSweepNoWait();
+                //sweeper.sweep();
+            }/* else if (gamepad2.right_bumper && !grabberOut) {
+                //sweeper.extendDown();
+                sweeperOut = true;
+            }*/
             //else  if ((gamepad2.left_stick_y != 0) && !grabberOut) { // maybe this should only work if the sweeper is already out?
             //  sweeper.stickControl(-gamepad2.left_stick_y, gamepad2.left_stick_button);
             //}
 
             ///////////////////////////////////////////////////////////////////
             // Code to control the grabber servos
-             if (gamepad2.left_bumper && grabberOut) {
+             if (gamepad2.left_bumper) {
                 grabber.deposit();
                 grabberOut = false;
             } else if(gamepad2.dpad_up) {
@@ -213,6 +217,8 @@ public class teamTeleop extends LinearOpMode {
 
     public void autoDump() {
         ElapsedTime runtime = new ElapsedTime();
+        leftColor.calibrate();
+        rightColor.calibrate();
         boolean leftTapeSeen = false;
         boolean rightTapeSeen = false;
         runtime.reset();
@@ -237,6 +243,5 @@ public class teamTeleop extends LinearOpMode {
         xrail.fullDumpNoWait();
         basicMove.motorsOff();
     }
-
 }
 
