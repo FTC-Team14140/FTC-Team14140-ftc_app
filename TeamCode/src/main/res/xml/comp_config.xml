@@ -11,6 +11,7 @@
             <Servo name="grabberServo" port="1" />
             <Servo name="retrieveBaseServo" port="2" />
             <Servo name="retrieveArmServo" port="3" />
+            <Servo name="craterInServo" port="4" />
             <LynxEmbeddedIMU name="imu" port="0" bus="0" />
             <LynxColorSensor name="leftRearColor" port="1" bus="0" />
             <LynxColorSensor name="rightRearColor" port="0" bus="1" />

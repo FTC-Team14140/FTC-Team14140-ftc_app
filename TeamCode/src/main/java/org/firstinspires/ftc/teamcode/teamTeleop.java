@@ -5,6 +5,7 @@ import android.widget.Space;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.teamLibs.basicMovement;
+import org.firstinspires.ftc.teamcode.teamLibs.goBuildAServo2000;
 import org.firstinspires.ftc.teamcode.teamLibs.revHubIMUGyro;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
@@ -20,6 +21,8 @@ import org.firstinspires.ftc.teamcode.teamLibs.xRail;
 import org.firstinspires.ftc.teamcode.teamLibs.linearActuator;
 import org.firstinspires.ftc.teamcode.teamLibs.teamUtil;
 import org.firstinspires.ftc.teamcode.teamLibs.sweeperArm;
+
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name="Comp TeleOp", group="Linear Opmode")
@@ -31,6 +34,8 @@ public class teamTeleop extends LinearOpMode {
     private xRail xrail;
     private sweeperArm sweeper;
     private linearActuator La;
+    private goBuildAServo2000 craterInServo;
+
     private teamColorSensor leftColor;
     private teamColorSensor rightColor;
     private basicMovement basicMove;
@@ -62,6 +67,8 @@ public class teamTeleop extends LinearOpMode {
         leftColor = new teamColorSensor(telemetry,hardwareMap.get(ColorSensor.class,"leftRearColor"));
         rightColor = new teamColorSensor(telemetry,hardwareMap.get(ColorSensor.class,"rightRearColor"));
         sweeper = new sweeperArm(telemetry, hardwareMap, "retrieveBaseServo", "retrieveArmServo");
+        craterInServo = new goBuildAServo2000(hardwareMap.get(Servo.class, "craterInServo"), telemetry);
+
         leftColor.calibrate();
         rightColor.calibrate();
         xrail.init();
@@ -72,7 +79,7 @@ public class teamTeleop extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
          waitForStart();
         //grabber.initialize(); // don't move servos until play starts!
-
+        craterInServo.goTo(32);
          // reseet the LA position so we are ready to extend at end of match
         //La.retractFullyNoWait();
 
@@ -139,7 +146,8 @@ public class teamTeleop extends LinearOpMode {
             motorLeft.setPower(tgtPowerLeft*speedFactor);
 
             if (gamepad1.right_trigger > .5 && gamepad1.left_trigger > 0.5) {
-                autoDump();
+                //autoDump();
+                squareAndDump(-0.3);
             }
 
             ////////////////////////////////////////////////////////////////////
@@ -225,7 +233,7 @@ public class teamTeleop extends LinearOpMode {
         basicMove.motorsOn(-0.3);
         while (!leftColor.isOnTape() && !rightColor.isOnTape()&& runtime.seconds()<3) {
         }
-/*        while ((!leftTapeSeen || !rightTapeSeen) && runtime.seconds()<3){
+        while ((!leftTapeSeen || !rightTapeSeen) && runtime.seconds()<3){
             teamUtil.log("sensing for line...");
             if(!leftTapeSeen && leftColor.isOnTape()){
                 motorLeft.setPower(.3);
@@ -238,10 +246,58 @@ public class teamTeleop extends LinearOpMode {
                 teamUtil.log("Left color sensor on tape");
             }
         }
-        */
+
         basicMove.moveInches(-0.3, -4);
         xrail.fullDumpNoWait();
         basicMove.motorsOff();
+    }
+
+    void squareAndDump(double speed) {
+        double     COUNTS_PER_INCH = 89.7158;
+        double     WHEEL_BASE = 16;
+
+        ElapsedTime runtime = new ElapsedTime();
+        int leftEncoder = 0;
+        int rightEncoder = 0;
+        motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorLeft.setPower(speed);
+        motorRight.setPower(speed);
+        runtime.reset();
+        while ((leftEncoder == 0 || rightEncoder == 0) && runtime.seconds()<3) {
+            teamUtil.log("sensing for line...");
+            if (leftEncoder == 0 && leftColor.isOnTape()) {
+                leftEncoder = motorLeft.getCurrentPosition();
+                teamUtil.log("Left color sensor on tape at : " + leftEncoder);
+            }
+            if (rightEncoder == 0 && rightColor.isOnTape()) {
+                rightEncoder = motorRight.getCurrentPosition();
+                teamUtil.log("Right color sensor on tape at : " + rightEncoder);
+            }
+        }
+        float turnAngle = (float)-Math.toDegrees(Math.atan((rightEncoder-leftEncoder)/(WHEEL_BASE*COUNTS_PER_INCH)));
+        teamUtil.log("WHEEL_BASE" + WHEEL_BASE);
+        teamUtil.log("rightEncoder-leftEncoder" + (rightEncoder - leftEncoder));
+        teamUtil.log("WHEEL_BASE * COUNTS_PER_INCH" + (WHEEL_BASE * COUNTS_PER_INCH));
+        teamUtil.log("Spin Degrees: " + turnAngle);
+        teamUtil.log("Math.atan" + (Math.atan((rightEncoder-leftEncoder)/(WHEEL_BASE*COUNTS_PER_INCH))));
+        if (turnAngle > 0) {
+            basicMove.rightSpin(.3, turnAngle);
+
+        } else {
+            basicMove.leftSpin(.3, -turnAngle);
+        }
+        basicMove.motorsOn(0.3);
+        while (!leftColor.isOnTape() && !rightColor.isOnTape()&& runtime.seconds()<3) {
+        }
+        basicMove.moveInches(-0.3, -4);
+        xrail.fullDumpNoWait();
+        basicMove.motorsOff();
+
     }
 }
 

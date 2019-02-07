@@ -41,6 +41,7 @@ public class manualTest extends LinearOpMode {
     private sweeperArm sweeper;
     mineralDetector detector;
     private Servo theServo;
+    private goBuildAServo2000 craterInServo;
 
 
     @Override
@@ -78,6 +79,7 @@ public class manualTest extends LinearOpMode {
         sweeper = new sweeperArm(telemetry, hardwareMap, "retrieveBaseServo", "retrieveArmServo");
         //sweeper.retract();
         //theServo =  hardwareMap.get(Servo.class, "baseServo");
+        craterInServo = new goBuildAServo2000(hardwareMap.get(Servo.class, "craterInServo"), telemetry);
 
         // Wait for the game to start (driver presses PLAY)
         telemetry.addData("Status", "Initialized...Ready to Run");
@@ -91,6 +93,7 @@ public class manualTest extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         int base = 100;
         int arm = 100;
+        int crater = 100;
         while (opModeIsActive()) {
 
             //telemetry.addData( "Gyro Heading",gyro.getHeading());
@@ -196,7 +199,7 @@ public class manualTest extends LinearOpMode {
 
             ////////////////////////////////////////////////////////////////////
             // Code to manually control the sweeper servos (in order to get positions
-/*
+
            if(gamepad2.x){
                 base += 1;
                 sweeper.goTo(base, arm);
@@ -221,9 +224,17 @@ public class manualTest extends LinearOpMode {
                telemetry.addData("Sweeper Base:", base);
                telemetry.addData("Sweeper arm:", arm);
                teamUtil.sleep(100);
+           } else if (gamepad2.left_bumper) {
+               crater += 1;
+               craterInServo.goTo(crater);
+               telemetry.addData("craterInServo:", crater);
+           } else if (gamepad2.right_bumper) {
+               crater -= 1;
+               craterInServo.goTo(crater);
+               telemetry.addData("craterInServo:", crater);
            }
 
-
+/*
             if (gamepad1.a) {
                 basicMove.forwardMovement(1, 5);
             } else  if (gamepad1.b) {

@@ -7,12 +7,15 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.teamLibs.basicMovement;
+import org.firstinspires.ftc.teamcode.teamLibs.goBuildAServo2000;
 import org.firstinspires.ftc.teamcode.teamLibs.grabberArm;
 import org.firstinspires.ftc.teamcode.teamLibs.linearActuator;
 import org.firstinspires.ftc.teamcode.teamLibs.mineralDetector;
 import org.firstinspires.ftc.teamcode.teamLibs.sweeperArm;
 import org.firstinspires.ftc.teamcode.teamLibs.teamUtil;
 import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.Servo;
+
 import org.firstinspires.ftc.teamcode.teamLibs.teamColorSensor;
 
 @Autonomous(name="Auto Crater", group="Linear Opmode")
@@ -24,8 +27,10 @@ public class autoCrater extends LinearOpMode{
         private teamColorSensor rightColor;
         private sweeperArm sweeper;
         private mineralDetector detector;
+        private goBuildAServo2000 craterInServo;
 
-        @Override
+
+    @Override
         public void runOpMode() {
 
             teamUtil.theOpMode = this;
@@ -53,6 +58,7 @@ public class autoCrater extends LinearOpMode{
             leftColor = new teamColorSensor(telemetry,hardwareMap.get(ColorSensor.class,"leftRearColor"));
             rightColor = new teamColorSensor(telemetry,hardwareMap.get(ColorSensor.class,"rightRearColor"));
             sweeper = new sweeperArm(telemetry, hardwareMap, "retrieveBaseServo", "retrieveArmServo");
+            craterInServo = new goBuildAServo2000(hardwareMap.get(Servo.class, "craterInServo"), telemetry);
 
             grabber.autoInitialize();
             sweeper.retract();
@@ -147,7 +153,7 @@ public class autoCrater extends LinearOpMode{
                 basicMove.moveInches(-1,-60);
                 basicMove.moveInches(-0.3,-5);
             }
-
+        craterInServo.goTo(215);
         }
 
     }

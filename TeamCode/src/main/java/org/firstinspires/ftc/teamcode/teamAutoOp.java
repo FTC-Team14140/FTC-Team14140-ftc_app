@@ -6,9 +6,11 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.teamLibs.goBuildAServo2000;
 import org.firstinspires.ftc.teamcode.teamLibs.mineralDetector;
 import org.firstinspires.ftc.teamcode.teamLibs.sweeperArm;
 import org.firstinspires.ftc.teamcode.teamLibs.teamColorSensor;
@@ -30,6 +32,7 @@ public class teamAutoOp extends LinearOpMode {
     private mineralDetector detector;
     private distanceSensors leftDisSensor;
     private distanceSensors rightDisSensor;
+    private goBuildAServo2000 craterInServo;
 
 
 
@@ -67,6 +70,7 @@ public class teamAutoOp extends LinearOpMode {
 
         grabber.autoInitialize();
         sweeper.retract();
+        craterInServo = new goBuildAServo2000(hardwareMap.get(Servo.class, "craterInServo"), telemetry);
 
         teamUtil.log("Initialized, Waiting for Start...");
         telemetry.addData("Status", "AUTO DEPOT: Ready to Ruckus!");
@@ -160,6 +164,7 @@ public class teamAutoOp extends LinearOpMode {
             basicMove.moveInches(-1, -45);
             basicMove.decelRightSpin(0.5, 15);
             basicMove.moveInches(-0.5, -10);
+            craterInServo.goTo(215);
 
         } else if (cubePosition == 3) {
             teamUtil.log("calibrating");

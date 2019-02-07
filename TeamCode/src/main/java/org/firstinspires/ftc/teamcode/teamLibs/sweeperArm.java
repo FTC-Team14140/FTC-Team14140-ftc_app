@@ -22,23 +22,23 @@ public class sweeperArm {
 
     private boolean sweeperRunning = false;
     //variables integers below are degress for servo positions
-    private final int RETRACT_ARM = 138;
+    private final int RETRACT_ARM = 196;
     private final int RETRACT_BASE = 59;
 
     // full extended up and down
     private final int BASE_EXTEND = 127;
-    private final int ARM_EXTENDUP = 30;
-    private final int ARM_EXTENDDOWN = 45;
+    private final int ARM_EXTENDUP = 55;
+    private final int ARM_EXTENDDOWN = 76;
 
     // at the base of the crater up and down
     private final int BASE_DCRATER = 111;
-    private final int ARM_DCRATER = 82;
+    private final int ARM_DCRATER = 135;
     private final int BASE_DCRATER_UP = 190;
     private final int ARM_DCRATER_UP = 70;
 
     // at the top of the crater up and down
     private final int BASE_TCRATER = 90;
-    private final int ARM_TCRATER = 113;
+    private final int ARM_TCRATER = 173;
     private final int BASE_TCRATER_UP = 175;
     private final int ARM_TCRATER_UP = 115;
 
@@ -54,7 +54,7 @@ public class sweeperArm {
     //methods to move srevos
     public void retract () {
         if (currentPosition == Positions.CRATERTOP) {
-            glideBoth(BASE_TCRATER, RETRACT_BASE, ARM_TCRATER, (RETRACT_ARM-ARM_TCRATER) / 2 + ARM_TCRATER, 500);
+            glideBoth(BASE_TCRATER, RETRACT_BASE, ARM_TCRATER, RETRACT_ARM, 500);
         } else if (currentPosition == Positions.OUTUP) {
             glideBoth(BASE_EXTEND, RETRACT_BASE, ARM_EXTENDUP, ((RETRACT_ARM - ARM_EXTENDUP) / 3) * 2 + ARM_EXTENDUP, 1000);
             glideArm(((RETRACT_ARM - ARM_EXTENDUP) / 3) * 2 + ARM_EXTENDUP, RETRACT_ARM, 500);
