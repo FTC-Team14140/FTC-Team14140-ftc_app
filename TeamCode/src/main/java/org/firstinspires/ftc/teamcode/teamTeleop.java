@@ -294,7 +294,7 @@ public class teamTeleop extends LinearOpMode {
         basicMove.motorsOn(0.3);
         while (!leftColor.isOnTape() && !rightColor.isOnTape()&& runtime.seconds()<3) {
         }
-        basicMove.moveInches(-0.3, -4);
+        basicMove.moveInches(-0.3, -3);
         xrail.fullDumpNoWait();
         basicMove.motorsOff();
 
