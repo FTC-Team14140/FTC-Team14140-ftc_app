@@ -16,7 +16,7 @@ public class basicMovement {
     Telemetry telemetry;
 
     //The counts per inch is the number of ticks per revolution divided by the circumference of the wheel
-    private double     COUNTS_PER_INCH = 89.7158;
+    private double     COUNTS_PER_INCH = 59.4178;  // 89.7158 is the orriginal number
     private final double MIN_SPEED = 0.11;
     private final double MAX_ACEL_PER_INCH = 0.15;
     private final double MAX_DECEL_PER_INCH = 0.15;
