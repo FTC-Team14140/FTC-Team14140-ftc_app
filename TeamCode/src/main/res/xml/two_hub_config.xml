@@ -6,12 +6,8 @@
         <LynxModule name="Expansion Hub 2" port="2">
             <NeveRest40Gearmotor name="motorRight" port="0" />
             <NeveRest40Gearmotor name="motorLeft" port="1" />
-            <NeveRest40Gearmotor name="LAMotor" port="2" />
-            <Motor name="xRailMotor" port="3" />
             <Servo name="liftServo" port="0" />
-            <Servo name="grabberServo" port="1" />
             <Servo name="retrieveBaseServo" port="2" />
-            <Servo name="retrieveArmServo" port="3" />
             <Servo name="craterInServo" port="4" />
             <LynxEmbeddedIMU name="imu" port="0" bus="0" />
             <LynxColorSensor name="leftRearColor" port="1" bus="0" />
@@ -21,6 +17,10 @@
         </LynxModule>
         <LynxModule name="Expansion Hub 3" port="3">
             <LynxEmbeddedIMU name="imu 1" port="0" bus="0" />
+            <NeveRest40Gearmotor name="LAMotor" port="2" />
+            <Motor name="xRailMotor" port="3" />
+            <Servo name="grabberServo" port="1" />
+            <Servo name="retrieveArmServo" port="3" />
         </LynxModule>
     </LynxUsbDevice>
 </Robot>
