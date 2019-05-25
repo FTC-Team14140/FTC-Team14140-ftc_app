@@ -57,12 +57,12 @@ public class HolonomicDriveTest extends LinearOpMode{
     }
     if (gamepad1.dpad_up){
         speede = speede+.05;
-        teamUtil.sleep(450);
+        teamUtil.sleep(500);
 
         }
      if (gamepad1.dpad_down) {
          speede = speede - .05;
-         teamUtil.sleep(450);
+         teamUtil.sleep(500);
 
      }
     while (turnTest = true){
