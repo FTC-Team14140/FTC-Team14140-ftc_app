@@ -19,20 +19,20 @@ public class HolonomicDriveTest extends LinearOpMode{
         double speede;
         DcMotor motorBackLeft;
         DcMotor motorBackRight;
-        DcMotor motorFrontLeft;
         DcMotor motorFrontRight;
+        DcMotor motorFrontLeft;
         boolean moveTest = this.gamepad1.a;
         boolean turnTest = this.gamepad1.x;
     // left stick controls direction
         // right stick X controls rotation
 
-        motorFrontRight = hardwareMap.get(DcMotor.class, "motorFrontRight;");
+        motorFrontRight = hardwareMap.get(DcMotor.class, "fr");
         teamUtil.log("Getting Right Front Motor from hardware map");
-        motorFrontLeft = hardwareMap.get(DcMotor.class, "motorFrontLeft;");
+        motorFrontLeft = hardwareMap.get(DcMotor.class, "fl");
         teamUtil.log("Getting Left Front Motor from hardware map");
-        motorBackRight = hardwareMap.get(DcMotor.class, "motorBackRight;");
+        motorBackRight = hardwareMap.get(DcMotor.class, "br");
         teamUtil.log("Getting Right Back Motor from hardware map");
-        motorBackLeft = hardwareMap.get(DcMotor.class, "motorBackLeft;");
+        motorBackLeft = hardwareMap.get(DcMotor.class, "bl");
         teamUtil.log("Getting Left Back Motor from hardware map");
         telemetry.addData("Status", "Waiting for Start...");
         telemetry.update();
@@ -82,10 +82,10 @@ public class HolonomicDriveTest extends LinearOpMode{
             }
 
             if (gamepad1.a) {
-                motorFrontRight.setPower(-speede);
-                motorFrontLeft.setPower(speede);
-                motorBackLeft.setPower(speede);
-                motorBackRight.setPower(-speede);
+                motorFrontRight.setPower(speede);
+                motorFrontLeft.setPower(-speede);
+                motorBackLeft.setPower(-speede);
+                motorBackRight.setPower(speede);
                 teamUtil.sleep(1000);
                 motorFrontRight.setPower(0);
                 motorFrontLeft.setPower(0);

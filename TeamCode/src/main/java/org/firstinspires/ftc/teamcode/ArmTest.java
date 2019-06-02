@@ -43,7 +43,7 @@ public class ArmTest extends LinearOpMode {
 
         TurnTable.goTo(tDegrees);
         grabber.goTo(gDegrees);
-        initArm();
+        //initArm();
 
         telemetry.addData("Status", "Waiting for Start...");
         telemetry.update();
@@ -61,6 +61,14 @@ public class ArmTest extends LinearOpMode {
             } else {
                 BaseMotor.setPower(0);
             }
+            //alternative base motor
+            if (gamepad2.left_stick_y>0) {
+                BaseMotor.setPower(0.5);
+            } else if (gamepad2.left_stick_y <0) {
+                BaseMotor.setPower(-0.5);
+            } else {
+                BaseMotor.setPower(0); // still fading even when we use run to position...so try this
+            }
 
             //arm motor
             if (gamepad2.x) {
@@ -75,22 +83,24 @@ public class ArmTest extends LinearOpMode {
 
             //alternative arm motor
             if (gamepad2.right_stick_y>0) {
-                if (aDegrees > MIN_ARM_DEGREES) {
+                joint2Motor.setPower(1);
+                /*if (aDegrees > MIN_ARM_DEGREES) {
                     aDegrees--;
-                    joint2Motor.setPower(ARM_DOWN);
+                    joint2Motor.setPower(1);
                     armGoTo(aDegrees);
                     teamUtil.sleep(25);
-                }
+                }*/
 
             } else if (gamepad2.right_stick_y <0) {
-                if (aDegrees < MAX_ARM_DEGREES) {
+                joint2Motor.setPower(-1);
+                /*if (aDegrees < MAX_ARM_DEGREES) {
                     aDegrees++;
-                    joint2Motor.setPower(ARM_UP);
+                    joint2Motor.setPower(-1);
                     armGoTo(aDegrees);
                     teamUtil.sleep(25);
-                }
+                }*/
             } else {
-                joint2Motor.setPower(.1); // still fading even when we use run to position...so try this
+                joint2Motor.setPower(0); // still fading even when we use run to position...so try this
             }
             //grabber Servo
             if (gamepad2.dpad_right) {
@@ -103,12 +113,20 @@ public class ArmTest extends LinearOpMode {
             if (gamepad2.a) {
                 tDegrees--;
                 TurnTable.goTo(tDegrees);
-                teamUtil.sleep(50);
             } else if (gamepad2.y){
                 tDegrees++;
                 TurnTable.goTo(tDegrees);
-                teamUtil.sleep(50);
             }
+
+            //alternative turn table
+            if (gamepad2.left_stick_x>0) {
+                tDegrees--;
+                TurnTable.goTo(tDegrees);
+            } else if (gamepad2.left_stick_x <0) {
+                tDegrees++;
+                TurnTable.goTo(tDegrees);
+            }
+            teamUtil.sleep(50);
 
 
             telemetry.addData("aDegrees", aDegrees);
