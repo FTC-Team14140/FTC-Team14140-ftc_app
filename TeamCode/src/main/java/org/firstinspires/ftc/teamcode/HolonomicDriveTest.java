@@ -65,10 +65,10 @@ public class HolonomicDriveTest extends LinearOpMode{
             BackRight = Range.clip(BackRight, -1, 1);
 
             // write the values to the motors
-            motorFrontRight.setPower(FrontRight);
-            motorFrontLeft.setPower(FrontLeft);
-            motorBackLeft.setPower(BackLeft);
-            motorBackRight.setPower(BackRight);
+            motorFrontRight.setPower(FrontRight*.5);
+            motorFrontLeft.setPower(FrontLeft*.5);
+            motorBackLeft.setPower(BackLeft*.5);
+            motorBackRight.setPower(BackRight*.5);
 
             if (gamepad1.dpad_up) {
                 speede = speede + .05;
